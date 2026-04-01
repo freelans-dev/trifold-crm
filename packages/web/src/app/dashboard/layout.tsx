@@ -42,6 +42,24 @@ export default async function DashboardLayout({
               >
                 Leads
               </Link>
+              <Link
+                href="/dashboard/corretores"
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Corretores
+              </Link>
+              <Link
+                href="/dashboard/conversas"
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Conversas
+              </Link>
+              <Link
+                href="/dashboard/configuracoes/pipeline"
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Configuracoes
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-4">
