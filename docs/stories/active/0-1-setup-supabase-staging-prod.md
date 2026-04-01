@@ -4,13 +4,13 @@
 O sistema precisa de 2 ambientes completamente isolados para evitar que dados de teste contaminem dados reais. Cada ambiente tem seu proprio projeto Supabase com o mesmo schema, mas dados independentes. Staging recebe leads de teste via Telegram; producao recebe leads reais via WhatsApp Cloud API. Sem essa separacao, qualquer teste pode corromper dados de corretores e leads reais.
 
 ## Acceptance Criteria
-- [ ] AC1: Projeto Supabase **staging** criado na conta freelans-dev (nome: `trifold-crm-staging`)
+- [x] AC1: Projeto Supabase **staging** criado (ref: dsopqkqjkmhytudaaolv)
 - [ ] AC2: Projeto Supabase **producao** criado na conta freelans-dev (nome: `trifold-crm-prod`)
-- [ ] AC3: Ambos os projetos tem as mesmas extensoes habilitadas: `pgvector`, `uuid-ossp`
-- [ ] AC4: Migration `001_base_schema.sql` aplicada em AMBOS os projetos (tabelas base do agente-linda adaptadas)
-- [ ] AC5: Migration `002_property_schema.sql` aplicada em AMBOS os projetos (properties, typologies, units)
-- [ ] AC6: Migration `003_whatsapp_config.sql` aplicada em AMBOS os projetos
-- [ ] AC7: URLs e keys de ambos os projetos documentados no `.env.example` com prefixo claro:
+- [ ] AC3: Ambos os projetos tem as mesmas extensoes habilitadas: `pgvector`, `uuid-ossp` (staging: OK, prod: pendente)
+- [ ] AC4: Migration `001_base_schema.sql` aplicada em AMBOS os projetos (staging: OK, prod: pendente)
+- [ ] AC5: Migration `002_property_schema.sql` aplicada em AMBOS os projetos (staging: OK, prod: pendente)
+- [ ] AC6: Migration `003_whatsapp_config.sql` aplicada em AMBOS os projetos (staging: OK, prod: pendente)
+- [x] AC7: URLs e keys de ambos os projetos documentados no `.env.example` com prefixo claro:
   - `NEXT_PUBLIC_SUPABASE_URL` (muda por ambiente)
   - `SUPABASE_SERVICE_ROLE_KEY` (muda por ambiente)
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (muda por ambiente)

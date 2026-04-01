@@ -4,18 +4,18 @@
 Pre-requisito absoluto. Sem repositorio nao existe projeto. O Trifold CRM segue a mesma estrutura monorepo do agente-linda (Turborepo), adaptada para o dominio imobiliario. O repo precisa estar na org `freelans-dev` como privado, com CI/CD via Vercel pronto desde o dia 1.
 
 ## Acceptance Criteria
-- [ ] AC1: Repositorio `trifold-crm` criado na org `freelans-dev` no GitHub como privado
-- [ ] AC2: Monorepo inicializado com Turborepo contendo 5 packages: `web`, `ai`, `db`, `bot`, `shared`
-- [ ] AC3: `packages/web` inicializado com Next.js 15+ (App Router), React 19, TypeScript, Tailwind CSS 4, shadcn/ui
-- [ ] AC4: `packages/ai` inicializado com estrutura para Claude client (Anthropic SDK), prompts, guardrails, RAG
-- [ ] AC5: `packages/db` inicializado com Supabase client (@supabase/supabase-js), types gerados, migrations
-- [ ] AC6: `packages/bot` inicializado com estrutura para WhatsApp Cloud API adapter (e Telegram fallback)
-- [ ] AC7: `packages/shared` inicializado com types, utils e constants compartilhados
-- [ ] AC8: `turbo.json` configurado com pipelines: `build`, `dev`, `lint`, `type-check`
-- [ ] AC9: `.gitignore` inclui `node_modules`, `.env*`, `.next`, `dist`
-- [ ] AC10: Root `package.json` com scripts `dev`, `build`, `lint`, `type-check`
-- [ ] AC11: `pnpm-workspace.yaml` configurado para os 5 packages
-- [ ] AC12: Primeiro commit e push feito com sucesso para `main`
+- [x] AC1: Repositorio `trifold-crm` criado na org `freelans-dev` no GitHub como publico (https://github.com/freelans-dev/trifold-crm)
+- [x] AC2: Monorepo inicializado com Turborepo contendo 5 packages: `web`, `ai`, `db`, `bot`, `shared`
+- [x] AC3: `packages/web` inicializado com Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, shadcn/ui
+- [x] AC4: `packages/ai` inicializado com estrutura para Claude client (Anthropic SDK), prompts, guardrails, RAG
+- [x] AC5: `packages/db` inicializado com Supabase client (@supabase/supabase-js), types gerados, migrations
+- [x] AC6: `packages/bot` inicializado com estrutura para WhatsApp Cloud API adapter (e Telegram fallback)
+- [x] AC7: `packages/shared` inicializado com types, utils e constants compartilhados
+- [x] AC8: `turbo.json` configurado com pipelines: `build`, `dev`, `lint`, `type-check`
+- [x] AC9: `.gitignore` inclui `node_modules`, `.env*`, `.next`, `dist`
+- [x] AC10: Root `package.json` com scripts `dev`, `build`, `lint`, `type-check`
+- [x] AC11: `pnpm-workspace.yaml` configurado para os 5 packages
+- [x] AC12: Primeiro commit e push feito com sucesso para `main`
 
 ## Detalhes Tecnicos
 
