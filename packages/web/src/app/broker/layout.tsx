@@ -35,6 +35,12 @@ export default async function BrokerLayout({
               >
                 Pipeline
               </Link>
+              <Link
+                href="/broker/agenda"
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Agenda
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-4">
