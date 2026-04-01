@@ -68,10 +68,7 @@ function prepareTextForTTS(text: string): string {
     .replace(/\bao meio dia\b/gi, "ao meio-dia")
     .replace(/\bsegunda a sexta\b/gi, "segunda à sexta")
 
-  // Pausas com SSML break tags (ElevenLabs suporta exceto v3)
-  // break time controla duração exata — mais natural que vírgula ou reticências
-  result = result.replace(/\.\s+/g, '. <break time="0.3s"/> ')
-  result = result.replace(/!\s+/g, '! <break time="0.2s"/> ')
+  // Sem SSML breaks — Gigi pausa naturalmente pela pontuação
 
   // Limitar tamanho (áudio longo fica monótono)
   if (result.length > 500) {
