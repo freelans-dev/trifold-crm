@@ -146,21 +146,32 @@ export async function POST(request: NextRequest) {
           orgId,
         })
 
-        // Send via Telegram (with extended timeout for DNS resolution)
-        const sendResult = await fetch(
-          `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              chat_id: chatId,
-              text: response,
-            }),
-            signal: AbortSignal.timeout(30000),
+        // Split response into paragraphs and send each as separate message
+        const paragraphs = response
+          .split(/\n\n+/)
+          .map((p: string) => p.trim())
+          .filter((p: string) => p.length > 0)
+
+        for (const paragraph of paragraphs) {
+          const sendResult = await fetch(
+            `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: paragraph,
+              }),
+              signal: AbortSignal.timeout(30000),
+            }
+          )
+          if (!sendResult.ok) {
+            console.error("Telegram send error:", await sendResult.text())
           }
-        )
-        if (!sendResult.ok) {
-          console.error("Telegram send error:", await sendResult.text())
+          // Small delay between messages for natural feel
+          if (paragraphs.length > 1) {
+            await new Promise((r) => setTimeout(r, 800))
+          }
         }
       } catch (aiError) {
         console.error("AI processing error:", aiError)
