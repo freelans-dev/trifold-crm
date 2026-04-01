@@ -2,6 +2,7 @@ import { createClient } from "@web/lib/supabase/server"
 import { getServerUser } from "@web/lib/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import { RoleDropdown, ToggleActiveButton } from "@web/components/admin/role-dropdown"
 
 export default async function UsuariosPage() {
   const user = await getServerUser()
@@ -124,73 +125,3 @@ export default async function UsuariosPage() {
   )
 }
 
-function RoleDropdown({
-  userId,
-  currentRole,
-}: {
-  userId: string
-  currentRole: string
-}) {
-  return (
-    <form
-      action={async (formData: FormData) => {
-        "use server"
-        const newRole = formData.get("role") as string
-        if (!["admin", "supervisor", "broker"].includes(newRole)) return
-
-        const supabase = await (
-          await import("@web/lib/supabase/server")
-        ).createClient()
-        await supabase.from("users").update({ role: newRole }).eq("id", userId)
-      }}
-    >
-      <select
-        name="role"
-        defaultValue={currentRole}
-        onChange={(e) => {
-          const form = e.target.closest("form")
-          if (form) form.requestSubmit()
-        }}
-        className="rounded-md border border-gray-300 px-2 py-1 text-xs focus:border-orange-500 focus:outline-none"
-      >
-        <option value="admin">Admin</option>
-        <option value="supervisor">Supervisor</option>
-        <option value="broker">Corretor</option>
-      </select>
-    </form>
-  )
-}
-
-function ToggleActiveButton({
-  userId,
-  isActive,
-}: {
-  userId: string
-  isActive: boolean
-}) {
-  return (
-    <form
-      action={async () => {
-        "use server"
-        const supabase = await (
-          await import("@web/lib/supabase/server")
-        ).createClient()
-        await supabase
-          .from("users")
-          .update({ is_active: !isActive })
-          .eq("id", userId)
-      }}
-    >
-      <button
-        type="submit"
-        className={`rounded-md px-3 py-1 text-xs font-medium ${
-          isActive
-            ? "bg-red-50 text-red-600 hover:bg-red-100"
-            : "bg-green-50 text-green-600 hover:bg-green-100"
-        }`}
-      >
-        {isActive ? "Desativar" : "Ativar"}
-      </button>
-    </form>
-  )
-}
