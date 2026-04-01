@@ -3,7 +3,7 @@ import { getServerUser } from "@web/lib/auth"
 import Link from "next/link"
 
 export default async function CampaignsPage() {
-  const user = await getServerUser()
+  await getServerUser()
   const supabase = await createClient()
 
   // Fetch leads with utm_campaign grouped data

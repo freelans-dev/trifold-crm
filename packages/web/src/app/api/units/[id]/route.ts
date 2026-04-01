@@ -75,7 +75,8 @@ export async function GET(
 
   // Clean up response: remove org_id from nested property
   const { properties, typologies, ...unitData } = unit
-  const { org_id: _, ...propertyData } = properties
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { org_id: _orgId, ...propertyData } = properties
 
   return NextResponse.json({
     data: {

@@ -9,7 +9,7 @@ export default async function PropertyDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const user = await getServerUser()
+  await getServerUser()
   const supabase = await createClient()
 
   const { data: property } = await supabase

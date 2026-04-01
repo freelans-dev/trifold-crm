@@ -3,7 +3,7 @@ import { getServerUser } from "@web/lib/auth"
 import Link from "next/link"
 
 export default async function DashboardPage() {
-  const user = await getServerUser()
+  await getServerUser()
   const supabase = await createClient()
 
   // Fetch metrics in parallel
@@ -11,7 +11,7 @@ export default async function DashboardPage() {
   today.setHours(0, 0, 0, 0)
   const monday = new Date(today)
   monday.setDate(monday.getDate() - monday.getDay() + 1)
-  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
+
 
   const [leadsToday, pipeline, properties] = await Promise.all([
     supabase

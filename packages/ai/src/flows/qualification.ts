@@ -78,8 +78,9 @@ export function extractCollectedData(
   // Extract name mentions - look for patterns like "Prazer, [Name]" or "Olá, [Name]"
   if (!updated.name) {
     const namePatterns = [
-      /(?:prazer|olá|ola|obrigad[ao]),?\s+([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)?)/,
-      /(?:certo|entendi),?\s+([A-ZÀ-Ú][a-zà-ú]+)/,
+      /(?:prazer|olá|ola|obrigad[ao]),?\s+([A-Za-zÀ-ÿ][a-zà-ÿ]+(?:\s+[A-Za-zÀ-ÿ][a-zà-ÿ]+)*)/i,
+      /(?:certo|entendi),?\s+([A-Za-zÀ-ÿ][a-zà-ÿ]+(?:\s+[A-Za-zÀ-ÿ][a-zà-ÿ]+)*)/i,
+      /(?:meu nome [eé]|me chamo|sou (?:o |a )?)\s*([A-Za-zÀ-ÿ][a-zà-ÿ]+(?:\s+[A-Za-zÀ-ÿ][a-zà-ÿ]+)*)/i,
     ]
     for (const pattern of namePatterns) {
       const match = aiResponse.match(pattern)

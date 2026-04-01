@@ -12,7 +12,7 @@ export default async function PropertyUnitsPage({
 }) {
   const { id } = await params
   const filters = await searchParams
-  const user = await getServerUser()
+  await getServerUser()
   const supabase = await createClient()
 
   const { data: property } = await supabase

@@ -43,7 +43,8 @@ export async function GET(
   }
 
   // Remove nested properties from response
-  const { properties: _, ...typologyData } = typology
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { properties: _props, ...typologyData } = typology
   return NextResponse.json({ data: typologyData })
 }
 

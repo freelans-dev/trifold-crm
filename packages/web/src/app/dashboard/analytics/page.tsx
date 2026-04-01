@@ -2,7 +2,7 @@ import { createClient } from "@web/lib/supabase/server"
 import { getServerUser } from "@web/lib/auth"
 
 export default async function AnalyticsPage() {
-  const user = await getServerUser()
+  await getServerUser()
   const supabase = await createClient()
 
   const now = new Date()
