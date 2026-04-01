@@ -5,7 +5,7 @@ Cada lead tem uma timeline de tudo que aconteceu: quando entrou, quando mudou de
 
 ## Acceptance Criteria
 - [ ] AC1: Tabela `activities` ja existe no schema (Story 1.2) — esta story cobre o registro e exibicao
-- [ ] AC2: Tipos de atividade suportados:
+- [x] AC2: Tipos de atividade suportados:
   | Tipo | Descricao | Exemplo |
   |------|-----------|---------|
   | `lead_created` | Lead criado | "Lead criado via WhatsApp" |
@@ -21,8 +21,8 @@ Cada lead tem uma timeline de tudo que aconteceu: quando entrou, quando mudou de
   | `property_interest_change` | Interesse mudou | "Interesse mudou de Vind para Yarden" |
 - [ ] AC3: Cada activity tem: `id`, `lead_id`, `type`, `description`, `metadata` (jsonb), `created_by` (user_id ou 'system'), `created_at`
 - [ ] AC4: Funcao utilitaria `logActivity(leadId, type, description, metadata?, userId?)` usada por todas as stories
-- [ ] AC5: API route `GET /api/leads/[id]/activities` retorna activities em ordem cronologica reversa
-- [ ] AC6: No detalhe do lead (Story 4.5), secao Timeline exibe activities com:
+- [x] AC5: API route `GET /api/leads/[id]/activities` retorna activities em ordem cronologica reversa
+- [x] AC6: No detalhe do lead (Story 4.5), secao Timeline exibe activities com:
   - Icone por tipo (seta = stage_change, pessoa = broker_assigned, etc.)
   - Descricao
   - Quem fez (nome do usuario ou "Sistema")
@@ -90,3 +90,7 @@ await logActivity({
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+- `packages/web/src/app/dashboard/atividades/page.tsx` — Pagina de listagem de atividades com type badges, timestamps e links para leads

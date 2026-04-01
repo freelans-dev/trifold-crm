@@ -12,8 +12,8 @@ A Nicole precisa responder perguntas especificas sobre Vind e Yarden: localizaca
 - [x] AC6: Seed com dados automaticos extraidos dos empreendimentos: localizacao, conceito, diferenciais, metragem, tipologias, lazer, prazo de entrega
 - [x] AC7: Funcao `buildContextFromRAG(query, orgId, propertyId?)` que retorna texto formatado para inserir no prompt
 - [ ] AC8: Re-geracao de embeddings ao salvar/editar knowledge_base entry
-- [ ] AC9: API route `POST /api/knowledge-base` para admin adicionar novos pares
-- [ ] AC10: API route `GET /api/knowledge-base` para listar entries (com filtro por property e category)
+- [x] AC9: API route `POST /api/knowledge-base` para admin adicionar novos pares
+- [x] AC10: API route `GET /api/knowledge-base` para listar entries (com filtro por property e category)
 - [x] AC11: RAG retorna top 5 resultados relevantes com score minimo de 0.7
 
 ## Detalhes Tecnicos
@@ -90,3 +90,5 @@ G (Grande) — 3-4 horas
 - `packages/ai/src/rag/context-builder.ts` — Monta contexto formatado para inserir no prompt
 - `packages/ai/src/rag/index.ts` — Export central do modulo RAG
 - `supabase/migrations/005_rag_search_function.sql` — Funcao SQL match_knowledge para busca vetorial
+- `packages/web/src/app/api/knowledge-base/route.ts` — API routes GET (listar) e POST (criar) knowledge base entries
+- `packages/web/src/app/api/knowledge-base/[id]/route.ts` — API routes GET, PUT, DELETE para entry individual

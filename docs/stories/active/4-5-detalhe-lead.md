@@ -10,8 +10,8 @@ A pagina de detalhe do lead e onde o supervisor/admin ve TUDO sobre um lead: dad
 - [x] AC4: **Secao Resumo IA:** Card com `ai_summary` gerado automaticamente — preferencias, objecoes, perguntas, proximos passos recomendados
 - [x] AC5: **Secao Conversa:** Historico completo de mensagens (agente + lead + corretor) — exibido como chat bubbles com timestamp e sender type (IA = roxo, Lead = cinza, Corretor = azul, Supervisor = vermelho)
 - [x] AC6: **Secao Timeline:** Activity logs em ordem cronologica reversa (mais recente primeiro)
-- [ ] AC7: **Secao Notas:** Area para adicionar notas em texto livre (admin/supervisor/corretor)
-- [ ] AC8: **Acoes rapidas:** Mover para etapa (dropdown), Designar corretor (dropdown), Marcar visita agendada
+- [x] AC7: **Secao Notas:** Area para adicionar notas em texto livre (admin/supervisor/corretor)
+- [x] AC8: **Acoes rapidas:** Mover para etapa (dropdown), Designar corretor (dropdown), Marcar visita agendada
 - [ ] AC9: Secao conversa carrega via scroll infinito (ultimas 50 mensagens, load more ao scrollar pra cima)
 - [ ] AC10: Dados atualizados em tempo real via Supabase Realtime (nova mensagem aparece, mudanca de etapa reflete)
 - [x] AC11: Layout em tabs ou sidebar: Dados | Conversa | Timeline | Notas
@@ -77,3 +77,5 @@ G (Grande) — 3-4 horas
 ## File List
 
 - `packages/web/src/app/dashboard/leads/[id]/page.tsx` — Pagina de detalhe do lead com header, dados, resumo IA, conversa e timeline
+- `packages/web/src/app/api/leads/[id]/notes/route.ts` — API routes GET e POST para notas do lead
+- `packages/web/src/app/api/leads/[id]/stage/route.ts` — API route PATCH para mudanca de etapa (acoes rapidas)

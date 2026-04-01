@@ -4,8 +4,8 @@
 O supervisor e corretor precisam ver toda a conversa que a Nicole (IA) teve com o lead, incluindo mensagens do lead, respostas da Nicole, e mensagens do corretor (via Coexistence Mode). Isso e essencial para contexto — o corretor precisa saber o que foi dito antes de assumir, e o supervisor precisa monitorar qualidade. As mensagens ja sao salvas na tabela `messages` pelas stories do Bloco 3 — esta story cobre a exibicao no CRM.
 
 ## Acceptance Criteria
-- [ ] AC1: No detalhe do lead (Story 4.5), secao "Conversa" exibe todas as mensagens da conversa
-- [ ] AC2: Mensagens exibidas como chat bubbles com:
+- [x] AC1: No detalhe do lead (Story 4.5), secao "Conversa" exibe todas as mensagens da conversa
+- [x] AC2: Mensagens exibidas como chat bubbles com:
   - Icone/badge do sender type (IA = roxo, Lead = cinza, Corretor = azul)
   - Conteudo do texto
   - Timestamp formatado ("14:32" se hoje, "28/03 14:32" se outro dia)
@@ -17,8 +17,8 @@ O supervisor e corretor precisam ver toda a conversa que a Nicole (IA) teve com 
 - [ ] AC4: Scroll infinito: ultimas 50 mensagens inicialmente, "Carregar mensagens anteriores" no topo
 - [ ] AC5: Novas mensagens aparecem em tempo real (Supabase Realtime no canal `messages`)
 - [ ] AC6: Indicador visual de quando o handoff aconteceu: separator "Nicole transferiu para Joao (corretor) — 14:32"
-- [ ] AC7: Mensagens da Nicole tem tag "IA" visivel para o admin/supervisor (o lead nao ve, mas quem acompanha no CRM sabe)
-- [ ] AC8: API route `GET /api/leads/[id]/messages?cursor=xxx&limit=50` retorna mensagens paginadas
+- [x] AC7: Mensagens da Nicole tem tag "IA" visivel para o admin/supervisor (o lead nao ve, mas quem acompanha no CRM sabe)
+- [x] AC8: API route `GET /api/leads/[id]/messages?cursor=xxx&limit=50` retorna mensagens paginadas
 
 ## Detalhes Tecnicos
 
@@ -79,3 +79,8 @@ const channel = supabase
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+- `packages/web/src/app/dashboard/conversas/[id]/page.tsx` — Pagina de detalhe da conversa com chat bubbles, sender badges e timestamps
+- `packages/web/src/app/dashboard/conversas/page.tsx` — Pagina de listagem de conversas atualizada
