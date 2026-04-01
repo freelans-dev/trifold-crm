@@ -319,7 +319,12 @@ export default async function AgendaPage({
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="text-sm font-semibold text-stone-900">
-                          {time.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })} — {lead?.name ?? "Sem nome"}
+                          {time.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" })} —{" "}
+                          {lead ? (
+                            <Link href={`/dashboard/leads/${lead.id}`} className="text-orange-600 hover:underline">
+                              {lead.name}
+                            </Link>
+                          ) : "Sem nome"}
                         </p>
                         <p className="mt-0.5 text-xs text-stone-500">
                           {property?.name ?? ""} {broker ? `· ${broker.name}` : ""} · {apt.duration_minutes}min · {apt.location ?? "Stand Trifold"}
@@ -390,7 +395,7 @@ export default async function AgendaPage({
                         const lead = extractRelation<RelatedLead>(apt.lead)
                         return (
                           <div key={apt.id} className={`truncate rounded px-1 py-0.5 text-[9px] font-medium ${s.bg} ${s.color}`}>
-                            {new Date(apt.scheduled_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })} {lead?.name ?? ""}
+                            {new Date(apt.scheduled_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" })} {lead?.name ?? ""}
                           </div>
                         )
                       })}
@@ -500,9 +505,16 @@ export default async function AgendaPage({
                         {time.toLocaleTimeString("pt-BR", {
                           hour: "2-digit",
                           minute: "2-digit",
+                          timeZone: "America/Sao_Paulo",
                         })}
                       </p>
-                      <p className="truncate">{lead?.name ?? "Lead"}</p>
+                      <p className="truncate">
+                        {lead ? (
+                          <Link href={`/dashboard/leads/${lead.id}`} className="hover:underline">
+                            {lead.name}
+                          </Link>
+                        ) : "Lead"}
+                      </p>
                       {broker && (
                         <p className="truncate text-[10px] opacity-75">
                           {broker.name}
@@ -566,10 +578,11 @@ function AppointmentDetail({
             Data / Hora
           </p>
           <p className="text-sm text-gray-900">
-            {date.toLocaleDateString("pt-BR")} as{" "}
+            {date.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })} às{" "}
             {date.toLocaleTimeString("pt-BR", {
               hour: "2-digit",
               minute: "2-digit",
+              timeZone: "America/Sao_Paulo",
             })}
             <span className="ml-1 text-gray-400">
               ({apt.duration_minutes}min)
@@ -588,7 +601,11 @@ function AppointmentDetail({
 
         <div>
           <p className="text-xs font-medium uppercase text-gray-400">Lead</p>
-          <p className="text-sm text-gray-900">{lead?.name ?? "-"}</p>
+          <p className="text-sm text-gray-900">
+            {lead ? (
+              <Link href={`/dashboard/leads/${lead.id}`} className="text-orange-600 hover:underline">{lead.name}</Link>
+            ) : "-"}
+          </p>
           {lead?.phone && (
             <p className="text-xs text-gray-500">{lead.phone}</p>
           )}

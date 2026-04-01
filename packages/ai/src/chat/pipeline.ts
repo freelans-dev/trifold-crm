@@ -395,15 +395,18 @@ export async function processMessageWithMetadata(
 
     // Auto-create appointment when visit is discussed
     if (finalData.visit_availability && !state?.visit_proposed && conversation.org_id) {
+      // Default: next business day 10am Maringá (UTC-3 = 13h UTC)
       const tomorrow = new Date()
       tomorrow.setDate(tomorrow.getDate() + 1)
-      tomorrow.setHours(10, 0, 0, 0) // Default 10am next day
+      // Skip Sunday
+      if (tomorrow.getDay() === 0) tomorrow.setDate(tomorrow.getDate() + 1)
+      tomorrow.setUTCHours(13, 0, 0, 0) // 10h Maringá = 13h UTC
 
       await supabase.from("appointments").insert({
         org_id: conversation.org_id,
         lead_id: leadId,
         scheduled_at: tomorrow.toISOString(),
-        location: "Stand Trifold",
+        location: "Sede Trifold - Av. Nildo Ribeiro da Rocha, 1337, Vila Marumby",
         status: "scheduled",
         created_by: "nicole",
         notes: `Visita sugerida pela Nicole. Disponibilidade informada: ${String(finalData.visit_availability)}`,
