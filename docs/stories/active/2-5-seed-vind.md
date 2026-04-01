@@ -4,20 +4,20 @@
 O Vind e o empreendimento em comercializacao da Trifold. 48 unidades, tipologia unica. O seed precisa criar o empreendimento, a tipologia e todas as 48 unidades com dados reais (ou estimados, conforme decisao do PO). Esses dados alimentam a Nicole e permitem demo funcional na sexta.
 
 ## Acceptance Criteria
-- [ ] AC1: Empreendimento "Vind" criado com todos os dados conhecidos
-- [ ] AC2: 1 tipologia criada: "2 Suites" (67m2, 2 suites, sacada ampla, churrasqueira a carvao, 1 vaga coberta)
-- [ ] AC3: 48 unidades criadas: 12 pavimentos tipo x 4 unidades/andar
-- [ ] AC4: Unidades nomeadas seguindo padrao: andar + posicao (ex: 101, 102, 103, 104, 201, 202... ate 1204)
-- [ ] AC5: Posicoes alternadas por unidade no andar: frente-esquerda, frente-direita, fundos-esquerda, fundos-direita
-- [ ] AC6: Vista estimada por posicao: frente = "rua", fundos = "interna" (ou dados reais se disponiveis)
-- [ ] AC7: Todas as unidades com status `available` (ou dados reais de vendidas/reservadas se disponiveis)
-- [ ] AC8: Garagem: 1 vaga coberta padrao para todas
-- [ ] AC9: Precos NAO preenchidos (admin insere depois — conforme decisao PO)
-- [ ] AC10: Amenities do Vind cadastradas (dados conhecidos do brief)
-- [ ] AC11: Endereco: Rua Jose Pereira da Costa, 547, Maringa-PR
-- [ ] AC12: Data de entrega: 2027-06-30 (1o semestre 2027)
-- [ ] AC13: Seed executavel via script ou migration separada
-- [ ] AC14: Regras comerciais: `requires_down_payment: false` (Vind nao exige entrada obrigatoria como Yarden)
+- [x] AC1: Empreendimento "Vind" criado com todos os dados conhecidos
+- [x] AC2: 1 tipologia criada: "2 Suites" (67m2, 2 suites, sacada ampla, churrasqueira a carvao, 1 vaga coberta)
+- [x] AC3: 48 unidades criadas: 12 pavimentos tipo x 4 unidades/andar
+- [x] AC4: Unidades nomeadas seguindo padrao: andar + posicao (ex: 101, 102, 103, 104, 201, 202... ate 1204)
+- [x] AC5: Posicoes alternadas por unidade no andar: frente-esquerda, frente-direita, fundos-esquerda, fundos-direita
+- [x] AC6: Vista estimada por posicao: frente = "rua", fundos = "interna" (ou dados reais se disponiveis)
+- [x] AC7: Todas as unidades com status `available` (ou dados reais de vendidas/reservadas se disponiveis)
+- [x] AC8: Garagem: 1 vaga coberta padrao para todas
+- [x] AC9: Precos NAO preenchidos (admin insere depois — conforme decisao PO)
+- [x] AC10: Amenities do Vind cadastradas (dados conhecidos do brief)
+- [x] AC11: Endereco: Rua Jose Pereira da Costa, 547, Maringa-PR
+- [x] AC12: Data de entrega: 2027-06-30 (1o semestre 2027)
+- [x] AC13: Seed executavel via script ou migration separada
+- [x] AC14: Regras comerciais: `requires_down_payment: false` (Vind nao exige entrada obrigatoria como Yarden)
 
 ## Detalhes Tecnicos
 

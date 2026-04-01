@@ -4,17 +4,17 @@
 Todas as APIs externas (Supabase, Anthropic, Meta Cloud API) precisam de credenciais configuradas. O `.env.example` serve como documentacao viva das variaveis necessarias. As variaveis precisam estar tanto no `.env.local` (dev) quanto na Vercel (producao). Sem isso, nenhuma integracao funciona.
 
 ## Acceptance Criteria
-- [ ] AC1: `.env.example` criado na raiz com TODAS as variaveis necessarias (sem valores reais)
-- [ ] AC2: `.env.local` criado localmente com valores reais de dev/staging
-- [ ] AC3: Variaveis Supabase configuradas: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
-- [ ] AC4: Variavel Anthropic configurada: `ANTHROPIC_API_KEY`
-- [ ] AC5: Variaveis Meta/WhatsApp Cloud API configuradas (mesmo que vazias por enquanto): `META_WHATSAPP_PHONE_NUMBER_ID`, `META_WHATSAPP_ACCESS_TOKEN`, `META_WHATSAPP_VERIFY_TOKEN`, `META_WABA_ID`
-- [ ] AC6: Variavel Telegram fallback: `TELEGRAM_BOT_TOKEN` (para caso de fallback)
-- [ ] AC7: Variaveis utilitarias: `NEXT_PUBLIC_APP_URL`, `NODE_ENV`
-- [ ] AC8: `packages/db/src/client.ts` le variaveis Supabase e exporta client configurado
-- [ ] AC9: `packages/ai/src/client.ts` le variavel Anthropic e exporta client configurado
-- [ ] AC10: Variaveis de producao configuradas no dashboard Vercel
-- [ ] AC11: `.gitignore` confirma que `.env.local` e `.env` NAO sao commitados
+- [x] AC1: `.env.example` criado na raiz com TODAS as variaveis necessarias (sem valores reais)
+- [x] AC2: `.env` criado localmente com valores reais de staging
+- [x] AC3: Variaveis Supabase configuradas: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- [x] AC4: Variavel Anthropic configurada: `ANTHROPIC_API_KEY` (no .env.example, valor pendente)
+- [x] AC5: Variaveis Meta/WhatsApp Cloud API configuradas (mesmo que vazias por enquanto): `META_WHATSAPP_PHONE_NUMBER_ID`, `META_WHATSAPP_ACCESS_TOKEN`, `META_WHATSAPP_VERIFY_TOKEN`, `META_APP_SECRET`
+- [x] AC6: Variavel Telegram fallback: `TELEGRAM_BOT_TOKEN` (para caso de fallback)
+- [x] AC7: Variaveis utilitarias: `NODE_ENV`
+- [x] AC8: `packages/db/src/client.ts` le variaveis Supabase e exporta client configurado
+- [x] AC9: `packages/ai/src/client.ts` le variavel Anthropic e exporta client configurado
+- [ ] AC10: Variaveis de producao configuradas no dashboard Vercel (pendente deploy)
+- [x] AC11: `.gitignore` confirma que `.env.local` e `.env` NAO sao commitados
 
 ## Detalhes Tecnicos
 

@@ -4,21 +4,21 @@
 O Yarden e o empreendimento de lancamento da Trifold (julho/2026), alto padrao com rooftop exclusivo. Tem 2 tipologias e regra de negocio critica: exige entrada. O seed do Yarden e mais complexo que o Vind por ter 2 tipologias, opcao de 1 ou 2 vagas, e mais amenities (rooftop com fitness, sport bar, coworking, mirante).
 
 ## Acceptance Criteria
-- [ ] AC1: Empreendimento "Yarden" criado com todos os dados conhecidos
-- [ ] AC2: 2 tipologias criadas:
+- [x] AC1: Empreendimento "Yarden" criado com todos os dados conhecidos
+- [x] AC2: 2 tipologias criadas:
   - Tipologia A: "2 Suites" — 83,66m2, 2 suites, 2 banheiros
   - Tipologia B: "2 Dorm + 1 Suite" — 79,81m2, 2 dormitorios + 1 suite, 2 banheiros
-- [ ] AC3: 60 unidades criadas: 15 pavimentos tipo x 4 unidades/andar
-- [ ] AC4: Distribuicao de tipologias alternada por posicao no andar (ex: posicoes 1 e 3 = Tipo A, posicoes 2 e 4 = Tipo B — ou dados reais se disponiveis)
-- [ ] AC5: Unidades nomeadas: andar + posicao (101-104 ate 1501-1504)
-- [ ] AC6: Garagem: mix de 1 vaga (11,25m2) e 2 vagas (22,50m2) — distribuicao estimada (ex: andar 1-8 = 1 vaga, 9-15 = 2 vagas) ou dados reais
-- [ ] AC7: Todas as unidades com status `available` (lancamento)
-- [ ] AC8: Amenities completas cadastradas: rooftop (fitness, sport bar, coworking, mirante), terreo (piscina, salao de festas, espaco gourmet, pet place, playground, miniquadra)
-- [ ] AC9: Endereco: Rua Carlos Meneghetti, 168, Gleba Itororo, Maringa-PR
-- [ ] AC10: Data de entrega: 2029-06-30 (1o semestre 2029)
-- [ ] AC11: Regras comerciais: `requires_down_payment: true` (regra critica — lead sem entrada nao qualifica)
-- [ ] AC12: Conceito/proposta de valor cadastrada refletindo alto padrao + rooftop exclusivo
-- [ ] AC13: Seed executavel e idempotente
+- [x] AC3: 60 unidades criadas: 15 pavimentos tipo x 4 unidades/andar
+- [x] AC4: Distribuicao de tipologias alternada por posicao no andar (ex: posicoes 1 e 3 = Tipo A, posicoes 2 e 4 = Tipo B — ou dados reais se disponiveis)
+- [x] AC5: Unidades nomeadas: andar + posicao (101-104 ate 1501-1504)
+- [x] AC6: Garagem: mix de 1 vaga (11,25m2) e 2 vagas (22,50m2) — distribuicao estimada (ex: andar 1-8 = 1 vaga, 9-15 = 2 vagas) ou dados reais
+- [x] AC7: Todas as unidades com status `available` (lancamento)
+- [x] AC8: Amenities completas cadastradas: rooftop (fitness, sport bar, coworking, mirante), terreo (piscina, salao de festas, espaco gourmet, pet place, playground, miniquadra)
+- [x] AC9: Endereco: Rua Carlos Meneghetti, 168, Gleba Itororo, Maringa-PR
+- [x] AC10: Data de entrega: 2029-06-30 (1o semestre 2029)
+- [x] AC11: Regras comerciais: `requires_down_payment: true` (regra critica — lead sem entrada nao qualifica)
+- [x] AC12: Conceito/proposta de valor cadastrada refletindo alto padrao + rooftop exclusivo
+- [x] AC13: Seed executavel e idempotente
 
 ## Detalhes Tecnicos
 

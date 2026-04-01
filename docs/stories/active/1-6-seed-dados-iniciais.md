@@ -4,14 +4,16 @@
 O sistema precisa de dados base para funcionar: organizacao Trifold, usuario admin (Alexandre), pipeline stages default, e configuracoes iniciais do agente. Sem seed, o sistema abre vazio e nao e possivel testar nenhum fluxo. Esta story cobre apenas dados estruturais — seeds de empreendimentos sao stories separadas (2.5 e 2.6).
 
 ## Acceptance Criteria
-- [ ] AC1: Organizacao "Trifold Engenharia" criada com dados reais (Maringa-PR)
-- [ ] AC2: Usuario admin criado: Alexandre Guimaraes Nicolau (email a definir, role `admin`)
-- [ ] AC3: Usuario supervisor criado: Lucas/Marcao (email a definir, role `supervisor`)
-- [ ] AC4: 8 kanban_stages criados com dados exatos do PRD (Novo, Em Qualificacao, Qualificado, Visita Agendada, Visitou, Negociando, Fechou, Perdido) com cores e tipos corretos
-- [ ] AC5: `agent_config` base criado com configuracoes default (model: claude-sonnet-4-20250514, temperature, max_tokens)
-- [ ] AC6: `agent_prompts` base criados (placeholders): `system_personality`, `qualification_flow`, `property_presentation`, `visit_scheduling`, `handoff_summary`, `guardrails`, `off_hours`
-- [ ] AC7: Seed executavel via `pnpm seed` ou `supabase db seed`
-- [ ] AC8: Seed e idempotente (pode rodar multiplas vezes sem duplicar dados — usa UPSERT ou IF NOT EXISTS)
+- [x] AC1: Organizacao "Trifold Engenharia" criada com dados reais (Maringa-PR)
+- [x] AC2: Usuario admin criado: Alexandre Guimaraes Nicolau (email a definir, role `admin`)
+- [x] AC3: Usuario supervisor criado: Lucas/Marcao (email a definir, role `supervisor`)
+- [x] AC4: 8 kanban_stages criados com dados exatos do PRD (Novo, Em Qualificacao, Qualificado, Visita Agendada, Visitou, Negociando, Fechou, Perdido) com cores e tipos corretos
+- [x] AC5: `agent_config` base criado com configuracoes default (model: claude-sonnet-4-20250514, temperature, max_tokens)
+- [x] AC6: `agent_prompts` base criados (placeholders): `system_personality`, `qualification_flow`, `property_presentation`, `visit_scheduling`, `handoff_summary`, `guardrails`, `off_hours`
+- [x] AC7: Seed executavel via `pnpm seed` ou `supabase db seed`
+- [x] AC8: Seed e idempotente (pode rodar multiplas vezes sem duplicar dados — usa UPSERT ou IF NOT EXISTS)
+
+> Nota: Seed aplicado via scripts TypeScript (run-seed.ts)
 
 ## Detalhes Tecnicos
 
