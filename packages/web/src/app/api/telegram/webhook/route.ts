@@ -14,6 +14,75 @@ const IMAGE_MIME_TYPES = new Set([
   "image/jpg",
 ])
 
+function fixAccents(text: string): string {
+  const replacements: [RegExp, string][] = [
+    [/\bvoce\b/gi, "você"],
+    [/\bnao\b/gi, "não"],
+    [/\btambem\b/gi, "também"],
+    [/\besta\b/gi, "está"],
+    [/\bsera\b/gi, "será"],
+    [/\bimovel\b/gi, "imóvel"],
+    [/\bimoveis\b/gi, "imóveis"],
+    [/\bproximo\b/gi, "próximo"],
+    [/\bhorario\b/gi, "horário"],
+    [/\bhorarios\b/gi, "horários"],
+    [/\bvisao\b/gi, "visão"],
+    [/\bpadrao\b/gi, "padrão"],
+    [/\bvalorizacao\b/gi, "valorização"],
+    [/\blocalizacao\b/gi, "localização"],
+    [/\binformacao\b/gi, "informação"],
+    [/\binformacoes\b/gi, "informações"],
+    [/\bcondicoes\b/gi, "condições"],
+    [/\bcondicao\b/gi, "condição"],
+    [/\bopcoes\b/gi, "opções"],
+    [/\bopcao\b/gi, "opção"],
+    [/\bprevisao\b/gi, "previsão"],
+    [/\bchurrasqueira\b/gi, "churrasqueira"],
+    [/\bMaringa\b/g, "Maringá"],
+    [/\bItorobo\b/gi, "Itororó"],
+    [/\bItoboro\b/gi, "Itororó"],
+    [/\bvoces\b/gi, "vocês"],
+    [/\bja\b/gi, "já"],
+    [/\bate\b/gi, "até"],
+    [/\bso\b/gi, "só"],
+    [/\bpos\b/gi, "pós"],
+    [/\bpre\b/gi, "pré"],
+    [/\bcafe\b/gi, "café"],
+    [/\bserio\b/gi, "sério"],
+    [/\botimo\b/gi, "ótimo"],
+    [/\botima\b/gi, "ótima"],
+    [/\bincrivel\b/gi, "incrível"],
+    [/\bpossivel\b/gi, "possível"],
+    [/\bacessivel\b/gi, "acessível"],
+    [/\bcomodo\b/gi, "cômodo"],
+    [/\banimo\b/gi, "ânimo"],
+    [/\barea\b/gi, "área"],
+    [/\bareas\b/gi, "áreas"],
+    [/\bsuite\b/gi, "suíte"],
+    [/\bsuites\b/gi, "suítes"],
+    [/\bai\b/gi, "aí"],
+    [/\bduvida\b/gi, "dúvida"],
+    [/\bduvidas\b/gi, "dúvidas"],
+    [/\bpratico\b/gi, "prático"],
+    [/\bunico\b/gi, "único"],
+    [/\bunica\b/gi, "única"],
+    [/\bproprio\b/gi, "próprio"],
+    [/\bpropria\b/gi, "própria"],
+    [/\bnecessario\b/gi, "necessário"],
+    [/\bnecessaria\b/gi, "necessária"],
+    [/\bdisponivel\b/gi, "disponível"],
+    [/\bdisponiveis\b/gi, "disponíveis"],
+    [/\bla\b/g, "lá"],
+    [/\bpe\b/g, "pé"],
+  ]
+
+  let result = text
+  for (const [pattern, replacement] of replacements) {
+    result = result.replace(pattern, replacement)
+  }
+  return result
+}
+
 async function sendTypingAction(chatId: string): Promise<void> {
   await fetch(
     `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendChatAction`,
@@ -306,13 +375,15 @@ export async function POST(request: NextRequest) {
           mediaBlock,
         })
 
-        // Strip any remaining markdown from response
-        const cleanResponse = response
-          .replace(/\*\*/g, "")
-          .replace(/\*/g, "")
-          .replace(/^#{1,6}\s+/gm, "")
-          .replace(/^[-*]\s+/gm, "")
-          .replace(/`/g, "")
+        // Strip markdown and fix common missing accents
+        const cleanResponse = fixAccents(
+          response
+            .replace(/\*\*/g, "")
+            .replace(/\*/g, "")
+            .replace(/^#{1,6}\s+/gm, "")
+            .replace(/^[-*]\s+/gm, "")
+            .replace(/`/g, "")
+        )
 
         // Split response into paragraphs and send each as separate message
         const paragraphs = cleanResponse
@@ -361,12 +432,14 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Always send text too (for accessibility and chat history)
-        for (let i = 0; i < paragraphs.length; i++) {
-          await sendTypingAction(chatId)
-          const delay = calculateTypingDelay(paragraphs[i])
-          await new Promise((r) => setTimeout(r, delay))
-          await sendTelegramMessage(chatId, paragraphs[i])
+        // Send text only if voice was NOT sent (avoid duplicate)
+        if (!respondWithVoice) {
+          for (let i = 0; i < paragraphs.length; i++) {
+            await sendTypingAction(chatId)
+            const delay = calculateTypingDelay(paragraphs[i])
+            await new Promise((r) => setTimeout(r, delay))
+            await sendTelegramMessage(chatId, paragraphs[i])
+          }
         }
       } catch (aiError) {
         console.error("AI processing error:", aiError)
