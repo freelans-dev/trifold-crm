@@ -301,14 +301,32 @@ export async function processMessageWithMetadata(
         .eq("id", leadId)
     }
 
+    // [3.3 AC9] Sync property_interest from collected_data
+    if (!identifiedPropertyId && finalData.property_interest) {
+      const interest = (finalData.property_interest as string).toLowerCase()
+      const matchedProperty = properties.find((p) =>
+        p.slug.includes(interest) || p.name.toLowerCase().includes(interest)
+      )
+      if (matchedProperty) {
+        await supabase
+          .from("leads")
+          .update({ property_interest_id: matchedProperty.id })
+          .eq("id", leadId)
+      }
+    }
+
     // [3.4 AC4] Sync collected_data → lead fields
+    // Map state field names to lead column names
     const leadUpdates: Record<string, unknown> = {}
     if (finalData.name && (finalData.name as string).toLowerCase() !== "nicole") {
       leadUpdates.name = finalData.name
     }
     if (finalData.bedrooms) leadUpdates.preferred_bedrooms = finalData.bedrooms
+    if (finalData.floor) leadUpdates.preferred_floor = finalData.floor
     if (finalData.preferred_floor) leadUpdates.preferred_floor = finalData.preferred_floor
+    if (finalData.view) leadUpdates.preferred_view = finalData.view
     if (finalData.preferred_view) leadUpdates.preferred_view = finalData.preferred_view
+    if (finalData.garages) leadUpdates.preferred_garage_count = finalData.garages
     if (finalData.garage_count) leadUpdates.preferred_garage_count = finalData.garage_count
     if (finalData.has_down_payment !== undefined) leadUpdates.has_down_payment = finalData.has_down_payment
     leadUpdates.qualification_score = updatedScore
@@ -406,23 +424,24 @@ export async function processMessageWithMetadata(
     current_property_id: identifiedPropertyId ?? state?.current_property_id ?? null,
   })
 
-  // 12.5 Update lead memory asynchronously (don't block response)
+  // 12.5 Update lead memory (run in background but don't swallow errors)
   if (conversation?.lead_id) {
+    const leadId = conversation.lead_id
     updateLeadMemory({
       anthropic,
       currentSummary,
       userMessage: message,
       assistantMessage,
       collectedData: finalData,
-    }).then((newSummary) => {
-      if (newSummary && newSummary !== currentSummary) {
-        supabase
+    }).then(async (newSummary) => {
+      if (newSummary) {
+        const { error } = await supabase
           .from("leads")
           .update({ ai_summary: newSummary })
-          .eq("id", conversation.lead_id)
-          .then(() => {})
+          .eq("id", leadId)
+        if (error) console.error("Error saving lead memory:", error.message)
       }
-    }).catch(() => {})
+    }).catch((err) => console.error("Lead memory update failed:", err))
   }
 
   // 13. Return response with metadata

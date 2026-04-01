@@ -91,6 +91,15 @@ export default async function LeadDetailPage({
     .order("last_message_at", { ascending: false })
     .limit(5)
 
+  // Fetch conversation state (collected_data)
+  const { data: convState } = await supabase
+    .from("conversation_state")
+    .select("collected_data, qualification_step, current_property_id, visit_proposed")
+    .eq("conversation_id", conversations?.[0]?.id ?? "")
+    .single()
+
+  const collectedData = (convState?.collected_data ?? {}) as Record<string, unknown>
+
   // Fetch activities
   const { data: activities } = await supabase
     .from("activities")
@@ -98,6 +107,12 @@ export default async function LeadDetailPage({
     .eq("lead_id", id)
     .order("created_at", { ascending: false })
     .limit(20)
+
+  // Helper to get collected data value as string
+  const cd = (key: string): string | null => {
+    const v = collectedData[key]
+    return v !== null && v !== undefined && v !== "" ? String(v) : null
+  }
 
   return (
     <div className="space-y-6">
@@ -176,69 +191,32 @@ export default async function LeadDetailPage({
             Informacoes
           </h2>
           <dl className="space-y-3">
-            <div className="flex justify-between text-sm">
-              <dt className="text-gray-500">Empreendimento</dt>
-              <dd className="font-medium text-gray-900">
-                {property ? (
-                  <Link
-                    href={`/dashboard/properties/${property.id}`}
-                    className="text-orange-600 hover:text-orange-700"
-                  >
-                    {property.name}
-                  </Link>
-                ) : (
-                  "-"
-                )}
-              </dd>
-            </div>
-            <div className="flex justify-between text-sm">
-              <dt className="text-gray-500">Quartos</dt>
-              <dd className="font-medium text-gray-900">
-                {lead.preferred_bedrooms ?? "-"}
-              </dd>
-            </div>
-            <div className="flex justify-between text-sm">
-              <dt className="text-gray-500">Andar</dt>
-              <dd className="font-medium text-gray-900">
-                {lead.preferred_floor ?? "-"}
-              </dd>
-            </div>
-            <div className="flex justify-between text-sm">
-              <dt className="text-gray-500">Vista</dt>
-              <dd className="font-medium text-gray-900">
-                {lead.preferred_view ?? "-"}
-              </dd>
-            </div>
-            <div className="flex justify-between text-sm">
-              <dt className="text-gray-500">Vagas</dt>
-              <dd className="font-medium text-gray-900">
-                {lead.preferred_garage_count ?? "-"}
-              </dd>
-            </div>
-            <div className="flex justify-between text-sm">
-              <dt className="text-gray-500">Tem entrada</dt>
-              <dd className="font-medium text-gray-900">
-                {lead.has_down_payment === true
-                  ? "Sim"
-                  : lead.has_down_payment === false
-                    ? "Nao"
-                    : "-"}
-              </dd>
-            </div>
-            <div className="flex justify-between text-sm">
-              <dt className="text-gray-500">Origem</dt>
-              <dd className="font-medium text-gray-900">
-                {lead.source
-                  ? (sourceLabels[lead.source] ?? lead.source)
-                  : "-"}
-              </dd>
-            </div>
-            <div className="flex justify-between text-sm">
-              <dt className="text-gray-500">Canal</dt>
-              <dd className="font-medium text-gray-900">
-                {lead.channel ?? "-"}
-              </dd>
-            </div>
+            <InfoRow label="Empreendimento" value={
+              property ? (
+                <Link href={`/dashboard/properties/${property.id}`} className="text-orange-600 hover:text-orange-700">
+                  {property.name}
+                </Link>
+              ) : (collectedData.property_interest as string) ?? "-"
+            } />
+            <InfoRow label="Quartos" value={lead.preferred_bedrooms ?? cd("bedrooms")} />
+            <InfoRow label="Andar" value={lead.preferred_floor ?? cd("floor")} />
+            <InfoRow label="Vista" value={lead.preferred_view ?? cd("view") ?? cd("preferred_view")} />
+            <InfoRow label="Vagas" value={lead.preferred_garage_count ?? cd("garages") ?? cd("garage_count")} />
+            <InfoRow label="Tem entrada" value={
+              lead.has_down_payment === true ? "Sim" :
+              lead.has_down_payment === false ? "Nao" :
+              collectedData.has_down_payment === true ? "Sim" :
+              collectedData.has_down_payment === false ? "Nao" : null
+            } />
+            <InfoRow label="Origem" value={lead.source ? (sourceLabels[lead.source] ?? lead.source) : null} />
+            <InfoRow label="Canal" value={lead.channel} />
+            <InfoRow label="Etapa qualificacao" value={convState?.qualification_step} />
+            <InfoRow label="Visita proposta" value={convState?.visit_proposed ? "Sim" : "Nao"} />
+            <InfoRow label="Como conheceu" value={cd("how_found")} />
+            <InfoRow label="Disponibilidade visita" value={cd("visit_availability")} />
+            <InfoRow label="Familia" value={cd("family_size")} />
+            <InfoRow label="Faixa investimento" value={cd("budget_range")} />
+            <InfoRow label="Prazo decisao" value={cd("timeline")} />
           </dl>
         </div>
 
@@ -388,6 +366,16 @@ export default async function LeadDetailPage({
           <p className="text-sm text-gray-400">Nenhuma atividade registrada.</p>
         )}
       </div>
+    </div>
+  )
+}
+
+function InfoRow({ label, value }: { label: string; value: unknown }) {
+  const display = value === null || value === undefined || value === "" ? "-" : String(value)
+  return (
+    <div className="flex justify-between text-sm">
+      <dt className="text-stone-500">{label}</dt>
+      <dd className="font-medium text-stone-900">{typeof value === "object" && value !== null ? value as React.ReactNode : display}</dd>
     </div>
   )
 }
