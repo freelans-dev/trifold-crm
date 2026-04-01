@@ -1,0 +1,83 @@
+"use client"
+
+import { useDroppable } from "@dnd-kit/core"
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
+import { LeadCard } from "./lead-card"
+
+interface KanbanColumnProps {
+  stage: {
+    id: string
+    name: string
+    color: string
+  }
+  leads: Array<{
+    id: string
+    name: string | null
+    phone: string
+    qualification_score: number | null
+    interest_level: string | null
+    property_interest_id: string | null
+    assigned_broker_id: string | null
+    created_at: string
+    updated_at: string
+    properties?: { name: string } | null
+    users?: { name: string } | null
+  }>
+}
+
+export function KanbanColumn({ stage, leads }: KanbanColumnProps) {
+  const { setNodeRef, isOver } = useDroppable({ id: stage.id })
+
+  return (
+    <div
+      className={`flex w-72 flex-shrink-0 flex-col rounded-lg bg-gray-100 ${
+        isOver ? "ring-2 ring-orange-400" : ""
+      }`}
+    >
+      <div
+        className="flex items-center justify-between rounded-t-lg px-3 py-2"
+        style={{ borderTop: `3px solid ${stage.color}` }}
+      >
+        <h3 className="text-sm font-semibold text-gray-700">{stage.name}</h3>
+        <span
+          className="rounded-full px-2 py-0.5 text-xs font-medium"
+          style={{
+            backgroundColor: `${stage.color}20`,
+            color: stage.color,
+          }}
+        >
+          {leads.length}
+        </span>
+      </div>
+
+      <div
+        ref={setNodeRef}
+        className="flex flex-1 flex-col gap-2 overflow-y-auto p-2"
+        style={{ minHeight: "100px" }}
+      >
+        <SortableContext
+          items={leads.map((l) => l.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {leads.map((lead) => (
+            <LeadCard
+              key={lead.id}
+              lead={lead}
+              propertyName={lead.properties?.name}
+              brokerName={lead.users?.name}
+            />
+          ))}
+        </SortableContext>
+
+        {leads.length === 0 && (
+          <p className="py-8 text-center text-xs text-gray-400">
+            Nenhum lead nesta etapa
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
