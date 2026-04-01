@@ -392,32 +392,62 @@ export async function POST(request: NextRequest) {
           .filter((p: string) => p.length > 0)
 
         // If lead sent voice, respond with voice too (TTS)
-        const respondWithVoice = mediaMetadata.media_type === "voice" && process.env.OPENAI_API_KEY
+        const elevenLabsKey = process.env.ELEVENLABS_API_KEY
+        const openaiKey = process.env.OPENAI_API_KEY
+        const respondWithVoice = mediaMetadata.media_type === "voice" && (elevenLabsKey || openaiKey)
+        let voiceSent = false
 
         if (respondWithVoice) {
-          // Send voice response via OpenAI TTS
           await sendTypingAction(chatId)
           try {
-            const ttsRes = await fetch("https://api.openai.com/v1/audio/speech", {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                model: "tts-1-hd",
-                voice: "shimmer",
-                input: cleanResponse,
-                response_format: "opus",
-                speed: 1.0,
-              }),
-              signal: AbortSignal.timeout(30000),
-            })
+            let audioBuffer: ArrayBuffer | null = null
 
-            if (ttsRes.ok) {
-              const audioBuffer = await ttsRes.arrayBuffer()
+            if (elevenLabsKey) {
+              // ElevenLabs TTS (much more natural)
+              const ttsRes = await fetch(
+                "https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL",
+                {
+                  method: "POST",
+                  headers: {
+                    "xi-api-key": elevenLabsKey,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    text: cleanResponse,
+                    model_id: "eleven_multilingual_v2",
+                    voice_settings: { stability: 0.4, similarity_boost: 0.8 },
+                  }),
+                  signal: AbortSignal.timeout(30000),
+                }
+              )
+              if (ttsRes.ok) {
+                audioBuffer = await ttsRes.arrayBuffer()
+              } else {
+                console.error("ElevenLabs error:", await ttsRes.text())
+              }
+            }
+
+            // Fallback to OpenAI TTS if ElevenLabs failed or unavailable
+            if (!audioBuffer && openaiKey) {
+              const ttsRes = await fetch("https://api.openai.com/v1/audio/speech", {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${openaiKey}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  model: "tts-1-hd",
+                  voice: "nova",
+                  input: cleanResponse,
+                  response_format: "opus",
+                }),
+                signal: AbortSignal.timeout(30000),
+              })
+              if (ttsRes.ok) audioBuffer = await ttsRes.arrayBuffer()
+            }
+
+            if (audioBuffer) {
               const audioBlob = new Blob([audioBuffer], { type: "audio/ogg" })
-
               const formData = new FormData()
               formData.append("chat_id", chatId)
               formData.append("voice", audioBlob, "response.ogg")
@@ -426,14 +456,15 @@ export async function POST(request: NextRequest) {
                 `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendVoice`,
                 { method: "POST", body: formData, signal: AbortSignal.timeout(30000) }
               ).catch(() => {})
+              voiceSent = true
             }
           } catch {
-            // Fallback to text if TTS fails
+            // Fallback to text
           }
         }
 
         // Send text only if voice was NOT sent (avoid duplicate)
-        if (!respondWithVoice) {
+        if (!voiceSent) {
           for (let i = 0; i < paragraphs.length; i++) {
             await sendTypingAction(chatId)
             const delay = calculateTypingDelay(paragraphs[i])
