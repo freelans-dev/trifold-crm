@@ -1,0 +1,105 @@
+import { createClient } from "@web/lib/supabase/server"
+import { getServerUser } from "@web/lib/auth"
+import Link from "next/link"
+
+export default async function PropertiesPage() {
+  const user = await getServerUser()
+  const supabase = await createClient()
+
+  const { data: properties } = await supabase
+    .from("properties")
+    .select("id, name, slug, status, address, city, state, total_units, delivery_date, is_active")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false })
+
+  const isAdmin = user.role === "admin" || user.role === "supervisor"
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900">Empreendimentos</h1>
+        {isAdmin && (
+          <Link
+            href="/dashboard/properties/new"
+            className="rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
+          >
+            Novo empreendimento
+          </Link>
+        )}
+      </div>
+
+      <div className="rounded-lg bg-white shadow-sm">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead>
+            <tr className="text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-6 py-3">Nome</th>
+              <th className="px-6 py-3">Status</th>
+              <th className="px-6 py-3">Cidade</th>
+              <th className="px-6 py-3">Unidades</th>
+              <th className="px-6 py-3">Entrega</th>
+              <th className="px-6 py-3"></th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {properties?.map((p) => (
+              <tr key={p.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 font-medium text-gray-900">
+                  {p.name}
+                </td>
+                <td className="px-6 py-4">
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      p.status === "selling"
+                        ? "bg-green-100 text-green-700"
+                        : p.status === "launching"
+                        ? "bg-blue-100 text-blue-700"
+                        : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {p.status === "selling"
+                      ? "Em venda"
+                      : p.status === "launching"
+                      ? "Lancamento"
+                      : p.status}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-500">
+                  {p.city}/{p.state}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-500">
+                  {p.total_units ?? "-"}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-500">
+                  {p.delivery_date
+                    ? new Date(p.delivery_date).toLocaleDateString("pt-BR", {
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "-"}
+                </td>
+                <td className="px-6 py-4 text-right">
+                  <Link
+                    href={`/dashboard/properties/${p.id}`}
+                    className="text-sm text-orange-600 hover:text-orange-700"
+                  >
+                    Editar
+                  </Link>
+                </td>
+              </tr>
+            ))}
+            {(!properties || properties.length === 0) && (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-6 py-8 text-center text-sm text-gray-500"
+                >
+                  Nenhum empreendimento cadastrado.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
