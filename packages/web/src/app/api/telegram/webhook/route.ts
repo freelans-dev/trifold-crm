@@ -42,13 +42,19 @@ function prepareTextForTTS(text: string): string {
     [/\b83,66\b/g, "oitenta e três"],
     [/\b79,81\b/g, "quase oitenta"],
     [/\b66,91\b/g, "quase sessenta e sete"],
-    // Abreviações
-    [/\bAv\.\b/gi, "Avenida"],
-    [/\bR\.\b/gi, "Rua"],
+    // Abreviações — TODAS devem ser expandidas antes do TTS
+    [/\bAv\b\.?\s?/gi, "Avenida "],
+    [/\bR\b\.\s?/gi, "Rua "],
+    [/\bn[°ºo]\s?/gi, "número "],
+    [/\bDr\b\.?\s?/gi, "Doutor "],
+    [/\bProf\b\.?\s?/gi, "Professor "],
     [/\bseg\b/gi, "segunda"],
     [/\bsex\b/gi, "sexta"],
     [/\bsáb\b/gi, "sábado"],
     [/\bdom\b/gi, "domingo"],
+    [/\bmin\b/gi, "minutos"],
+    [/\bkm\b/gi, "quilômetros"],
+    [/\betc\b\.?/gi, "etcétera"],
   ]
 
   for (const [pattern, replacement] of expansions) {
@@ -477,10 +483,13 @@ export async function POST(request: NextRequest) {
           .map((p: string) => p.trim())
           .filter((p: string) => p.length > 0)
 
-        // If lead sent voice, respond with voice too (TTS)
+        // If lead sent voice, respond with voice — UNLESS response contains address/link (send text instead)
         const elevenLabsKey = process.env.ELEVENLABS_API_KEY
         const openaiKey = process.env.OPENAI_API_KEY
-        const respondWithVoice = mediaMetadata.media_type === "voice" && (elevenLabsKey || openaiKey)
+        const hasAddress = /\b(Av\.|Avenida|Rua|R\.)\b/i.test(cleanResponse) ||
+          /\d{3,5}/.test(cleanResponse) ||
+          /Vila|Jardim|Gleba|Marumby/i.test(cleanResponse)
+        const respondWithVoice = mediaMetadata.media_type === "voice" && (elevenLabsKey || openaiKey) && !hasAddress
         let voiceSent = false
 
         if (respondWithVoice) {
@@ -503,9 +512,9 @@ export async function POST(request: NextRequest) {
                     text: ttsText,
                     model_id: "eleven_turbo_v2_5",
                     voice_settings: {
-                      stability: 0.15,
-                      similarity_boost: 0.80,
-                      style: 0.70,
+                      stability: 0.10,
+                      similarity_boost: 0.75,
+                      style: 0.85,
                       use_speaker_boost: true,
                     },
                   }),
