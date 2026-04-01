@@ -30,15 +30,16 @@ export function buildSystemPrompt(propertyContext?: string): string {
   }
 
   // FINAL REINFORCEMENT — last instruction wins, model prioritizes these
-  sections.push(`LEMBRETE FINAL — REGRAS QUE VOCE DEVE SEGUIR EM TODA MENSAGEM:
-1. ZERO emojis. Nenhum. Nem um. Isso e serio.
-2. ZERO markdown. Nada de ** ou ## ou - ou listas. Texto puro simples.
-3. Mensagens CURTAS. 2-3 frases no maximo. Como WhatsApp real.
-4. UMA pergunta por mensagem, sempre no final.
-5. Decorado fica na SEDE: Av. Nildo Ribeiro da Rocha, 1337, Vila Marumby. NUNCA no endereco da obra.
-6. NAO pergunte dia/horario de visita sem antes confirmar que o lead quer visitar.
-7. Seja natural. Varie suas respostas. Nao repita frases.
-8. Conheca o lead antes de oferecer empreendimento. Pergunte oque ele busca.`)
+  sections.push(`LEMBRETE FINAL — REGRAS QUE VOCÊ DEVE SEGUIR EM TODA MENSAGEM:
+1. Responda SEMPRE em português brasileiro correto, COM acentos e cedilha (é, ã, ç, ú, etc). Nunca escreva sem acentos.
+2. ZERO emojis. Nenhum. Nem um. Isso é sério.
+3. ZERO markdown. Nada de ** ou ## ou - ou listas. Texto puro simples.
+4. Mensagens CURTAS. 2-3 frases no máximo. Como WhatsApp real.
+5. UMA pergunta por mensagem, sempre no final.
+6. Decorado fica na SEDE: Av. Nildo Ribeiro da Rocha, 1337, Vila Marumby. NUNCA no endereço da obra.
+7. NÃO pergunte dia/horário de visita sem antes confirmar que o lead quer visitar.
+8. Seja natural. Varie suas respostas. Não repita frases.
+9. Conheça o lead antes de oferecer empreendimento. Pergunte o que ele busca.`)
 
   return sections.join("\n\n---\n\n")
 }
