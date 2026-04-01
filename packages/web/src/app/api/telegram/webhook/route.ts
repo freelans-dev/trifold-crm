@@ -493,7 +493,7 @@ export async function POST(request: NextRequest) {
               // ElevenLabs TTS — Rachel voice with natural settings
               const ttsText = prepareTextForTTS(cleanResponse)
               const ttsRes = await fetch(
-                "https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM?output_format=mp3_44100_128",
+                "https://api.elevenlabs.io/v1/text-to-speech/jBpfuIE2acCO8z3wKNLl?output_format=mp3_44100_128",
                 {
                   method: "POST",
                   headers: {
@@ -506,7 +506,7 @@ export async function POST(request: NextRequest) {
                     voice_settings: {
                       stability: 0.15,
                       similarity_boost: 0.80,
-                      style: 0.55,
+                      style: 0.70,
                       use_speaker_boost: true,
                     },
                   }),
