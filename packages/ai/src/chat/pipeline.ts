@@ -277,7 +277,9 @@ export async function processMessageWithMetadata(
 
     // [3.4 AC4] Sync collected_data → lead fields
     const leadUpdates: Record<string, unknown> = {}
-    if (finalData.name) leadUpdates.name = finalData.name
+    if (finalData.name && (finalData.name as string).toLowerCase() !== "nicole") {
+      leadUpdates.name = finalData.name
+    }
     if (finalData.bedrooms) leadUpdates.preferred_bedrooms = finalData.bedrooms
     if (finalData.preferred_floor) leadUpdates.preferred_floor = finalData.preferred_floor
     if (finalData.preferred_view) leadUpdates.preferred_view = finalData.preferred_view
@@ -572,21 +574,15 @@ function buildFlowContext(
 async function saveMessages(
   supabase: SupabaseClient,
   conversationId: string,
-  userMessage: string,
+  _userMessage: string,
   assistantMessage: string
 ): Promise<void> {
-  const { error } = await supabase.from("messages").insert([
-    {
-      conversation_id: conversationId,
-      role: "user",
-      content: userMessage,
-    },
-    {
-      conversation_id: conversationId,
-      role: "assistant",
-      content: assistantMessage,
-    },
-  ])
+  // Only save assistant response — user message is already saved by the webhook handler
+  const { error } = await supabase.from("messages").insert({
+    conversation_id: conversationId,
+    role: "assistant",
+    content: assistantMessage,
+  })
 
   if (error) {
     console.error("Error saving messages:", error)
