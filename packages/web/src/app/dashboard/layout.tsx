@@ -61,6 +61,12 @@ export default async function DashboardLayout({
                 Atividades
               </Link>
               <Link
+                href="/dashboard/treinamento"
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Treinamento
+              </Link>
+              <Link
                 href="/dashboard/configuracoes/pipeline"
                 className="text-gray-600 hover:text-gray-900"
               >

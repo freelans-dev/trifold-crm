@@ -1,0 +1,162 @@
+import { createClient } from "@web/lib/supabase/server"
+import { getServerUser } from "@web/lib/auth"
+import Link from "next/link"
+import { redirect } from "next/navigation"
+
+export default async function PersonalidadePage() {
+  const user = await getServerUser()
+
+  if (!["admin", "supervisor"].includes(user.role)) {
+    redirect("/dashboard")
+  }
+
+  const supabase = await createClient()
+
+  const { data: agentConfig } = await supabase
+    .from("agent_config")
+    .select("*")
+    .eq("org_id", user.orgId)
+    .single()
+
+  const { data: agentPrompts } = await supabase
+    .from("agent_prompts")
+    .select("*")
+    .eq("org_id", user.orgId)
+    .eq("is_active", true)
+    .order("type")
+    .order("name")
+
+  const typeColors: Record<string, string> = {
+    system: "bg-purple-100 text-purple-700",
+    qualification: "bg-blue-100 text-blue-700",
+    guardrail: "bg-red-100 text-red-700",
+    greeting: "bg-green-100 text-green-700",
+    objection: "bg-yellow-100 text-yellow-700",
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <Link
+          href="/dashboard/configuracoes/pipeline"
+          className="text-sm text-gray-500 hover:text-gray-700"
+        >
+          &larr; Configuracoes
+        </Link>
+        <h1 className="mt-1 text-2xl font-bold text-gray-900">
+          Personalidade da Nicole
+        </h1>
+        <p className="mt-1 text-sm text-gray-500">
+          Configuracoes de personalidade e comportamento da IA
+        </p>
+      </div>
+
+      {!agentConfig ? (
+        <div className="rounded-lg bg-white p-8 text-center shadow-sm">
+          <p className="text-gray-500">
+            Nenhuma configuracao de agente encontrada para esta organizacao.
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* Personality Prompt */}
+          <div className="rounded-lg bg-white p-5 shadow-sm">
+            <h2 className="mb-3 text-lg font-semibold">Prompt de personalidade</h2>
+            <textarea
+              readOnly
+              value={agentConfig.personality_prompt ?? ""}
+              rows={8}
+              className="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+            />
+            <p className="mt-1 text-xs text-gray-400">
+              Somente leitura. Edicao disponivel em breve.
+            </p>
+          </div>
+
+          {/* Editable Messages */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="rounded-lg bg-white p-5 shadow-sm">
+              <h2 className="mb-3 text-lg font-semibold">Mensagem de saudacao</h2>
+              <textarea
+                readOnly
+                value={agentConfig.greeting_message ?? ""}
+                rows={4}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              />
+            </div>
+            <div className="rounded-lg bg-white p-5 shadow-sm">
+              <h2 className="mb-3 text-lg font-semibold">
+                Mensagem fora do horario
+              </h2>
+              <textarea
+                readOnly
+                value={agentConfig.out_of_hours_message ?? ""}
+                rows={4}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              />
+            </div>
+          </div>
+
+          {/* Model Info */}
+          <div className="rounded-lg bg-white p-5 shadow-sm">
+            <h2 className="mb-3 text-lg font-semibold">Modelo</h2>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <div>
+                <p className="text-xs font-medium text-gray-500">Modelo primario</p>
+                <p className="mt-1 text-sm font-medium text-gray-900">
+                  {agentConfig.model_primary ?? "-"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-gray-500">Temperatura</p>
+                <p className="mt-1 text-sm font-medium text-gray-900">
+                  {agentConfig.temperature ?? "-"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-gray-500">Max tokens</p>
+                <p className="mt-1 text-sm font-medium text-gray-900">
+                  {agentConfig.max_tokens ?? "-"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Agent Prompts */}
+      <div className="rounded-lg bg-white p-5 shadow-sm">
+        <h2 className="mb-3 text-lg font-semibold">
+          Prompts do agente ({agentPrompts?.length ?? 0})
+        </h2>
+        {agentPrompts && agentPrompts.length > 0 ? (
+          <div className="space-y-3">
+            {agentPrompts.map((prompt) => (
+              <div
+                key={prompt.id}
+                className="rounded-md border border-gray-200 p-4"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-gray-900">{prompt.name}</span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      typeColors[prompt.type] ?? "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {prompt.type}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-gray-500">
+                  {prompt.content?.substring(0, 150)}
+                  {prompt.content && prompt.content.length > 150 ? "..." : ""}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500">Nenhum prompt configurado.</p>
+        )}
+      </div>
+    </div>
+  )
+}
