@@ -25,6 +25,7 @@ import {
   generateHandoffSummary,
   updateLeadMemory,
 } from "../flows"
+import { buildSystemPrompt as buildPromptFromCode } from "../prompts"
 import { isBusinessHours } from "../utils/business-hours"
 
 interface ConversationState {
@@ -624,30 +625,9 @@ function buildSystemPrompt(
 ): string {
   const parts: string[] = []
 
-  // Personality
-  if (config.personality_prompt) {
-    parts.push(config.personality_prompt)
-  } else {
-    parts.push(
-      "You are Nicole, a friendly and professional real estate AI assistant. " +
-        "You help potential buyers learn about properties, answer their questions, " +
-        "and guide them through the qualification process. " +
-        "Always be helpful, warm, and knowledgeable."
-    )
-  }
-
-  // Guardrails
-  if (config.guardrails.length > 0) {
-    parts.push("")
-    parts.push("=== GUARDRAILS ===")
-    parts.push(
-      "You MUST follow these rules at all times. Never deviate from them:"
-    )
-    config.guardrails.forEach((rule) => {
-      parts.push(`- ${rule}`)
-    })
-    parts.push("=== END GUARDRAILS ===")
-  }
+  // Personality + guardrails + qualification + property presentation + visit scheduling
+  // ALWAYS from code (not database) to ensure latest rules are applied
+  parts.push(buildPromptFromCode(ragContext))
 
   // Qualification context
   if (state) {
