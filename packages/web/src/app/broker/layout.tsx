@@ -1,53 +1,44 @@
 import Link from "next/link"
 import { getServerUser } from "@web/lib/auth"
 import { logout } from "@web/app/login/actions"
+import { redirect } from "next/navigation"
 
-export default async function DashboardLayout({
+export default async function BrokerLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   const user = await getServerUser()
 
+  if (user.role !== "broker") {
+    redirect("/dashboard")
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="border-b bg-white">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
           <div className="flex items-center gap-6">
-            <Link href="/dashboard" className="text-lg font-bold text-orange-600">
+            <Link href="/broker" className="text-lg font-bold text-orange-600">
               Trifold CRM
             </Link>
             <div className="flex items-center gap-4 text-sm">
               <Link
-                href="/dashboard"
+                href="/broker"
                 className="text-gray-600 hover:text-gray-900"
               >
-                Dashboard
+                Meus Leads
               </Link>
               <Link
-                href="/dashboard/properties"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Empreendimentos
-              </Link>
-              <Link
-                href="/dashboard/pipeline"
+                href="/broker/pipeline"
                 className="text-gray-600 hover:text-gray-900"
               >
                 Pipeline
               </Link>
-              <Link
-                href="/dashboard/leads"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Leads
-              </Link>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">
-              {user.name} ({user.role})
-            </span>
+            <span className="text-sm text-gray-500">{user.name}</span>
             <form action={logout}>
               <button
                 type="submit"
