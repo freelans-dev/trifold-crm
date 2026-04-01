@@ -1,0 +1,1450 @@
+Uma ideia é fazer uma competição de ar entre as pessoas internas,
+porque são várias funções dentro da obra, tem o engenheiro, tem a administrativa de obra,
+aqui tem várias pessoas, então cada um tem uma área diferente,
+e de repente de que forma a gente pode instigar as pessoas a dedicar um pouco do tempo
+para desenvolver um projeto de ar referente ao trabalho que ela está executando ali,
+esse jogo, então não sei como fazer isso.
+Não, mas tem diversas maneiras que dá para a gente encaixar isso aí.
+Então, e aí colocando a aplicação dentro do nosso contexto,
+nós temos como aplicar no marketing, como aplicar na parte dos leads que chegam na própria parte da engenharia,
+o caipira de orçamento, conversando com você aqui, você falou que desenvolveu agentes de ar
+que estão programando para você, então se não programa mais são agentes que programam,
+então muita coisa para mim é bastante nova, talvez para outras pessoas que não estejam tão novas,
+mas é importante a gente começar a conduzir isso de forma junta, de forma coletiva,
+para poder até somar uns com os outros naquilo que eles estão desenvolvendo.
+Então, de que forma que o Caipira pode ser mais assertivo na elaboração dos orçamentos,
+e ter mais o sucesso disso, né?
+O Robson, que é da parte financeira.
+Como é que está? Beleza?
+Então, de que forma que a gente, o Robson está desenvolvendo,
+usando o Baiton para desenvolver uma solução para a parte do financeiro,
+então hoje é mais uma conversa inicial, até para saber se você vê sentido e nos ajudar nisso,
+porque de repente nem é o seu core, tem alguém que pode te ajudar ou pode te ajudar,
+o Dom faz sentido isso, e pelo que nós conversamos aquele dia,
+você disse que até o final do ano, as empresas já vão estar desenvolvendo cada uma a sua IA,
+independente de se tem essa IA para outra empresa e faz a mesma coisa.
+Então, se eu pudesse dar uma pequena palestra através disso.
+Fecho, vamos lá.
+Bom, eu fui bombeiro dez anos, mas eu saí de bombeiro para ir no mercado de tecnologia.
+Eu tive a primeira startup que foi uma, que eu estou reativando ela,
+que é uma empresa de uma plataforma de qualquer tipo de profissional se cadastrar,
+e coloca lá, eu sou pintor, eu pedi, etc, e fazia esse match, né?
+Depois eu desenvolvi um aplicativo, profissionais, isso,
+depois desenvolvi um aplicativo chamado Menuzão, que a gente chegou a receber investimento,
+vendi minha parte e tudo mais,
+depois fui para a parte de abrir uma fábrica de software de fato,
+só que eu vi que a inteligência artificial ia mudar tudo,
+então eu saí da fábrica de software e voltei a focar só na inteligência artificial,
+prestei serviço para a Academia Legendária,
+não sei se alguém conhece o Valo Nicolas,
+que ele é bem em referência do Brasil e do mundo já,
+sobre IA para negócio, então a ideia é inteligência artificial para ganhar mais dinheiro ou evitar custos,
+basicamente isso.
+Depois eu fui para empresas de investimento, onde eu cuidava da parte de tecnologia e inteligência artificial,
+tudo mais, de livrar minhas operações,
+aí ele ofereceu para eu comprar minha parte, vendi minha parte e voltei a trabalhar com inteligência artificial,
+prestando serviço,
+só que hoje o meu maior foco não é só prestar o serviço, mas é construir em conjunto,
+tem diversos tipos de maneiras de você construir um software, prestar um serviço,
+desde, vou emitir um orçamento aqui, a gente faz um escopo,
+que é entender de onde que a gente vai, para onde que a gente quer chegar,
+e entregar o projeto e beleza, fiz minha parte,
+ou prestar serviço, a gente precisa ir melhorando,
+pegar um período de horas fixas, semanais, para ir desenvolvendo e estar sempre melhorando o projeto,
+ou em desenvolver em conjunto, que é a grande maioria dos meus projetos desenvolvendo hoje assim,
+que eu sei muito bem do meu mercado,
+eu entendo a dor do meu mercado, eu quero desenvolver, mas não tenho recursos,
+a gente desenvolve junto, se der certo lá na frente, todo mundo ganha,
+se não, o custo que eu tenho aqui é baixo para desenvolver, então tudo certo também,
+que é o caso do sistema de estudantes que eu tinha comentado com você,
+que eu estou fazendo dois professores, eles me trazem as demandas das escolas e a gente vai fazer,
+então hoje, o que eu tenho de projeto, que eu acredito que daria para encaixar aqui,
+atendente de WhatsApp, onde eu tenho um CRM,
+e o atendente de WhatsApp faz tanto o atendimento principal, ou até de fato, vai ficar à venda mesmo,
+tem toda a parte de controle daquele lead pelo CRM interno,
+você consegue saber que horas chegou, o que a IA conversou com ele,
+o que ela conseguiu captar de dados, quais dados são primordiais para qualificar aquele lead,
+quais dados são interessantes para ela captar,
+esse é um serviço que a gente tem, a gente tem a parte de marketing,
+então tem uma plataforma, onde você faz toda a parte do branding book e tudo mais,
+e tem um agente que atua como se fosse um diretor de marketing,
+vai solicitar dicas de cópias, de criativo, você consegue gerar o próprio criativo dentro da plataforma,
+todas as exemplos para a gente conseguir entender o que dá para fazer e o que não dá,
+o Alexandre comentou, de mapear essa parte de o que a gente compra de material,
+e o que de fato é usado na obra,
+isso aí, eu tenho um projeto que é semelhante,
+não é exatamente desse jeito, mas por exemplo,
+é um projeto onde eu tenho um fogo, que ele tem uma joalheria,
+dentro da plataforma que eu desenvolvei para ele,
+a vendedora coloca lá, eu quero um anel assim assado, vou até mostrar,
+fica mais fácil.
+Se quiser projetar?
+Tem pouca wi-fi nessa área.
+Como é que é o nome de o nosso?
+É Trifold ou 337?
+Trifold de engenharia ou Trifold de visitante?
+Trifold.
+Trifold?
+Um 337.
+Cifrão?
+Meio que toda hora que eu ligo a TV aparece um tênis aqui,
+do que da hora que eu ligo a TV para essas criancinhas ali?
+É a TV Hall ou é a sala de folga?
+Sala de folga.
+Sala de folga.
+Isso aqui é um exemplo que eu vou passar para vocês.
+A gente faz o anel via inteligência artificial,
+então, eu quero um anel de ouro branco com uma pedra assim assada,
+ele gera o arquivo para mostrar para o cliente na hora
+e depois ele gera já o arquivo pronto para fazer a impressão 3D.
+Então, a gente foi de 2D para 3D e hoje lá na empresa dele,
+ele tem que passar com o design e fazer toda a parte, tudo mais,
+deve de 3 a 5 dias, agora ele está conseguindo fazer em 10 minutos.
+Então, é um exemplo de um case que a gente já consegue ver que é possível de fazer.
+Voltando no que a gente tinha falado,
+eu quero mapear tudo que está sendo gasto,
+qualquer estimativa daquela obra de material,
+a gente consegue, por exemplo, filmar tudo que está sendo construído
+para de fato entender se foi usado aquele material ou não,
+pelo projeto mesmo, a gente passar o arquivo do projeto para ir analisar
+e já passar uma estimativa do que vai usar e do que não vai usar.
+Então, a gente está passando ideias aqui do que dá para a gente fazer e o que não dá,
+mas a verdade é que não tem limite,
+é muita possibilidade.
+Na sua parte, você falou que você está fazendo algumas coisas com Python,
+aquilo ali eu chamo Cloud Code,
+é por aqui que eu faço os meus projetos,
+então cada terminal desse aqui é um projeto
+onde eu só vou passando as referências que eu quero para a inteligência artificial,
+não chega nem a ser pronto,
+tinha uma conversa mesmo,
+só que eu sei o que eu preciso pedir para ela,
+para fazer com qualidade o código.
+Tem uma coisa que eu acho que seria legal mostrar também,
+por exemplo, aqui eu tenho os agentes que o Alexandre comentou,
+então, por exemplo, eu tenho um agente só para cuidar da parte de marketing,
+eu tenho um agente só para cuidar da parte de vendas,
+eu tenho toda a parte de desenvolvimento de software,
+então, eu tenho um analista,
+eu tenho quem cuida do banco de dados,
+eu tenho um programador,
+eu tenho um tester,
+eu tenho quem faz as orientações para passar para o programador,
+para ele desenvolver com aquela qualidade de code,
+então tudo isso a gente consegue implementar aqui
+para se põe a casa,
+eu quero desenvolver um sistema interno,
+utilizando inteligência artificial,
+a gente auxilia nessa parte também,
+o passo é que os agentes que é para você usar,
+como que vai fazer para você usar para instalar,
+tudo isso a gente consegue fazer, conseguir ajudar.
+Você passa para o cloud?
+Oi?
+O cloud?
+É, eu passo os arquivos e daí ensino a instalar dentro do cloud
+e como usar para desenvolver os projetos internos aqui também,
+não preciso eu desenvolver,
+claro, posso fazer, tem a minha demanda aqui,
+preciso de um terceiro para desenvolver,
+desenvolvo também,
+mas essa parte de implementação do cloud,
+ensinar como utilizar,
+como desenvolver agentes,
+como fazer agentes que tem qualidade mesmo,
+que vai ser autônomo de verdade,
+tudo isso a gente consegue ajudar.
+Não sei se já tem alguma demanda interna que fala assim,
+não, essa aqui é a principal que a gente gostaria de resolver.
+Nós estamos, no começo tem implementação do agente de conversa.
+O que vocês já aprendem desse agente?
+Só o agente não está respondendo como precisa e não responde.
+Tentamos amarrar a terceira.
+Qual que é?
+Tentamos pelo chat.
+Chat IPT?
+É, não responder o que precisava,
+não apresentar prioridades,
+alguma coisa muito técnica.
+Você lembra qual o modelo de inteligência artificial que você falou?
+Não, não, não porque era a de terceira,
+mas eu vim aqui,
+eu vim através de uma empresa
+especializada nesse sistema.
+Então, não foi,
+a gente tentou utilizar a deles,
+que orou a conversa,
+orou bastante,
+então ela soltou um susto de chat bot mesmo,
+botzinho.
+JIT 1, JIT 2.
+Você falou de um modelo da OpenAI,
+o modelo da OpenAI é isso?
+É, é que assim,
+OpenAI é uma empresa,
+a gente tem o Cloud e tudo mais.
+É porque o modelo conversacional,
+o Cloud dá shows.
+Na verdade, a maioria dos agentes que eu utilizo aqui é o Cloud.
+Eu nem utilizo mais chat IPT,
+essas coisas assim.
+Eu utilizo quando eu vou fazer, por exemplo,
+eu vou fazer um desenvolvimento que eu
+acho interessante eu ter
+visões de outros tipos de LLMs
+para ver se não faltou nenhum detalhe,
+alguma coisa assim,
+a outra é muito bom,
+mas é interessante ter a principal para trabalhar.
+Então, assim,
+é um projeto que dá para startar,
+porque assim, é o que nós temos hoje,
+demanda,
+está tomando bastante tempo
+e sendo um pouco
+pesado o trabalho,
+porque assim, tudo que vem dentro da AI,
+não é esconder deles,
+eles estão fechados,
+aí criar a educação dela,
+criar o tom dela não está sendo fácil,
+bem trabalhoso,
+bem trabalhoso mesmo, porque a gente não colocou para vontade,
+a gente trabalha só com um potezinho.
+Deixa eu ver se está aqui...
+Esse aqui, por exemplo,
+é o dashboard
+que eu comentei com vocês
+de atendimento de leads,
+aqui a gente tem um pipeline
+onde é o cambãozão ali
+do lead.
+Aqui os detalhes do lead
+que ela coleta,
+então o que foi coletado
+de informação
+que ela realmente precisa?
+Vou coletar isso aqui,
+então,
+os obrigatórios
+que eu preciso que ela peça,
+já está preenchido,
+os opcionais
+que é bom entender
+o que ela traz,
+qual foi a conversa
+que a AI teve
+com aquele lead?
+Qual foi a conversa que a AI teve
+com aquele lead?
+Qual foi a conversa que a AI teve
+com aquele lead?
+Qual foi a conversa que a AI teve
+com aquele lead?
+Quais as mídias
+que aquela AI
+puxou do lead?
+O que ela fez de follow-up?
+Como eu quero configurar aquele follow-up?
+Qual foi feito o treinamento?
+Por exemplo, aqui eu tenho
+as conversas
+que eu só exportei
+de um WhatsApp.
+Você queria que ele fizesse até de vertebol.
+Aí ela já tem parâmetro
+para, por exemplo,
+eu sou mais formal ou eu sou informal?
+Eu sou mais técnico
+ou eu sou mais abrangente?
+Ela tem uma parte de aprendizado
+dentro dela para conseguir arquivos.
+E conforme você vai subindo,
+o que eu falo?
+Quando você tem uma conversa com um lead
+que vai do zero até a venda
+ou até o pós-venda,
+onde ele tirou muitas dúvidas,
+isso aí é muito rico
+para a inteligência artificial,
+porque você consegue passar para ela esse arquivo
+e ela tem cada vez mais parâmetros.
+Quando a gente passa para ela,
+ela vai adicionando automaticamente
+o faque,
+objeções,
+informações gerais, qual é o endereço,
+o que é, o que não é,
+tem essa parte também.
+Eu quero aqui
+o catálogo de serviços,
+produtos, pacotes e tudo mais.
+Aqui você tem
+as informações certinho
+do que é cada coisa,
+cada detalhe,
+valores e tudo mais.
+Então é uma coisa
+bem...
+Quando eu vou treinar
+com uma conversa da Daria,
+ainda não vai ficar com cara de robô.
+Tem por onde eu estou
+olhando os clientes.
+Olha, esse aqui
+é um número que eu tenho de teste
+que está conectado
+com esse modelo.
+Esse modelo.
+Eu acho que eu tenho até meu Lid
+aqui no Pimp Online.
+Ela já sabe que eu quero comprar camiseta,
+40 camisetas,
+no cor de tecido e tudo mais.
+Deixa eu ver se ela vai ficar com...
+Ela já vem
+pedindo se quer fechar o pedido
+em completo ou não.
+Eu uso esse número para várias peças.
+Deixa eu ver se eu tenho
+uma imagem que eu
+mandei para ela
+como referência.
+Aqui, mandei uma imagem.
+Isso, tudo só.
+Essa que eu estou treinando
+é para uma empresa de uniforme
+que recebe muita mensagem.
+Ela pediu aqui...
+Pode mandar o arquivo aqui
+que nossa equipe já começa a montar o modelo
+que ela quer provar.
+Eu perguntei se ela...
+Ela mandou ali
+se tem algum alô, artes prontos.
+Tem um alô simples.
+Você quer que eu compre?
+Pode mandar o arquivo aqui
+que nossa equipe já começa a montar o modelo
+para ela provar.
+Só que eu nem treinei ainda
+a parte de áudio
+para ela falar de uma maneira específica.
+Eu só instalei,
+que eu queria só testar mesmo.
+Não, eu instalei
+baseado numa API
+que eu trouxe.
+Só que, por exemplo, dentro dessa API
+tem o tom de voz
+que você quer usar.
+Se você quer usar mais feminino, menos feminino,
+se você quer usar masculino ou não
+e por aí vai.
+Você traz vários APIs para configurar.
+Por exemplo, essa
+é da OpenAI.
+Só que eu estou vendo que
+estou testando agora a da Eleven Labs.
+Para ver se ela fica mais natural ainda.
+Então,
+eu quero que ela fale
+C em vez de você.
+E por aí vai.
+Então admira.
+Por exemplo, aqui
+eu mandei
+a mid
+ela anexa aqui
+o arquivo.
+Tem toda a parte da conversa,
+um resumo. O que dá para fazer também?
+Eu não quero cair
+a tenda 100%.
+Eu quero ter uma pessoa atendendo.
+Só que eu quero cair, acompanhar aquele tendimento
+para ir passando
+os ensaios. Então, por exemplo,
+você está conversando aqui
+faz essa pergunta para essa pessoa
+porque isso aqui é interessante para a gente ter
+esse tipo de informação e não sei o que.
+Então, não precisa ser um
+sistema 100% autônomo.
+Dá para ele ser um copiloto ali.
+E você faz a parte de integração
+também, como qual a forma diferente
+e tudo mais?
+Como eu falei, com o interesse artificial agora
+você pode fazer de tudo.
+Dá para tirar dashboard,
+meta,
+todo o código.
+É que assim, você tem o meta,
+você tem o cloud,
+mas você tem o cloud com agentes
+personalizados. Isso aí
+é completamente diferente.
+Quando você vai usar o
+cloud code com agentes
+personalizados, aí você tem
+um resultado infinitamente melhor.
+Bem, bem melhor mesmo.
+E a gente poderia usar, vamos supor o mesmo
+número, vamos supor que a gente está
+utilizando o número padrão da
+trifogue, que é o whatsapp da
+recepcionista. E aí a gente fica
+com o que a gente faz, a gente acaba utilizando
+para cada serviço um número diferente.
+Esse mesmo número identifique a área
+e já responda. Vamos supor a
+cadastra, lá serve uma resposta para esse
+agente financeiro. A gente dá essas
+respostas financeiras automáticas.
+A gente já vai para o seu
+aprendimento comercial e entra no
+CIFUNIU, no pipeline comercial.
+Se for na engenharia,
+ele já faz essa
+segmentação, ou
+a gente tem que tratar o mesmo
+caminho?
+Tudo depende. Você
+quer ter números para
+setores diferentes? Se você
+quer ter números para setores diferentes,
+você cadastra dentro da inteligência artificial
+no dashboard aqui falando, ó, esse
+responsável é esse número, esse responsável é esse número.
+É, porque a ideia é que a gente
+conseguir utilizar o mesmo número, eu acho mais fácil.
+Porque você padroniza o telefone
+da empresa, não tem que ficar
+ah, que eu falava como é que está, não, que a
+supermenos liga tal, tal, tal, tal, tal.
+E a outra, aquelas conversas
+que podem ser respondidas,
+alguma dúvida, uma coisa meio padrão,
+ela já consegue responder por ali
+sem precisar tomar o tempo do hobby, tomar o tempo
+do supermenos, tomar o tempo do...
+Sim.
+Se você quiser dar a mim, então não tem como louco perguntar isso.
+Eu não recomendo
+ter um número só,
+porque a neta está banindo
+bastante. Se você tem o número
+oficial, beleza, só que ele não
+tem tanta função quanto APIs não
+oficiais. Esse número mesmo
+que eu converso aqui,
+é um número de uma API não
+oficial, que é o ZIAPI. Eu pago
+um valor mensal e...
+O seu número oficial. De vocês
+oficial. Então,
+ela não tem tantas funções
+pra desenvolver
+quanto, por exemplo, um ZIAPI.
+Às vezes isso nem é limitação,
+né? Mas é
+um detalhe que a gente...
+A credibilidade do número...
+Sim, sim.
+O que é o número oficial não oficial?
+O número oficial você cadastra direto com a neta,
+né? E daí você tem no seu
+linha de verificar.
+E todo esse controle
+que você faz de envio e recebimento
+de mensagem é dentro do
+meta mesmo.
+Você faz a integração com API e tudo mais.
+Só que
+tem o lado bom e o lado ruim. O lado bom é que
+você não vai ser banido nunca.
+O lado ruim é que o custo é bem
+mais elevado do que uma API dessa.
+Em relação à
+alucinação da
+exigência ou proteção de dados,
+com a nossa experiência, hoje estamos no mercado,
+o que acontece?
+Está exposto lá, como a QIAT.
+Tem muitos dados também sensíveis da empresa?
+Pessoas de clientes?
+Cara, internet
+hoje, ninguém está
+100% seguro.
+É que o Cloud,
+sempre que eu estudo o Cloud também, o Cloud é bem autônomo, né?
+Sim. Talvez a mais autônoma hoje, né?
+Sim. O que que eu...
+Eu vi a QIAT recomendando, por exemplo,
+instalar o Cloud
+Code em uma VPS que você
+contrata.
+Então é uma VPS
+que ela não tem acesso a nenhum dado externo,
+a não ser o que você passa via API.
+Entendeu?
+Ela não vai estar no seu computador.
+Você vai instalar no Linux lá da vida e daí sim
+ele vai rodar
+como se fosse
+no seu computador, né? Só que daí não vai ter
+os dados que está no seu computador
+ou na sua rede.
+Mas a alucinação,
+você tem diversas maneiras
+de evitar isso. Você tem, por exemplo, lá
+eu vou salvar esses dados
+de maneira que é embed
+em Xampp, que é a partir
+do...
+Eles salvam em uma linguagem de programação
+que é performática pra IA entender.
+Aí eles salvam aquilo lá
+em Xampp, que é
+etapa por etapa. Você vai
+separando conforme vai
+aumentando, vai passando aquele contexto.
+Então, ah, eu vou salvar de 1000
+e 1000 tokens, beleza? Quando
+você mandar alguma coisa pra ela
+porque ela precisa responder, que ela precisa
+de contexto, ela vai fazer
+uma comparação daqueles chunks
+e vai trazer os três
+que mais tem contexto com aquele
+assunto pra
+conseguir responder de maneira
+assertiva, pra
+justamente não
+alucinar.
+Aí você também tem um processo de reggae
+que é você treinar o agente
+ah, eu quero que aquele agente ali
+faça exatamente o que eu preciso que ele faça.
+Então, você treina ele
+com essa parte de hand, que é
+basicamente passar vários parâmetros
+pra ele. Esse
+sistema que eu mostrei pra vocês
+pra gerar o
+o arquivo STL,
+que é o 3D,
+eu consegui
+chegar nesse resultado
+porque a minha
+mulher é design de jóias e
+ela tem lá mil arquivos
+de solitário.
+Então, eu peguei esses mil
+arquivos, passei pra Inteligência Artificial
+e falo, ó, entende
+tudo isso aqui certinho pra gente fazer
+o projeto assim, assim e assim.
+E, por exemplo,
+só pra pegar ozinho aqui do
+localzinho, quero fazer uma alteração
+no châmpio desse negócio.
+Aí eu vou no Cloud Code
+ou na própria
+no próprio sistema
+que eu desenvolvi, que tem todo um site
+tudo mais pronto pra equipe interna dele
+usar lá. Isso.
+Deixa eu mostrar aqui.
+Julio, nós estamos fazendo
+publicações
+e os leads
+que estão vindo não são qualificados
+pra aquele empreendimento.
+Precisamos melhorar e qualificar melhor
+os leads. A gente consegue entender
+onde que estamos
+serrando e onde precisamos melhorar pra poder atingir
+o conto certo, baseado
+nas respostas, baseado
+na leitor do CRM.
+Como é que pode ser
+mais acessível, mais cirúrgico pra chegar
+naquele lead que a gente está buscando?
+Tem?
+Uma forma que o pessoal está fazendo
+é integrar o agente do Cloud direto
+no MetaEdis.
+Você vai lá e habilita um aplicativo
+dentro do Meta mesmo
+que daí ele vai liberar lá
+a chave de API e tudo mais.
+Quais permissões que você quer passar pra aquele agente
+e daí ele vai conseguir
+ter informação em tempo real?
+Aí vai também de você ter a expertise
+de treinar esse agente
+pra ele conseguir de fato entender
+aqueles indicadores
+e passando cada vez mais feedback
+ver se o rastreamento
+está todo instalado
+Google Pixel e tudo mais
+ter o servidorzinho que envia
+os eventos pra daí sim
+ele conseguir falar, não, esse tipo de lead aqui
+está sendo
+fora do contexto
+ou esse tipo de lead é o que eu quero buscar.
+E aí tem a outra ideia que faz as correções
+naquilo que está sendo publicado?
+Dá pra fazer também.
+Pra ela otimizar a campanha.
+Dá pra ela tanto passar insights
+então, ah, eu quero que todo dia
+cedo você emite relatório
+baseado nessa conta do MetaEdis
+e tudo mais, ela vai ler todo o contexto
+vai entender toda a campanha
+ela ainda não consegue entender muito
+bem a parte de criativo
+e tudo mais, porque
+passar pra ela parâmetros de um vídeo
+por exemplo, não é tão assertivo
+porque a Grêmio e Maria, ela vai só
+fazer uma transcrição
+então ela não vai entender muito bem o contexto
+mas pra passar insights
+e análise de dados
+que está recebendo
+é 100%.
+Um agente do Cláudio dentro da Meta. Isso.
+Acho que você já deve ter feito isso.
+Já, já.
+É bem legal.
+Não, tem...
+Ah, vem me mostrar aqui.
+Aqui tem os...
+os arquivos
+e dentro desse arquivo
+que você seleciona
+e vai pra
+fazer as configurações
+ele entra dentro de um agente
+conversacional, onde você
+pode pedir pra ele refazer
+aquele STL
+por exemplo, ah, eu quero uma garra maior
+ah, eu quero que o ARM
+em vez de ser número 14, número 17
+aí ele vai refazer
+esse arquivo pra na hora
+que mandar pra impressora 3D
+tá com as novas
+especificações. E tudo isso
+é por a gente.
+Sim, por exemplo, posso desenhar,
+fazer umas com a minha mão, posso...
+posso ver isso? Tem aqui também a parte
+de... E é creche?
+É tudo porque é ele. Esse aqui eu...
+é que eu vou fazer um SAS, né?
+Isso aqui eu vou fazer um SAS. Então, por exemplo, eu tenho ali, ó
+tenho a peça, eu uso as minhas fotos
+você anexa a foto do que você desenhou
+ou de um modelo que você viu
+e ele vai conseguir
+mapear.
+Legal.
+É que é muita...
+Sem as novas especificações. Toda
+cada um de nós aqui tem uma necessidade
+de... Não, com certeza. Isso aqui eu acho nosso maior gargalo
+hoje mesmo nessa parte do rendimento.
+Não sei o que vocês acham.
+Hoje
+a prioridade é isso.
+A gente tinha feito um, mas
+o que vocês acharam foi um
+valor legal? Eu gostava dela.
+O que a gente gostava?
+A Laís?
+É, mas ela é a Laís.
+Ah, plataforma da Laís.
+Sei.
+Eu gostava, personalmente.
+A gente gostava, a consultoria não gostava
+de circulação. A consultoria que veio aqui
+Nossa, eu gostava dela. Se a gente conversava
+ela parecia natural. Até a
+época que a pessoa mandou a emoji, ela falou
+a emoji está meio artificial. Daí você tirou as emojis
+e geralmente
+no mercado imobiliário a Laís é a mais utilizada.
+É, e era muito bom. Eu gostava.
+Os carros imobiliários, né?
+Mas daí
+veio uma consultoria e falou pra tirar.
+É. Foi uma...
+Mas era uma consultoria de mercado imobiliário.
+Foi um pouco.
+Foi uma consultoria especializada.
+A consultoria de mercado imobiliário.
+Qual foi a orientação deles?
+O que eu falei?
+Falaram que era uma compensação de manter gostando.
+Falou como enquanto é bom, né?
+Que a Laís ela cobra...
+Ela não cobra o
+o toque nela, ela cobra o valor
+dela, né?
+É, é ali que foi a nossa consultoria.
+A gente consegue desenvolver uma igual?
+Sim.
+Não, igual não. Melhor.
+Não, vai fazer melhor.
+Então ensino o que você mostrou.
+Com a linguagem aprendizada é muito mais fácil
+fazer. Desta maneira é muito mais fácil.
+É, dos testes que eu venho fazendo
+você passar pra ela cenários reais
+de pessoas que estão aprendendo reais.
+Foi o linguagem mais simbolizado.
+Que mais dá
+retorno, porque é mensagem real.
+Eu participei nesses dois produtos.
+Um atendimento, external
+e um atendimento comercial.
+E praticado desde obras, né?
+Tipo, uma compreensão óbvia nesse sentido, né?
+A pessoa entra lá, fica pro WhatsApp,
+já recebe as informações,
+está perguntando no estatal, pra gente vai claro
+alimentando essa base de dados.
+Mas é...
+Eu acredito que é o melhor.
+Aqui mesmo você já vai
+falando, ah, eu quero que você seja
+mais formal, seu nome é tal,
+seu estilo é assim, mensagem de boas-vindas.
+O nome já está batizado.
+Então, tipo,
+tem muita coisa pra
+configurar aqui.
+O nome já está batizado.
+Não, isso daí é uma plataforma
+de atendimento mesmo.
+Que eu desenvolvo pra clientes.
+Então isso daí já está pronto.
+Se quiser adaptar uma coisa baseada nisso,
+já está pronto.
+É que isso aqui foi feito pra ser
+um atendimento praticamente 100%
+por gente ser profissional.
+Tem muita solução pronta aqui já.
+Pelo amor de Deus, ainda assim
+é um gargalo do nosso mercado.
+Porque a gente tem uma base de dados gigantesca.
+E tem mais de mil poucas clientes.
+Então, essa nutrição dessas pessoas aí
+que estão paradas, pra nós
+é deixar de andar mesmo.
+Não falar, não alimentar.
+É, eu fiz uma pesquisa
+breve
+do mercado e tudo mais.
+Eu fiz um até...
+Deixa eu ver se eu consigo aqui.
+É...
+No caso dessa solução
+sua, já é com o CRM.
+A gente usa o outro CRM.
+O CRM que vocês tem aqui,
+qual que é?
+O Supremo.
+Ele tem API?
+Então dá pra usar.
+Dá pra integrar.
+Só pedir a chave da API lá
+e testar os cantos.
+Eu vou ser sincero, cara.
+Eu...
+Se tiver tudo em um lugar só, pelo menos é o melhor.
+Porque aí ficar exportando
+depois, cara...
+É, esse sistema aqui
+que eu desenvolvi, por exemplo,
+o cara falou, um dos clientes
+não, eu utilizo o trelo
+pra fazer a gestão aqui da...
+Da...
+Os pedidos das...
+Dos uniformes.
+Minha equipe já está toda acostumada, não quero mexer.
+Beleza, ele vai continuar tendo isso aqui.
+Só que, eu vou jogar as informações
+pro trelo dele também.
+É dois lugares que ele vai ter os dados.
+Depende pra quem faz sentido.
+Depende pra quem faz. Então...
+É igual eu falei.
+Não tem limite.
+Que vocês quiserem fazer, dá pra fazer.
+Claro, porque assim, se não me sincero, cara,
+o nosso CRM aí, eu queria entregar alguns versos
+que a gente pode fazer.
+É sem montar que vai ter corte custo.
+É, pois é.
+Eu quero uma integração.
+E é isso que eu falei pra você,
+que eu acredito que até final do ano
+vai ter muita empresa
+desenvolvendo os próprios software.
+Porque a barreira de desenvolvimento
+e as possibilidades estão cada vez
+mais atingíveis, sabe?
+Então, essa conversa aqui
+que a gente está tendo, pô, já fui em várias empresas
+que é a mesma conversa.
+Pô, tem tal sistema que eu pago
+dois conto por mês.
+Vale mais a pena desenvolver o meu
+e colocar a inteligência artificial, personalizado aqui,
+e boa. Então, é...
+Eu te pergunto, você trabalha com programador
+ou você faz a sua parte?
+Eu tenho também.
+Mas daí é por demanda, né?
+A grande maioria do que eu puder fazer
+eu mesmo não faço eu mesmo.
+Ah, eu quero outro tipo de coisa.
+Por exemplo, fui numa empresa
+que é a Asas, não sei se vocês conhecem,
+de provedor de internet,
+o João do Ivaí.
+Lá ele tem um data lake
+que ele está estruturando
+para ter vários tipos de agentes
+de inteligência artificial
+e ele quer reutilizar aqueles dados.
+Aí eu vou trazer uma pessoa que
+manja só de dados
+para entender tudo que ele já tem, o que dá
+para reaproveitar, o que vai ter que
+editar de tabela
+e de captação de dados
+para conseguir utilizar
+o agente de inteligência artificial 100%.
+Entendi.
+É igual eu falei para você.
+É igual eu falei aqui.
+Eu vim da academia lendária
+que era focada em IA para o negócio.
+Onde que eu vou conseguir aplicar
+de maneira que vai ter
+mais retorno e com menos custo.
+Esse é o foco.
+E aí?
+Você faz dúvidas.
+Não sei se são as dúvidas, minhas foram
+chamadas aqui.
+Eu não tenho mais a idade para ficar com isso aqui.
+É por causa dessa comunicação aí
+das informações nossas.
+Comercel.
+Você não vai ver
+no restante não adianta funcionar.
+Claro.
+Eu acho que também
+é muito útil para você
+mapear a opinião na jornada inteira.
+Quando a jornada inteira
+ela extraporta o digital.
+Então tem que estar pensando nisso.
+Porque eu acho que isso é um desafio.
+Porque o cliente hoje no mercado do bilhardo compra muito pelo decorado.
+Que vai visitar a consultora, pedibilidade.
+Então acho que
+a gente tem que estar fazendo de uma maneira mais robusta
+que saia pouco do digital.
+Mas o desafio é trazer o cliente aqui.
+Então, uma vez que ele vem aqui,
+tem que trazer as informações dele.
+Não tem que saber o que ele é ou não.
+Não tem que saber o que ele é ou não.
+Qualquer coisa que ele está usando.
+Mas só tem que saber isso
+se tiver alguém que sabe usar isso.
+Não adianta ter.
+Sabe o que é o grupo aberto?
+O grupo aberto é para você.
+Aí vai resolver isso.
+Tem que trazer o cara aqui
+mas tem que saber que tem que trazer a pessoa aqui
+saber tudo dela, mas tem que ter alguém que use as informações.
+O dado tem que ler o dado.
+É uma coisa que daria para implementar.
+Por exemplo,
+a gente começa com a gestão de tráfico.
+Então a gente
+integra toda a parte de gestão de tráfico
+no CRM. Beleza, aquele lead veio.
+Por onde ele veio? Veio por essa campanha,
+por esse anúncio todo, por essa cópia,
+etc.
+Aí a atendeu, conseguiu tirar todas
+aquelas dúvidas e agendou.
+No agendamento,
+quem que vai atender ela?
+Vai ser o Roberto?
+Beleza, esse é a pessoa aqui.
+Eu já tenho a agenda dela conectada aqui.
+Então eu sei que ela
+vai atender naquele horário.
+Naquele horário, a gente pode
+colocar o número de whatsapp, mandar mensagem
+para ele e falar
+essa pessoa está vindo, essas são as características
+que ela quer, o que ela não quer, etc.
+E enfim, exatamente.
+Posso um pouco, vai dar isso para te cortar.
+Aí a gente entende de repente,
+isso é viável e fatível.
+Fazer um scrape assim da rede social da pessoa.
+É possível? Não.
+Se ela informar?
+Se ela tiver o visto só aberto.
+Liquezinho, cara.
+Isso é legal.
+Qual é o tatu com o corretor?
+Produção, filhos.
+Exato.
+Coisa que eles não fazem.
+Fazer um tatu com o corretor, você vai passar para ele.
+Exato.
+Estou jogando aqui na roda
+para ver o que é possível fazer.
+As pessoas não fazem?
+Não fazem.
+Eu falei para ele ir para o meu rapaz da roda.
+Cara, custa muito caralho.
+Que ele gosta, que ele usa o que faz.
+Eu acho que se isso tirasse um pouco
+também daria mais fácil.
+Por exemplo, perfil
+de compra do cliente.
+Para nós também, porque uma vez que o cliente vem e compra
+a gente tem a opção de que ele vire.
+Por exemplo.
+Uma...
+Nem filhos vão mostrar a área de lazer.
+Uma...
+Seria
+aí a entender
+como está sendo o diálogo do corretor
+com o cliente e aí a fazer
+sugestões para o corretor, o que ele deve falar
+mais, o que ele deve falar menos e
+educar o corretor.
+Como extrair melhor
+e mais informações daquele
+atendimento.
+Seu cavalo,
+você não podia ter perguntado para o cliente isso?
+Você perguntou isso?
+Eu acho...
+Tanto o WhatsApp
+quanto o áudio.
+Isso que eu ia falar
+também. A pessoa veio aqui
+grava você
+apresentando o negócio.
+Não pode fazer a gravação
+da conversa de telefone com
+o cliente?
+É do telefone que
+ele consegue trazer o cara não.
+Ele perde o cara onde?
+Normalmente então os leads
+vêm mais por ligação.
+Eles são impactados
+pelas redes
+e aí é feito o contato
+com o corretor de WhatsApp
+daí começa...
+O que a gente orienta aqui? Não passa mensagem, liga.
+Então daí começa o trabalho do
+corretor ligando.
+E aí se a IA puder entender
+qual está sendo o desempenho de cada um deles da ligação
+ele pode começar a corrigir o corretor
+da direção pra ele?
+O que ele deve ou não falar?
+É, porque da ligação tem mais nuances.
+A ligação é um pouco mais...
+Talvez não.
+A conexão emocional que eu não teve.
+Então tem muita nuances aí.
+Quem não tem não é mensagem.
+Como eu falei, tudo é possível.
+É só integrar
+uma API de um VoIP
+que grava a toda a ligação
+instalar no celular
+Se você for fazer o pilotizado...
+Cara, mas a gente pode fazer isso de gravar?
+Uma dúvida aí...
+A hora você falar
+essa gravação está sem gravar.
+É isso, tem que informar.
+Bom...
+Próximo passo.
+Tem que informar o celular essa empresa.
+Você não coloca mais gente, vê as perguntas
+e vê pra implantar.
+Porque tem que abordar o portão.
+Quem sabia?
+Se você consegue fazer isso,
+a gente deve estar pronto.
+Eu sei, mas aqui tem outras erradas.
+Então, é aqui esse produto pronto?
+Não, eu faço isso aqui personalizado.
+Eu tenho toda a infraestrutura.
+Só que por exemplo, esse daqui
+ele está pra uniforme.
+Então,
+o pipeline está feito pra uniforme.
+As perguntas ali padrões
+são feitas por uniforme.
+Tudo está focado por uniforme.
+Ah, eu tenho um outro que é por exemplo,
+de roupa.
+Já está tudo focado pra ela.
+Eu tenho um cliente que vende planta e saúde.
+É tudo personalizado pra ele.
+O que eu sinto que me agrada bastante
+é o fato de a BLT
+o agente
+isso aqui que a gente precisa.
+Mas também
+outras aplicações que ele pode
+a partir do momento dessa convivência
+pra participar mais dos nossos negócios.
+Teve um grupo
+que eu participava de construção
+o pessoal
+eles vendem construções
+de casas milionárias
+e o Instagram tem esse grupo no WhatsApp.
+E aí, eu te respondi
+eu te fui daqueles
+da comunidade
+recebi uns áudios
+de uma menina que sempre mandava
+eu fiquei pensando
+eu sou comercial do cara
+eu cliquei assim pra ver a foto
+eu venho bonito, né?
+Não jogou com a menina dele.
+Eu escutei a voz
+depois eu fiquei pensando
+toda vez que alguém mandava
+dependendo do que a pessoa respondia
+ela respondia, ela mandava áudio e tal
+depois eu fui sacar que era amanhã
+parecia muito
+Eu tenho uma telefonia
+que está com o IAO hoje
+não sei qual que é, mas é muito real.
+Cara, a menina parecia
+pessoa de verdade, ela falando assim
+Cara, pra menina colocar pra funcionar
+Por exemplo, essa ligação
+inicial, quando cai o IAO
+uma IAO podia fazer.
+Sim.
+A ligação conversacional?
+A primeira, né?
+Ele é padrão.
+O cara vai ser da ligação
+do ou ou?
+É.
+Normal, né?
+Ela tira dúvidas
+faz o agendamento
+Tudo.
+Eu tenho bem desenhado todas
+as perguntas e respostas
+Pra que a gente precisa do corretor?
+Porque eu já venho educando a outra
+a parte de agendamento
+porque já tem o cara de livrar
+então ele já cai como um aqui
+ter a agenda de quem precisa estar
+pra rodar, também
+mastigar.
+É por isso que eu falei.
+Eu estou assim, né?
+Um dia termino de fazer isso aqui
+precisa de um dia, tá pronto?
+E esses outros não
+eles não falaram de
+fazer o treinamento mensagem?
+Não.
+É bem mais simples.
+Eu vi aqui que ela não mandava
+mensagem em áudio
+o cara mandava e ela encaminhava
+porque como ela era
+de um inventor, do Estevam
+ela mandava assim
+um Estevam mandando áudio pra vocês
+só que ela aqui alimentando
+é como se fosse a secretária dele
+fazia tudo, cara.
+Muito legal.
+Tu é na rede?
+Não.
+Acabou.
+Tchau, cara. Obrigado.
+Tchau, pessoal. Até mais.
+Boa noite.
+Bom, mas assim
+na minha parte, uma coisa que
+eu gostaria muito é essa parte
+de trás de análise de dados
+eu estava desenvolvendo
+eu estava desenvolvendo pra mim
+a gente fala até pra lá, pra Alexandre, mas
+legal se tem o meu experience também
+então fazer isso em conjunto seria bem
+bem proveitoso e assim
+porque a gente está num momento agora
+de tomando o vetor de tráfico e tal
+não tem esse faz sentido não
+então dependendo o que aconteça aqui, eu tenho outra
+impressão.
+Nós temos que nos preparar porque nós temos
+um lançamento agora no começo do
+comecinho do 5º semestre
+em julho
+nós vamos lançar um mercado da minha vida de 200
+unidades
+e aí vai ser um ruído muito grande
+e aí eu vou te explicar como é que é o nosso processo de venda
+e como nós podemos
+oficializar o nosso
+processo de venda com o uso
+da IA
+pra que a gente possa atingir o resultado
+então
+ser bacana se a gente passar
+todo o nosso
+jornada do empreendimento
+desde os primeiros teaser
+até o dia
+D e 90
+dias após o dia D
+e aí nós temos duas forças de venda
+nós temos a força de venda das bolívares externas
+parceiras e a força de venda dos nossos
+corretores internos
+pra mim é muito melhor vender com corretor interno
+corretor interno pago 2% de comissão, pro externo
+pra mim é pago 4,5%
+então...
+minha cadeira de vida você vende pelo IA
+minha cadeira de vida você vende pelo IA
+então, vai ser minha cadeira de vida esse empreendimento
+você integrar simulador
+consegue integrar venda
+consegue montar tudo através da caixa
+quanto mais a gente facilitar
+com o corretor
+quanto mais facilitar com o corretor é melhor
+você vai embora
+você vai embora
+não sei se você fez as pazes comigo ainda
+não sei se você fez as pazes comigo ainda
+faz dois dias que tá de cara virada pra mim
+faz dois dias que tá de cara virada pra mim
+pode se ver no olho
+de uma égua
+viu onde estou que você veio só assim?
+viu onde você veio só assim?
+viu onde você veio só assim?
+olha aqui pra mim
+olha aqui pra mim
+esse vergonha
+você se tornado com a Harley
+olha creating
+vergonha
+olha pro ronco
+vergonha
+vergonha
+tchau, vergonha
+tchau, gente
+quando dessa idade
+essa mãe pro avante
+deixa a filha sul que eu chego
+Eu estou até imaginando.
+Mas minha casa faz sempre o que você quer fazer.
+O que a gente faz lá? Próximos passos?
+Pode marcar para botar bot.
+Marcar o horário para eles, para botar bot.
+Depois que eu comecei a trabalhar com os agentes aqui, eu tenho horário para tudo.
+Não tem jeito de despestar todos os corretores.
+Minha casa é a vida. É perigoso vender mais por aqui do que por eles.
+É assustador.
+Minha casa é a vida. Eu vi o regime. Minha casa é a vida.
+É tudo. Tudo, tudo, tudo.
+O cara marca a vida aqui e só não visita sozinho.
+Porque a empresa não é autônoma.
+Mas ele vê decorado. Você consegue fazer simulação batendo com a caixa.
+Só para o corretor não só decorado.
+Só para isso.
+Também, para ganhar de um jeito.
+O problema é só colocar um vento ser bom e fuçar aqui.
+Qualidade cai. Só para o corretor cai a quantidade.
+É.
+Você tem que se melhorar com o mano que ora com a mão.
+Põe a agenda.
+Sérgio, não faz sentido? A gente fechou, é doce, hein?
+Vamos. Vamos sim.
+Que dia que fica bom com vocês?
+Quero. Quero.
+Amanhã.
+Eu tenho urgência para isso. Eu tenho que parar todo o processo já.
+Tem que ter sentido para as duas partes.
+Isso não faz sentido aqui no mesmo caso para nós.
+É um negócio que vai fazer sentido, né?
+Porque é uma coisa aí que o Marcos morreu e me lamenta mais.
+Eu vou ficar trocando toda vez.
+Uma solução personalizada.
+Já é a quarta vez.
+A gente entraria com o Converso Nacional já de cara?
+Sim.
+Você tem os domínios, as coisinhas?
+O CRM vai ser CRM.3fold.
+Conseguir fazer toda essa configuração.
+Beleza.
+Já está pronto.
+Amanhã também.
+Vocês vão viajar, né?
+A gente vai. Segunda que vem.
+Vai ficar um tempo fora?
+Duas semanas.
+Duas semanas?
+Vou para a praia.
+Eu acho que vai chegar.
+É que na verdade...
+É onde você for trabalhando.
+Não, igual eu falei.
+Depois que eu coloquei os agentes para trabalhar...
+Demorou pra construir a gente, cara?
+Demorou?
+Os primeiros, né?
+Porque os primeiros que eu fui fazer
+é para ajudar a criar os outros.
+Só que, pô, hoje você entra no GitHub
+você consegue baixar 200 agentes.
+É mesmo? Pronto.
+Mas de qualidade você fala?
+Sim.
+Eu lembro dos agentes que eu utilizo aqui
+que entregam boa qualidade.
+Eu baixei para o GitHub.
+Como é que você
+usa um agente
+para programar?
+Por exemplo, eu estou fazendo esse sistema
+que eu quero te mostrar aqui
+mais de tempo.
+Também que eu montei para
+cargas de viabilidade de brilhantes familiar.
+Mas como é que eu estou fazendo?
+Estou usando o Dimenai.
+Eu fico falando o que eu quero e ele vai montando.
+O BR, o ajuste e tal.
+Mas baseado no que eu sei do negócio.
+Então da programação.
+Como é que o agente
+de programação
+trabalharia nesse sentido?
+Ele vai
+entender o que eu quero e pedir
+para que o
+a IA faça o código daquela forma?
+Eu vou até pedir para ela te responder.
+Eu não entendo isso.
+Só falta responder por algo.
+Espera.
+Eu não perdi nada.
+Esse agente qualquer?
+Esse é o code code
+que eu comentei com eles.
+Por exemplo.
+Por exemplo.
+Agente 1.
+Atendimento de estratégia.
+Antes de qualquer código
+o PM cria um PRD.
+Que é um Product Requirements Document.
+Isso daqui é boas práticas
+de fábrica de software.
+Então antes de tudo
+antes de eu escrever qualquer linha de código
+eu tenho que entender
+qual é o problema que a gente vai atacar
+e o que eu preciso passar
+de informação para o
+desenvolvedor.
+Mesmo que para responder
+a essas perguntas
+eu tenho que fazer uma dissertação.
+A Brenda às vezes não.
+Ela mesmo já traz.
+A não ser que você queira trabalhar
+daquela maneira.
+Qual é a melhor maneira de desenhar
+aquele sistema para fazer
+o que você é?
+Eu tenho algumas
+caminhos
+por ter já trabalhado.
+Mas ela me traz um milhão de caminhos.
+E ela consegue fazer um benchmark
+uma pesquisa profunda
+para falar que essa tecnologia é melhor
+usar após isso e disso e disso.
+E daí eu passo
+de agente em agente
+para ir coletando o máximo de informação
+para quando vai fazer a programação
+ela ser exatamente do jeito que precisa.
+Quando eu vou passar para um QA
+que é quem
+revisa o código do programador
+ele vai entender quais são os parâmetros
+de qualidade.
+Quando eu vou passar para um agente
+design de dados
+ele vai entender tudo
+que precisa para desenhar a arquitetura do banco.
+Então qual é o esquema
+qual é as polícias de segurança
+os indícios
+pesados de carries, migração
+tudo isso
+a gente vai fazer.
+Aí ele passa para o PIO e para o Scrum Master.
+O PIO
+ele cuida do produto.
+O que quer dizer?
+Precisa passar isso para o agente de desenvolvimento.
+Aí tem um passo a outro.
+É igual eu falei, ele segue
+o passo a passo de uma fábrica de software.
+Então eu tenho
+várias etapas
+antes de passar de fato
+para um programador
+que no caso aqui é o Dex.
+Daí sim ele escreve o código
+e tudo mais.
+Então ele também tem a parte de
+qualidade de código.
+Ah, eu não vou só escrever o código.
+Não, tem que estar comitado.
+Comitado é, por exemplo, barra, barra ali
+que ele não vai influenciar no código
+só que vai conseguir dar contexto
+para o programador.
+O pai tu usou o Jura Velho?
+O pai tu usou o Jura Velho para documentar?
+Não sei.
+Como é que você não sabe disso?
+O filho não vai saber, né?
+O filho não vai escrever.
+Caramba!
+Talvez as horas que eu perdi
+fazer um cláudio, eu teria feito há alguns minutos.
+Eu falei para você do Cláudio.
+Eu comecei com o Cláudio
+mas aí
+eu entrei
+eu estava tendo um plano de
+apesar de ter assinado o Cláudio
+e chegar no ponto que ele parava
+volta só amanhã até a hora.
+É, eu pago por mês o Cláudio
+R$1.100.
+Só para ter esse programinho aqui
+eu estou pagando R$1.100.
+Aí eu fui para o Adapta.
+Não vale a pena.
+Hoje veio o Cláudio no Adapta porque aí não tinha limite.
+Mas daí você usa um modelo
+de inteligência artificial
+que é ultrapassado.
+Mesmo sem o Cláudio?
+Porque lá tem tudo, tem Cláudio, tem GPT.
+Não é uma empresa, não é um modelo.
+Aí dentro do Adapta a gente tem um cláudio
+dentro do Adapta?
+Sim, mas daí você consegue selecionar qual modelo
+que você quer que ele fala
+mas é um modelo capado, tenho certeza.
+Porque na Academia Lendária ele disponibilizava
+isso também.
+Então isso aí é meio louco, né?
+Talvez não fez sentido também para o Adapta.
+Porque como a plataforma tem todas as
+pernas pagas, né?
+Você conhece o Adapta?
+Sim.
+Eu tenho um congresso para 5 mil pessoas
+que participam, não sei o quê.
+E aí quando eu comecei a usar o Adapta
+Cláudio na Adapta
+eu não tinha mais limite, eu usava ele
+só que aí eu percebi
+que
+eu usei um pouquinho, de mais
+gostei bastante e aí ele ficou
+muito mais produtivo do que o Cláudio da Adapta.
+Aí eu não voltei mais
+para o Cláudio da...
+Mas faz tempo isso?
+Noventa dias.
+É que o desafio mesmo é quando
+você tem que trocar a diada, né?
+Você perde todo o contexto que você colocou ali.
+É que depende, né? Se você está falando de
+contexto que você escreve no chat, né?
+É, não. É o modo mais fundamental
+que você está falando aqui.
+Ah, tipo, para usar no dia de...
+Mas por exemplo, no Cláudio
+se você quiser, você consegue
+exportar o seu
+contexto do chat IPT para dentro do Cláudio.
+Então...
+É, mas ainda assim não é a mesma coisa.
+Não é a mesma coisa assim que eu fiz isso, tá?
+Eu senti que faltou algumas coisinhas ali, mas
+é um caminhozinho.
+Isso aí.
+Muito bem. Obrigado.
+Acho que amanhã à tarde eu estou mais tranquilo.
+Às duas da tarde.
+Eu moro bem pertinho daqui.
+Pode ser? Pode ser.
+Eu vou me encaixando.
+Achando vocês, eu vou
+me encaixando e vou assim...
+Chegando, participando.
+Fechou.
+E amanhã eu já consigo trazer
+baseado nessa gravação que eu fiz aqui.
