@@ -45,13 +45,9 @@ export function shouldHandoff(params: HandoffCheckParams): HandoffResult {
   const { qualificationScore, message, conversationState } = params
   const lowerMessage = message.toLowerCase()
 
-  // Trigger: Visit has been scheduled
-  if (conversationState.visit_proposed === true || conversationState.visit_availability === true) {
-    return {
-      trigger: true,
-      reason: "Visita agendada ou disponibilidade confirmada — lead pronto para atendimento presencial.",
-    }
-  }
+  // Visit scheduled is NOT a handoff trigger anymore
+  // Nicole continues attending until a broker actually sends a message
+  // The follow-up system handles post-visit contact
 
   // Trigger: High score + price/simulation inquiry
   if (qualificationScore >= 70) {
