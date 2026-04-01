@@ -362,6 +362,30 @@ export async function processMessageWithMetadata(
         .eq("id", leadId)
     }
 
+    // Auto-create appointment when visit is discussed
+    if (finalData.visit_availability && !state?.visit_proposed && conversation.org_id) {
+      const tomorrow = new Date()
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      tomorrow.setHours(10, 0, 0, 0) // Default 10am next day
+
+      await supabase.from("appointments").insert({
+        org_id: conversation.org_id,
+        lead_id: leadId,
+        scheduled_at: tomorrow.toISOString(),
+        location: "Stand Trifold",
+        status: "scheduled",
+        created_by: "nicole",
+        notes: `Visita sugerida pela Nicole. Disponibilidade informada: ${String(finalData.visit_availability)}`,
+      })
+
+      await supabase.from("activities").insert({
+        org_id: conversation.org_id,
+        lead_id: leadId,
+        type: "visit_scheduled",
+        description: `Nicole agendou visita. Disponibilidade: ${String(finalData.visit_availability)}`,
+      })
+    }
+
     // [3.10 AC7/AC9/AC10] Handoff automations
     if (handoffResult.trigger && conversation.org_id) {
       // AC10: Move to appropriate stage
