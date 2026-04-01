@@ -1,7 +1,19 @@
-import Link from "next/link"
-import Image from "next/image"
 import { getServerUser } from "@web/lib/auth"
-import { logout } from "@web/app/login/actions"
+import { SidebarNav } from "@web/components/layout/sidebar-nav"
+
+const NAV_ITEMS = [
+  { href: "/dashboard", label: "Dashboard", icon: "◈" },
+  { href: "/dashboard/pipeline", label: "Pipeline", icon: "▦" },
+  { href: "/dashboard/leads", label: "Leads", icon: "◉" },
+  { href: "/dashboard/properties", label: "Imoveis", icon: "⌂" },
+  { href: "/dashboard/corretores", label: "Corretores", icon: "◎" },
+  { href: "/dashboard/conversas", label: "Conversas", icon: "◬" },
+  { href: "/dashboard/agenda", label: "Agenda", icon: "▣" },
+  { href: "/dashboard/atividades", label: "Atividades", icon: "◫" },
+  { href: "/dashboard/analytics", label: "Analytics", icon: "◩" },
+  { href: "/dashboard/treinamento", label: "Treinamento", icon: "◧" },
+  { href: "/dashboard/configuracoes/pipeline", label: "Config", icon: "⚙" },
+]
 
 export default async function DashboardLayout({
   children,
@@ -11,93 +23,20 @@ export default async function DashboardLayout({
   const user = await getServerUser()
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="border-b bg-white">
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
-          <div className="flex items-center gap-6">
-            <Link href="/dashboard" className="flex items-center gap-2">
-              <Image src="/logo-trifold.webp" alt="Trifold" width={32} height={32} />
-              <span className="text-lg font-bold text-orange-600">Trifold CRM</span>
-            </Link>
-            <div className="flex items-center gap-4 text-sm">
-              <Link
-                href="/dashboard"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/dashboard/properties"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Empreendimentos
-              </Link>
-              <Link
-                href="/dashboard/pipeline"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Pipeline
-              </Link>
-              <Link
-                href="/dashboard/leads"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Leads
-              </Link>
-              <Link
-                href="/dashboard/corretores"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Corretores
-              </Link>
-              <Link
-                href="/dashboard/conversas"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Conversas
-              </Link>
-              <Link
-                href="/dashboard/agenda"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Agenda
-              </Link>
-              <Link
-                href="/dashboard/atividades"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Atividades
-              </Link>
-              <Link
-                href="/dashboard/treinamento"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Treinamento
-              </Link>
-              <Link
-                href="/dashboard/configuracoes/pipeline"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Configuracoes
-              </Link>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">
-              {user.name} ({user.role})
-            </span>
-            <form action={logout}>
-              <button
-                type="submit"
-                className="rounded-md bg-gray-100 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-200"
-              >
-                Sair
-              </button>
-            </form>
-          </div>
+    <div className="min-h-screen bg-stone-50">
+      <SidebarNav
+        items={NAV_ITEMS}
+        userName={user.name}
+        userRole={user.role}
+        basePath="/dashboard"
+      />
+
+      {/* Main content area */}
+      <main className="lg:pl-56">
+        <div className="mx-auto max-w-6xl px-4 py-6 pb-24 lg:px-8 lg:py-8 lg:pb-8">
+          {children}
         </div>
-      </nav>
-      <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
+      </main>
     </div>
   )
 }

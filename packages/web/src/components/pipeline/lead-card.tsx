@@ -22,20 +22,18 @@ interface LeadCardProps {
   brokerName?: string
 }
 
-const PROPERTY_BADGE: Record<string, { label: string; className: string }> = {
-  vind: { label: "Vind", className: "bg-green-100 text-green-700" },
-  yarden: { label: "Yarden", className: "bg-blue-100 text-blue-700" },
-  both: { label: "Ambos", className: "bg-purple-100 text-purple-700" },
-  unknown: { label: "Indefinido", className: "bg-gray-100 text-gray-500" },
+const PROPERTY_BADGE: Record<string, { label: string; bg: string; text: string; dot: string }> = {
+  vind: { label: "Vind", bg: "bg-emerald-50", text: "text-emerald-700", dot: "bg-emerald-400" },
+  yarden: { label: "Yarden", bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-400" },
+  both: { label: "Ambos", bg: "bg-violet-50", text: "text-violet-700", dot: "bg-violet-400" },
+  unknown: { label: "—", bg: "bg-stone-50", text: "text-stone-400", dot: "bg-stone-300" },
 }
 
 function getMandatoryFieldsFilled(lead: LeadCardProps["lead"]): number {
   let filled = 0
   for (const field of MANDATORY_FIELDS) {
     const value = (lead as Record<string, unknown>)[field.key]
-    if (value !== null && value !== undefined && value !== "") {
-      filled++
-    }
+    if (value !== null && value !== undefined && value !== "") filled++
   }
   return filled
 }
@@ -53,29 +51,30 @@ export function LeadCard({ lead, propertyName, brokerName }: LeadCardProps) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.4 : 1,
   }
 
+  const score = lead.qualification_score ?? 0
   const scoreColor =
-    (lead.qualification_score ?? 0) >= 70
-      ? "bg-green-100 text-green-700"
-      : (lead.qualification_score ?? 0) >= 40
-      ? "bg-yellow-100 text-yellow-700"
-      : "bg-gray-100 text-gray-500"
+    score >= 70 ? "text-emerald-600 bg-emerald-50" :
+    score >= 40 ? "text-amber-600 bg-amber-50" :
+    "text-stone-400 bg-stone-50"
 
   const timeAgo = getTimeAgo(lead.updated_at)
-
   const filledCount = getMandatoryFieldsFilled(lead)
   const totalMandatory = MANDATORY_FIELDS.length
   const fillPercent = Math.round((filledCount / totalMandatory) * 100)
 
-  const interestKey = propertyName?.toLowerCase() ?? "unknown"
-  const badge = PROPERTY_BADGE[interestKey] ?? PROPERTY_BADGE.unknown
+  const interestKey = propertyName?.toLowerCase().includes("vind") ? "vind" :
+    propertyName?.toLowerCase().includes("yarden") ? "yarden" : "unknown"
+  const badge = PROPERTY_BADGE[interestKey]
 
   const summaryPreview = lead.ai_summary
-    ? lead.ai_summary.length > 50
-      ? lead.ai_summary.slice(0, 50) + "..."
-      : lead.ai_summary
+    ? lead.ai_summary.length > 80 ? lead.ai_summary.slice(0, 80) + "..." : lead.ai_summary
+    : null
+
+  const initials = brokerName
+    ? brokerName.split(" ").map((n) => n[0]).join("").slice(0, 2)
     : null
 
   return (
@@ -84,62 +83,67 @@ export function LeadCard({ lead, propertyName, brokerName }: LeadCardProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className="cursor-grab rounded-md border bg-white p-3 shadow-sm hover:shadow-md active:cursor-grabbing"
+      className="group cursor-grab rounded-xl border border-stone-200 bg-white p-3 transition-all hover:border-stone-300 hover:shadow-md active:cursor-grabbing"
     >
       <Link href={`/dashboard/leads/${lead.id}`} className="block">
-        <div className="flex items-start justify-between">
-          <p className="text-sm font-medium text-gray-900">
-            {lead.name || lead.phone}
-          </p>
-          <div className="flex items-center gap-1">
-            <span
-              className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${badge.className}`}
-            >
-              {badge.label}
-            </span>
-            {lead.qualification_score != null && (
-              <span
-                className={`rounded-full px-1.5 py-0.5 text-xs font-medium ${scoreColor}`}
-              >
-                {lead.qualification_score}
-              </span>
+        {/* Header: Name + Score */}
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[13px] font-semibold text-stone-900">
+              {lead.name || lead.phone}
+            </p>
+            {lead.name && (
+              <p className="truncate text-[11px] text-stone-400">{lead.phone}</p>
             )}
           </div>
+          {score > 0 && (
+            <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-semibold tabular-nums ${scoreColor}`}>
+              {score}
+            </span>
+          )}
         </div>
 
-        {/* Mandatory fields progress */}
-        <div className="mt-1.5 flex items-center gap-2">
-          <div className="h-1 flex-1 rounded-full bg-gray-200">
-            <div
-              className="h-1 rounded-full bg-orange-500 transition-all"
-              style={{ width: `${fillPercent}%` }}
-            />
-          </div>
-          <span className="text-[10px] text-gray-400">
-            {filledCount}/{totalMandatory}
+        {/* Property Badge + Progress */}
+        <div className="mt-2 flex items-center gap-2">
+          <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-medium ${badge.bg} ${badge.text}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${badge.dot}`} />
+            {badge.label}
           </span>
+          <div className="flex flex-1 items-center gap-1.5">
+            <div className="h-1 flex-1 rounded-full bg-stone-100">
+              <div
+                className="h-1 rounded-full bg-orange-400 transition-all"
+                style={{ width: `${fillPercent}%` }}
+              />
+            </div>
+            <span className="text-[9px] tabular-nums text-stone-300">
+              {filledCount}/{totalMandatory}
+            </span>
+          </div>
         </div>
 
-        {/* AI summary preview */}
+        {/* AI Summary Preview */}
         {summaryPreview && (
-          <p className="mt-1.5 text-[11px] leading-tight text-gray-500 italic">
+          <p className="mt-2 line-clamp-2 text-[11px] leading-relaxed text-stone-500">
             {summaryPreview}
           </p>
         )}
 
-        <div className="mt-2 flex items-center justify-between">
-          {brokerName ? (
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-100 text-[10px] font-medium text-orange-700">
-              {brokerName
-                .split(" ")
-                .map((n) => n[0])
-                .join("")
-                .slice(0, 2)}
-            </span>
+        {/* Footer: Broker + Time */}
+        <div className="mt-2.5 flex items-center justify-between">
+          {initials ? (
+            <div className="flex items-center gap-1.5">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-100 text-[9px] font-bold text-orange-700">
+                {initials}
+              </span>
+              <span className="text-[10px] text-stone-400">{brokerName?.split(" ")[0]}</span>
+            </div>
           ) : (
-            <span className="text-[10px] text-red-400">Sem corretor</span>
+            <span className="rounded-md bg-red-50 px-1.5 py-0.5 text-[10px] font-medium text-red-400">
+              Sem corretor
+            </span>
           )}
-          <span className="text-[10px] text-gray-400">{timeAgo}</span>
+          <span className="text-[10px] tabular-nums text-stone-300">{timeAgo}</span>
         </div>
       </Link>
     </div>
@@ -149,9 +153,11 @@ export function LeadCard({ lead, propertyName, brokerName }: LeadCardProps) {
 function getTimeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(diff / 60000)
+  if (mins < 1) return "agora"
   if (mins < 60) return `${mins}min`
   const hours = Math.floor(mins / 60)
   if (hours < 24) return `${hours}h`
   const days = Math.floor(hours / 24)
-  return `${days}d`
+  if (days < 7) return `${days}d`
+  return `${Math.floor(days / 7)}sem`
 }

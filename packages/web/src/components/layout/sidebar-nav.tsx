@@ -1,0 +1,137 @@
+"use client"
+
+import Link from "next/link"
+import Image from "next/image"
+import { usePathname } from "next/navigation"
+
+interface NavItem {
+  href: string
+  label: string
+  icon: string
+}
+
+interface SidebarNavProps {
+  items: NavItem[]
+  userName: string
+  userRole: string
+  basePath: string
+}
+
+export function SidebarNav({ items, userName, userRole, basePath }: SidebarNavProps) {
+  const pathname = usePathname()
+
+  const isActive = (href: string) => {
+    if (href === basePath) return pathname === basePath
+    return pathname.startsWith(href)
+  }
+
+  const initials = userName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase()
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-56 lg:flex-col">
+        <div className="flex grow flex-col border-r border-stone-200 bg-white">
+          {/* Logo */}
+          <div className="flex h-16 items-center gap-2.5 border-b border-stone-100 px-5">
+            <Image src="/logo-trifold.webp" alt="Trifold" width={28} height={28} />
+            <span className="text-base font-semibold tracking-tight text-stone-900">
+              Trifold
+            </span>
+          </div>
+
+          {/* Nav Items */}
+          <nav className="flex flex-1 flex-col px-3 py-4">
+            <ul className="flex flex-1 flex-col gap-0.5">
+              {items.map((item) => {
+                const active = isActive(item.href)
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-all ${
+                        active
+                          ? "bg-orange-50 text-orange-700"
+                          : "text-stone-500 hover:bg-stone-50 hover:text-stone-900"
+                      }`}
+                    >
+                      <span className="text-base">{item.icon}</span>
+                      {item.label}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </nav>
+
+          {/* User */}
+          <div className="border-t border-stone-100 p-3">
+            <div className="flex items-center gap-2.5 rounded-lg px-3 py-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 text-xs font-semibold text-orange-700">
+                {initials}
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <p className="truncate text-[13px] font-medium text-stone-900">{userName}</p>
+                <p className="text-[11px] text-stone-400 capitalize">{userRole}</p>
+              </div>
+            </div>
+            <form action={`${basePath === "/broker" ? "/broker" : "/dashboard"}/../login/actions`} method="post">
+              <Link
+                href="/login"
+                className="mt-1 flex w-full items-center justify-center rounded-lg px-3 py-1.5 text-[12px] text-stone-400 hover:bg-stone-50 hover:text-stone-600"
+              >
+                Sair
+              </Link>
+            </form>
+          </div>
+        </div>
+      </aside>
+
+      {/* Mobile Top Bar */}
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-stone-200 bg-white/95 px-4 backdrop-blur-sm lg:hidden">
+        <div className="flex items-center gap-2">
+          <Image src="/logo-trifold.webp" alt="Trifold" width={24} height={24} />
+          <span className="text-sm font-semibold text-stone-900">Trifold</span>
+        </div>
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-100 text-[10px] font-semibold text-orange-700">
+          {initials}
+        </div>
+      </header>
+
+      {/* Mobile Bottom Tab Bar */}
+      <nav className="mobile-nav-safe fixed bottom-0 left-0 right-0 z-30 border-t border-stone-200 bg-white/95 backdrop-blur-sm lg:hidden">
+        <div className="flex items-center justify-around px-1 py-1">
+          {items.slice(0, 5).map((item) => {
+            const active = isActive(item.href)
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex min-w-[52px] flex-col items-center gap-0.5 rounded-lg px-2 py-1.5 transition-colors ${
+                  active ? "text-orange-600" : "text-stone-400"
+                }`}
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span className="text-[10px] font-medium">{item.label}</span>
+              </Link>
+            )
+          })}
+          {items.length > 5 && (
+            <Link
+              href={items[5].href}
+              className="flex min-w-[52px] flex-col items-center gap-0.5 rounded-lg px-2 py-1.5 text-stone-400"
+            >
+              <span className="text-lg">...</span>
+              <span className="text-[10px] font-medium">Mais</span>
+            </Link>
+          )}
+        </div>
+      </nav>
+    </>
+  )
+}
