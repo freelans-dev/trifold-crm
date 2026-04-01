@@ -1,4 +1,5 @@
 import { getServerUser } from "@web/lib/auth"
+import { createClient } from "@web/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { SidebarNav } from "@web/components/layout/sidebar-nav"
 
@@ -6,6 +7,7 @@ const NAV_ITEMS = [
   { href: "/broker", label: "Meus Leads", icon: "◉" },
   { href: "/broker/pipeline", label: "Pipeline", icon: "▦" },
   { href: "/broker/agenda", label: "Agenda", icon: "▣" },
+  { href: "/broker/alertas", label: "Alertas", icon: "△" },
 ]
 
 export default async function BrokerLayout({
@@ -19,6 +21,17 @@ export default async function BrokerLayout({
     redirect("/dashboard")
   }
 
+  const supabase = await createClient()
+
+  // Count pending alerts for this broker's leads
+  // We need to join follow_up_log with leads to filter by assigned_broker_id
+  const { count: alertCount } = await supabase
+    .from("follow_up_log")
+    .select("id, lead:leads!lead_id!inner(assigned_broker_id)", { count: "exact", head: true })
+    .eq("org_id", user.orgId)
+    .eq("status", "pending")
+    .eq("lead.assigned_broker_id", user.id)
+
   return (
     <div className="min-h-screen bg-stone-50">
       <SidebarNav
@@ -26,6 +39,7 @@ export default async function BrokerLayout({
         userName={user.name}
         userRole={user.role}
         basePath="/broker"
+        alertCount={alertCount ?? 0}
       />
 
       <main className="lg:pl-56">

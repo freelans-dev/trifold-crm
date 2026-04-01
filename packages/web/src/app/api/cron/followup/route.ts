@@ -204,9 +204,113 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // --- Post-visit follow-up ---
+  // Find completed appointments with no post_visit follow-up log in the last 48h
+  let postVisitSent = 0
+
+  const { data: completedAppointments } = await supabase
+    .from("appointments")
+    .select(
+      `id, lead_id, org_id, property_id,
+       lead:leads!lead_id(id, name, phone, ai_summary),
+       property:properties!property_id(id, name),
+       feedback:visit_feedback(interest_after, feedback)`
+    )
+    .eq("status", "completed")
+
+  if (completedAppointments) {
+    const cooldown48h = new Date(now.getTime() - 48 * 60 * 60 * 1000)
+
+    for (const appt of completedAppointments) {
+      const leadData = Array.isArray(appt.lead) ? appt.lead[0] : appt.lead
+      if (!leadData) continue
+
+      // Check if there's already a post_visit log in the last 48h
+      const { data: existingLog } = await supabase
+        .from("follow_up_log")
+        .select("id")
+        .eq("lead_id", appt.lead_id)
+        .eq("type", "post_visit")
+        .gte("created_at", cooldown48h.toISOString())
+        .limit(1)
+
+      if (existingLog && existingLog.length > 0) continue
+
+      // Get feedback info
+      const feedbackArr = Array.isArray(appt.feedback) ? appt.feedback : appt.feedback ? [appt.feedback] : []
+      const feedbackEntry = feedbackArr[0] as { interest_after?: string; feedback?: string } | undefined
+      const interestLevel = feedbackEntry?.interest_after
+      const visitFeedback = interestLevel || undefined
+
+      // Get property name
+      const propertyData = Array.isArray(appt.property) ? appt.property[0] : appt.property
+      const propName = (propertyData as { name?: string } | null)?.name ?? "o imovel"
+
+      // Generate Nicole message
+      const { createAnthropicClient } = await import("@trifold/ai")
+      const anthropic = createAnthropicClient()
+      const { generatePostVisitMessage } = await import("@trifold/ai")
+
+      const message = await generatePostVisitMessage({
+        anthropic,
+        leadName: leadData.name || "",
+        propertyName: propName,
+        visitFeedback,
+        aiSummary: (leadData as { ai_summary?: string }).ai_summary || undefined,
+      })
+
+      // Create follow_up_log entry
+      await supabase.from("follow_up_log").insert({
+        org_id: appt.org_id,
+        lead_id: appt.lead_id,
+        type: "post_visit",
+        status: "sent",
+        scheduled_at: now.toISOString(),
+        sent_at: now.toISOString(),
+        message,
+      })
+
+      // Get or create conversation for the lead
+      const { data: conversations } = await supabase
+        .from("conversations")
+        .select("id")
+        .eq("lead_id", appt.lead_id)
+        .order("last_message_at", { ascending: false })
+        .limit(1)
+
+      if (conversations && conversations.length > 0) {
+        const conversationId = conversations[0].id
+
+        await supabase.from("messages").insert({
+          conversation_id: conversationId,
+          role: "assistant",
+          content: message,
+          metadata: { source: "post_visit_followup", appointment_id: appt.id },
+        })
+
+        await supabase
+          .from("conversations")
+          .update({ last_message_at: now.toISOString() })
+          .eq("id", conversationId)
+      }
+
+      // Activity log
+      await supabase.from("activities").insert({
+        org_id: appt.org_id,
+        lead_id: appt.lead_id,
+        type: "followup_post_visit",
+        description: `Nicole enviou follow-up pos-visita (interesse: ${interestLevel || "nao informado"})`,
+        metadata: { appointment_id: appt.id },
+      })
+
+      postVisitSent++
+    }
+  }
+
   return NextResponse.json({
     processed,
     alerts_created: alertsCreated,
     messages_sent: messagesSent,
+    post_visit_sent: postVisitSent,
   })
 }

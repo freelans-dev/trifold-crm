@@ -112,6 +112,92 @@ export async function POST(
       },
     })
 
+    // Trigger Nicole post-visit follow-up based on interest level
+    try {
+      // Check if there's already a post_visit log for this lead in the last 48h
+      const cooldown48h = new Date(Date.now() - 48 * 60 * 60 * 1000)
+      const { data: existingPostVisit } = await supabase
+        .from("follow_up_log")
+        .select("id")
+        .eq("lead_id", appointment.lead_id)
+        .eq("type", "post_visit")
+        .gte("created_at", cooldown48h.toISOString())
+        .limit(1)
+
+      if (!existingPostVisit || existingPostVisit.length === 0) {
+        // Get property info from the appointment
+        const { data: apptFull } = await supabase
+          .from("appointments")
+          .select("property_id, lead:leads!lead_id(name, ai_summary), property:properties!property_id(name)")
+          .eq("id", id)
+          .single()
+
+        if (apptFull) {
+          const leadInfo = Array.isArray(apptFull.lead) ? apptFull.lead[0] : apptFull.lead
+          const propInfo = Array.isArray(apptFull.property) ? apptFull.property[0] : apptFull.property
+          const leadName = (leadInfo as { name?: string } | null)?.name || ""
+          const propName = (propInfo as { name?: string } | null)?.name || "o imovel"
+          const aiSummary = (leadInfo as { ai_summary?: string } | null)?.ai_summary || undefined
+
+          const { createAnthropicClient, generatePostVisitMessage } = await import("@trifold/ai")
+          const anthropic = createAnthropicClient()
+
+          const message = await generatePostVisitMessage({
+            anthropic,
+            leadName,
+            propertyName: propName,
+            visitFeedback: body.interest_after,
+            aiSummary,
+          })
+
+          // Create follow_up_log entry
+          await supabase.from("follow_up_log").insert({
+            org_id: appointment.org_id,
+            lead_id: appointment.lead_id,
+            type: "post_visit",
+            status: "sent",
+            scheduled_at: new Date().toISOString(),
+            sent_at: new Date().toISOString(),
+            message,
+          })
+
+          // Send message via conversation
+          const { data: conversations } = await supabase
+            .from("conversations")
+            .select("id")
+            .eq("lead_id", appointment.lead_id)
+            .order("last_message_at", { ascending: false })
+            .limit(1)
+
+          if (conversations && conversations.length > 0) {
+            await supabase.from("messages").insert({
+              conversation_id: conversations[0].id,
+              role: "assistant",
+              content: message,
+              metadata: { source: "post_visit_followup", appointment_id: id },
+            })
+
+            await supabase
+              .from("conversations")
+              .update({ last_message_at: new Date().toISOString() })
+              .eq("id", conversations[0].id)
+          }
+
+          // Activity log
+          await supabase.from("activities").insert({
+            org_id: appointment.org_id,
+            lead_id: appointment.lead_id,
+            type: "followup_post_visit",
+            description: `Nicole enviou follow-up pos-visita (interesse: ${body.interest_after})`,
+            metadata: { appointment_id: id, feedback_id: feedback.id },
+          })
+        }
+      }
+    } catch (followupErr) {
+      // Non-blocking: log but don't fail the feedback response
+      console.error("Post-visit followup error:", followupErr)
+    }
+
     return NextResponse.json({ data: feedback }, { status: 201 })
   } catch (err) {
     const message = err instanceof Error ? err.message : "Internal server error"

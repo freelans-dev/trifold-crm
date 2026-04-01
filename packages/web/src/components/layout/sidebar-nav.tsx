@@ -15,9 +15,10 @@ interface SidebarNavProps {
   userName: string
   userRole: string
   basePath: string
+  alertCount?: number
 }
 
-export function SidebarNav({ items, userName, userRole, basePath }: SidebarNavProps) {
+export function SidebarNav({ items, userName, userRole, basePath, alertCount }: SidebarNavProps) {
   const pathname = usePathname()
 
   const isActive = (href: string) => {
@@ -58,7 +59,12 @@ export function SidebarNav({ items, userName, userRole, basePath }: SidebarNavPr
                       }`}
                     >
                       <span className="text-base">{item.icon}</span>
-                      {item.label}
+                      <span className="flex-1">{item.label}</span>
+                      {item.label === "Alertas" && alertCount != null && alertCount > 0 && (
+                        <span className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
+                          {alertCount > 99 ? "99+" : alertCount}
+                        </span>
+                      )}
                     </Link>
                   </li>
                 )

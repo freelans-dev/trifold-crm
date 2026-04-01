@@ -38,6 +38,11 @@ function getMandatoryFieldsFilled(lead: LeadCardProps["lead"]): number {
   return filled
 }
 
+function getDaysSinceContact(dateStr: string): number {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  return Math.floor(diff / (1000 * 60 * 60 * 24))
+}
+
 export function LeadCard({ lead, propertyName, brokerName }: LeadCardProps) {
   const {
     attributes,
@@ -59,6 +64,16 @@ export function LeadCard({ lead, propertyName, brokerName }: LeadCardProps) {
     score >= 70 ? "text-emerald-600 bg-emerald-50" :
     score >= 40 ? "text-amber-600 bg-amber-50" :
     "text-stone-400 bg-stone-50"
+
+  const daysSinceContact = getDaysSinceContact(lead.updated_at)
+  const needsFollowUp = daysSinceContact > 2
+  const isUrgent = daysSinceContact > 4
+
+  const alertBorderClass = isUrgent
+    ? "border-red-400"
+    : needsFollowUp
+    ? "border-orange-400"
+    : "border-stone-200"
 
   const timeAgo = getTimeAgo(lead.updated_at)
   const filledCount = getMandatoryFieldsFilled(lead)
@@ -83,7 +98,7 @@ export function LeadCard({ lead, propertyName, brokerName }: LeadCardProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className="group cursor-grab rounded-xl border border-stone-200 bg-white p-3 transition-all hover:border-stone-300 hover:shadow-md active:cursor-grabbing"
+      className={`group cursor-grab rounded-xl border bg-white p-3 transition-all hover:shadow-md active:cursor-grabbing ${alertBorderClass} ${needsFollowUp ? "border-2" : ""} ${!needsFollowUp ? "hover:border-stone-300" : ""}`}
     >
       <Link href={`/dashboard/leads/${lead.id}`} className="block">
         {/* Header: Name + Score */}
@@ -127,6 +142,24 @@ export function LeadCard({ lead, propertyName, brokerName }: LeadCardProps) {
           <p className="mt-2 line-clamp-2 text-[11px] leading-relaxed text-stone-500">
             {summaryPreview}
           </p>
+        )}
+
+        {/* Follow-up Alert Badge */}
+        {needsFollowUp && (
+          <div className="mt-2 flex items-center gap-1.5">
+            <span
+              className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-medium ${
+                isUrgent
+                  ? "bg-red-50 text-red-600"
+                  : "bg-orange-50 text-orange-600"
+              }`}
+            >
+              {daysSinceContact}d sem contato
+            </span>
+            <span className="text-[10px] text-stone-400">
+              {lead.assigned_broker_id ? "Corretor" : "Nicole"}
+            </span>
+          </div>
         )}
 
         {/* Footer: Broker + Time */}
