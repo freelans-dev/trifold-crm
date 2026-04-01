@@ -13,6 +13,11 @@ export async function GET(request: NextRequest) {
     .single()
   if (!appUser) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
+  // Only admin/supervisor can access analytics
+  if (!["admin", "supervisor"].includes(appUser.role)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
   const searchParams = request.nextUrl.searchParams
   const period = searchParams.get("period") ?? "month" // day, week, month
   const now = new Date()

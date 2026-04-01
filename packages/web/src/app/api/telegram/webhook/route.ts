@@ -10,9 +10,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 
-  // Validate webhook secret
+  // Validate webhook secret (always required when configured)
   const secret = request.headers.get("x-telegram-bot-api-secret-token")
-  if (TELEGRAM_WEBHOOK_SECRET && secret !== TELEGRAM_WEBHOOK_SECRET) {
+  if (!TELEGRAM_WEBHOOK_SECRET) {
+    return NextResponse.json({ error: "Webhook secret not configured" }, { status: 503 })
+  }
+  if (secret !== TELEGRAM_WEBHOOK_SECRET) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 

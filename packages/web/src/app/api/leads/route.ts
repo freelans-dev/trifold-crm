@@ -22,7 +22,8 @@ export async function GET(request: NextRequest) {
   }
 
   const url = new URL(request.url)
-  const search = url.searchParams.get("search")
+  const rawSearch = url.searchParams.get("search")
+  const search = rawSearch && rawSearch.length <= 100 ? rawSearch : null
   const stageId = url.searchParams.get("stage_id")
   const propertyId = url.searchParams.get("property_id")
 

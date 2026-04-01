@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
+import crypto from "crypto"
 
 function getSupabaseAdmin() {
   return createClient(
@@ -26,7 +27,22 @@ export async function GET(request: NextRequest) {
 
 // POST — Incoming message from WhatsApp
 export async function POST(request: NextRequest) {
-  const body = await request.json()
+  // HMAC signature verification (Meta sends X-Hub-Signature-256)
+  const appSecret = process.env.META_APP_SECRET
+  const rawBody = await request.text()
+
+  if (appSecret) {
+    const signature = request.headers.get("x-hub-signature-256")
+    const expectedSignature =
+      "sha256=" +
+      crypto.createHmac("sha256", appSecret).update(rawBody).digest("hex")
+
+    if (signature !== expectedSignature) {
+      return NextResponse.json({ error: "Invalid signature" }, { status: 403 })
+    }
+  }
+
+  const body = JSON.parse(rawBody)
 
   // Parse the incoming message
   const entry = body.entry?.[0]
