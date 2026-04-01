@@ -95,7 +95,12 @@ export default async function ConversasPage() {
               return (
                 <tr key={conv.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium text-gray-900">
-                    {lead?.name || lead?.phone || "Desconhecido"}
+                    <Link
+                      href={`/dashboard/conversas/${conv.id}`}
+                      className="text-orange-600 hover:text-orange-700"
+                    >
+                      {lead?.name || lead?.phone || "Desconhecido"}
+                    </Link>
                   </td>
                   <td className="px-6 py-4">
                     <span
