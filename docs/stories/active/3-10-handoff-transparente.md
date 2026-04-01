@@ -21,10 +21,10 @@ O handoff e o momento em que a Nicole transfere o lead para um corretor humano. 
   - Score de qualificacao
   - Proximos passos recomendados
 - [x] AC6: Resumo salvo em `leads.ai_summary` (atualizado a cada handoff ou interacao significativa)
-- [ ] AC7: Lead designado automaticamente a corretor do empreendimento (se houver) via `leads.assigned_broker_id`
+- [x] AC7: Lead designado automaticamente a corretor do empreendimento (se houver) via `leads.assigned_broker_id` — via broker_assignments no pipeline.ts
 - [x] AC8: Status da conversa muda para `handed_off` — Nicole para de responder automaticamente
-- [ ] AC9: Atividade registrada em `activities`: tipo `handoff`, com reason e broker_id
-- [ ] AC10: Lead move para kanban stage adequada: "Qualificado" ou "Visita Agendada"
+- [x] AC9: Atividade registrada em `activities`: tipo `handoff`, com reason e broker_id — integrado no pipeline.ts
+- [x] AC10: Lead move para kanban stage adequada: "Qualificado" ou "Visita Agendada" — integrado no pipeline.ts
 - [ ] AC11: Se nao houver corretor disponivel, lead fica em "Qualificado" sem designacao e notificacao vai para admin/supervisor
 
 ## Detalhes Tecnicos

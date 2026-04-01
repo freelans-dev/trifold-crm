@@ -209,6 +209,117 @@ export async function processMessageWithMetadata(
     handoffSummary = generateHandoffSummary(finalData, allMessages)
   }
 
+  // 10.5 Get lead info for sync operations
+  const { data: conversation } = await supabase
+    .from("conversations")
+    .select("lead_id, org_id")
+    .eq("id", conversationId)
+    .single()
+
+  if (conversation?.lead_id) {
+    const leadId = conversation.lead_id
+
+    // [3.3 AC9] Sync property_interest_id to lead
+    if (identifiedPropertyId) {
+      await supabase
+        .from("leads")
+        .update({ property_interest_id: identifiedPropertyId })
+        .eq("id", leadId)
+    }
+
+    // [3.4 AC4] Sync collected_data → lead fields
+    const leadUpdates: Record<string, unknown> = {}
+    if (finalData.name) leadUpdates.name = finalData.name
+    if (finalData.bedrooms) leadUpdates.preferred_bedrooms = finalData.bedrooms
+    if (finalData.preferred_floor) leadUpdates.preferred_floor = finalData.preferred_floor
+    if (finalData.preferred_view) leadUpdates.preferred_view = finalData.preferred_view
+    if (finalData.garage_count) leadUpdates.preferred_garage_count = finalData.garage_count
+    if (finalData.has_down_payment !== undefined) leadUpdates.has_down_payment = finalData.has_down_payment
+    leadUpdates.qualification_score = updatedScore
+    leadUpdates.qualification_status = updatedScore >= 70 ? "qualified" : updatedScore > 0 ? "in_progress" : "not_started"
+
+    if (Object.keys(leadUpdates).length > 0) {
+      await supabase.from("leads").update(leadUpdates).eq("id", leadId)
+    }
+
+    // [3.4 AC11] Kanban auto-update based on qualification
+    const STAGE_IDS = {
+      novo: "00000000-0000-0000-0001-000000000001",
+      em_qualificacao: "00000000-0000-0000-0001-000000000002",
+      qualificado: "00000000-0000-0000-0001-000000000003",
+      visita_agendada: "00000000-0000-0000-0001-000000000004",
+    }
+
+    const { data: currentLead } = await supabase
+      .from("leads")
+      .select("stage_id")
+      .eq("id", leadId)
+      .single()
+
+    if (currentLead?.stage_id === STAGE_IDS.novo && updatedScore > 0) {
+      await supabase
+        .from("leads")
+        .update({ stage_id: STAGE_IDS.em_qualificacao })
+        .eq("id", leadId)
+    } else if (currentLead?.stage_id === STAGE_IDS.em_qualificacao && updatedScore >= 70) {
+      await supabase
+        .from("leads")
+        .update({ stage_id: STAGE_IDS.qualificado })
+        .eq("id", leadId)
+    }
+
+    // [3.10 AC7/AC9/AC10] Handoff automations
+    if (handoffResult.trigger && conversation.org_id) {
+      // AC10: Move to appropriate stage
+      const handoffStageId = finalData.visit_availability
+        ? STAGE_IDS.visita_agendada
+        : STAGE_IDS.qualificado
+      await supabase
+        .from("leads")
+        .update({ stage_id: handoffStageId, ai_summary: handoffSummary })
+        .eq("id", leadId)
+
+      // AC7: Auto-assign broker from property
+      if (identifiedPropertyId) {
+        const { data: assignment } = await supabase
+          .from("broker_assignments")
+          .select("broker_id, brokers(user_id)")
+          .eq("property_id", identifiedPropertyId)
+          .eq("is_primary", true)
+          .single()
+
+        if (assignment?.broker_id) {
+          const brokers = assignment.brokers as unknown as { user_id: string } | { user_id: string }[]
+          const brokerId = Array.isArray(brokers) ? brokers[0]?.user_id : brokers?.user_id
+          if (brokerId) {
+            await supabase
+              .from("leads")
+              .update({ assigned_broker_id: brokerId })
+              .eq("id", leadId)
+          }
+        }
+      }
+
+      // AC9: Register activity log
+      await supabase.from("activities").insert({
+        org_id: conversation.org_id,
+        lead_id: leadId,
+        type: "handoff",
+        description: `Handoff: ${handoffResult.reason}`,
+        metadata: {
+          reason: handoffResult.reason,
+          qualification_score: updatedScore,
+        },
+      })
+
+      // Mark conversation as handed off
+      await supabase
+        .from("conversations")
+        .update({ is_ai_active: false, handoff_at: new Date().toISOString(), handoff_reason: handoffResult.reason })
+        .eq("id", conversationId)
+    }
+  }
+
   // 11. Save the user message and assistant response to the messages table
   await saveMessages(supabase, conversationId, message, assistantMessage)
 

@@ -16,14 +16,14 @@ A qualificacao e o core do valor da Nicole. Ela coleta dados do lead de forma PR
   - Disponibilidade para visita
 - [x] AC2: `conversation_state.collected_data` e atualizado a cada dado coletado (jsonb)
 - [x] AC3: `conversation_state.qualification_step` reflete a etapa atual: `greeting`, `collecting_interest`, `collecting_preferences`, `collecting_payment`, `qualified`, `scheduling_visit`
-- [ ] AC4: Dados coletados sao sincronizados com a tabela `leads` (campos: `preferred_bedrooms`, `preferred_floor`, `preferred_view`, etc.)
+- [x] AC4: Dados coletados sao sincronizados com a tabela `leads` (campos: `preferred_bedrooms`, `preferred_floor`, `preferred_view`, etc.) — integrado no pipeline.ts
 - [x] AC5: Score de qualificacao calculado (0-100) baseado em completude dos dados coletados
 - [x] AC6: Score >= 70 marca lead como `qualified` e dispara criterio de handoff
 - [x] AC7: Nicole NAO faz perguntas em sequencia rapida — intercala com respostas sobre o empreendimento
 - [x] AC8: Se lead ja forneceu dado em mensagem anterior, Nicole nao pergunta novamente
 - [x] AC9: Funcao `extractLeadData(message, currentState)` que extrai dados da mensagem do lead usando Claude (Haiku)
 - [x] AC10: Funcao `calculateQualificationScore(collectedData)` que retorna score 0-100
-- [ ] AC11: Kanban stage do lead atualiza automaticamente: "Novo" -> "Em Qualificacao" quando primeira resposta, "Em Qualificacao" -> "Qualificado" quando score >= 70
+- [x] AC11: Kanban stage do lead atualiza automaticamente: "Novo" -> "Em Qualificacao" quando primeira resposta, "Em Qualificacao" -> "Qualificado" quando score >= 70 — integrado no pipeline.ts
 
 ## Detalhes Tecnicos
 

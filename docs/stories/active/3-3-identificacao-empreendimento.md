@@ -12,7 +12,7 @@ Quando um lead escreve para a Nicole, ela precisa identificar qual empreendiment
 - [x] AC6: Se lead mudar de ideia durante a conversa (ex: "na verdade quero saber do Yarden"), Nicole se adapta
 - [x] AC7: Funcao `identifyProperty(message, conversationState)` que retorna property_id ou null
 - [x] AC8: Dados do empreendimento identificado sao injetados no contexto da IA (RAG filtrado por property)
-- [ ] AC9: Lead model atualiza campo `property_interest_id` quando identificado
+- [x] AC9: Lead model atualiza campo `property_interest_id` quando identificado — integrado no pipeline.ts
 
 ## Detalhes Tecnicos
 

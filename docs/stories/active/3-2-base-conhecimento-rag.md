@@ -8,7 +8,7 @@ A Nicole precisa responder perguntas especificas sobre Vind e Yarden: localizaca
 - [x] AC2: Funcao `generateEmbedding(text)` que gera embedding via API (Anthropic ou OpenAI embeddings)
 - [x] AC3: Funcao `searchKnowledge(query, orgId, propertyId?, limit?)` que busca por similaridade cosine
 - [x] AC4: Tabela `knowledge_base` com campos: `id`, `org_id`, `property_id` (opcional), `category`, `question`, `answer`, `embedding`, `is_active`, `created_at`
-- [ ] AC5: Seed com pelo menos 22 pares pergunta-resposta da base NLU existente (mencionada no PRD), adaptados para Vind e Yarden
+- [x] AC5: Seed com pelo menos 22 pares pergunta-resposta da base NLU existente (mencionada no PRD), adaptados para Vind e Yarden — 25 entries seedadas via scripts/seed-knowledge-base.ts
 - [x] AC6: Seed com dados automaticos extraidos dos empreendimentos: localizacao, conceito, diferenciais, metragem, tipologias, lazer, prazo de entrega
 - [x] AC7: Funcao `buildContextFromRAG(query, orgId, propertyId?)` que retorna texto formatado para inserir no prompt
 - [ ] AC8: Re-geracao de embeddings ao salvar/editar knowledge_base entry
