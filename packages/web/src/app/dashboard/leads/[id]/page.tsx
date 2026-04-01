@@ -2,6 +2,7 @@ import { createClient } from "@web/lib/supabase/server"
 import { getServerUser } from "@web/lib/auth"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { GenerateSummaryButton } from "@web/components/leads/generate-summary-button"
 
 const interestLevelLabels: Record<string, string> = {
   cold: "Frio",
@@ -26,12 +27,30 @@ const sourceLabels: Record<string, string> = {
   other: "Outro",
 }
 
+const TABS = [
+  { key: "info", label: "Info" },
+  { key: "conversa", label: "Conversa" },
+  { key: "timeline", label: "Timeline" },
+  { key: "resumo", label: "Resumo IA" },
+] as const
+
+type TabKey = (typeof TABS)[number]["key"]
+
 export default async function LeadDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ tab?: string }>
 }) {
   const { id } = await params
+  const { tab: rawTab } = await searchParams
+  const activeTab: TabKey = (
+    ["info", "conversa", "timeline", "resumo"] as TabKey[]
+  ).includes(rawTab as TabKey)
+    ? (rawTab as TabKey)
+    : "info"
+
   await getServerUser()
   const supabase = await createClient()
 
@@ -104,6 +123,14 @@ export default async function LeadDetailPage({
   const { data: activities } = await supabase
     .from("activities")
     .select("id, type, description, created_at, user:users(name)")
+    .eq("lead_id", id)
+    .order("created_at", { ascending: false })
+    .limit(20)
+
+  // Fetch follow-up logs for timeline tab
+  const { data: followUpLogs } = await supabase
+    .from("follow_up_log")
+    .select("id, type, status, message, created_at, sent_at")
     .eq("lead_id", id)
     .order("created_at", { ascending: false })
     .limit(20)
@@ -184,8 +211,25 @@ export default async function LeadDetailPage({
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Info Section */}
+      {/* Tab Bar */}
+      <div className="flex border-b border-gray-200">
+        {TABS.map((t) => (
+          <Link
+            key={t.key}
+            href={`/dashboard/leads/${id}?tab=${t.key}`}
+            className={`px-5 py-3 text-sm font-medium transition-colors ${
+              activeTab === t.key
+                ? "border-b-2 border-orange-600 text-orange-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            {t.label}
+          </Link>
+        ))}
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === "info" && (
         <div className="rounded-lg bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-gray-900">
             Informacoes
@@ -218,154 +262,257 @@ export default async function LeadDetailPage({
             <InfoRow label="Faixa investimento" value={cd("budget_range")} />
             <InfoRow label="Prazo decisao" value={cd("timeline")} />
           </dl>
-        </div>
 
-        {/* AI Summary */}
-        <div className="rounded-lg bg-white p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            Resumo IA
-          </h2>
-          {lead.ai_summary ? (
-            <p className="whitespace-pre-wrap text-sm text-gray-700">
-              {lead.ai_summary}
-            </p>
-          ) : (
-            <p className="text-sm text-gray-400">
-              Nenhum resumo gerado pela IA.
-            </p>
+          {broker && (
+            <div className="mt-6 border-t border-gray-100 pt-4">
+              <h3 className="mb-2 text-sm font-semibold text-gray-900">Corretor</h3>
+              <div className="flex items-center gap-3 text-sm text-gray-700">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 text-xs font-bold text-orange-600">
+                  {broker.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <div className="font-medium">{broker.name}</div>
+                  <div className="text-gray-400">{broker.email}</div>
+                </div>
+              </div>
+            </div>
           )}
         </div>
-      </div>
+      )}
 
-      {/* Conversations */}
-      <div className="rounded-lg bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">
-          Conversas
-        </h2>
-        {conversations && conversations.length > 0 ? (
-          <div className="space-y-6">
-            {conversations.map((conv) => {
-              const messages = (conv.messages ?? []) as Array<{
-                id: string
-                role: string
-                content: string
-                created_at: string
-              }>
-              const sortedMessages = [...messages].sort(
-                (a, b) =>
-                  new Date(a.created_at).getTime() -
-                  new Date(b.created_at).getTime()
-              )
+      {activeTab === "conversa" && (
+        <div className="rounded-lg bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            Conversas
+          </h2>
+          {conversations && conversations.length > 0 ? (
+            <div className="space-y-6">
+              {conversations.map((conv) => {
+                const messages = (conv.messages ?? []) as Array<{
+                  id: string
+                  role: string
+                  content: string
+                  created_at: string
+                }>
+                const sortedMessages = [...messages].sort(
+                  (a, b) =>
+                    new Date(a.created_at).getTime() -
+                    new Date(b.created_at).getTime()
+                )
 
-              return (
-                <div key={conv.id} className="space-y-2">
-                  <div className="text-xs font-medium uppercase text-gray-400">
-                    {conv.channel} — {conv.status}
-                  </div>
-                  <div className="space-y-2">
-                    {sortedMessages.map((msg) => {
-                      const isUser = msg.role === "user"
-                      return (
-                        <div
-                          key={msg.id}
-                          className={`flex ${isUser ? "justify-start" : "justify-end"}`}
-                        >
+                const channelBadge =
+                  conv.channel === "whatsapp"
+                    ? "bg-green-100 text-green-700"
+                    : conv.channel === "telegram"
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-gray-100 text-gray-700"
+
+                return (
+                  <div key={conv.id} className="space-y-2">
+                    <div className="flex items-center gap-2 text-xs font-medium uppercase text-gray-400">
+                      <span
+                        className={`rounded-full px-2 py-0.5 ${channelBadge}`}
+                      >
+                        {conv.channel}
+                      </span>
+                      <span>— {conv.status}</span>
+                    </div>
+                    <div className="max-h-[500px] space-y-2 overflow-y-auto">
+                      {sortedMessages.map((msg) => {
+                        const isUser = msg.role === "user"
+                        return (
                           <div
-                            className={`max-w-[75%] rounded-lg px-3 py-2 text-sm ${
-                              isUser
-                                ? "bg-gray-100 text-gray-800"
-                                : msg.role === "broker"
-                                  ? "bg-orange-100 text-orange-900"
-                                  : "bg-blue-100 text-blue-900"
-                            }`}
+                            key={msg.id}
+                            className={`flex ${isUser ? "justify-start" : "justify-end"}`}
                           >
-                            <div className="mb-1 text-[10px] font-medium uppercase opacity-60">
-                              {msg.role === "user"
-                                ? "Lead"
-                                : msg.role === "assistant"
-                                  ? "IA"
+                            <div
+                              className={`max-w-[75%] rounded-lg px-3 py-2 text-sm ${
+                                isUser
+                                  ? "bg-gray-100 text-gray-800"
                                   : msg.role === "broker"
-                                    ? "Corretor"
-                                    : msg.role}
-                            </div>
-                            <p className="whitespace-pre-wrap">{msg.content}</p>
-                            <div className="mt-1 text-[10px] opacity-50">
-                              {new Date(msg.created_at).toLocaleString(
-                                "pt-BR",
-                                {
-                                  day: "2-digit",
-                                  month: "short",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }
-                              )}
+                                    ? "bg-blue-100 text-blue-900"
+                                    : "bg-orange-100 text-orange-900"
+                              }`}
+                            >
+                              <div className="mb-1 text-[10px] font-medium uppercase opacity-60">
+                                {msg.role === "user"
+                                  ? "Lead"
+                                  : msg.role === "assistant"
+                                    ? "IA"
+                                    : msg.role === "broker"
+                                      ? "Corretor"
+                                      : msg.role}
+                              </div>
+                              <p className="whitespace-pre-wrap">{msg.content}</p>
+                              <div className="mt-1 text-[10px] opacity-50">
+                                {new Date(msg.created_at).toLocaleString(
+                                  "pt-BR",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        ) : (
-          <p className="text-sm text-gray-400">Nenhuma conversa registrada.</p>
-        )}
-      </div>
-
-      {/* Activities Timeline */}
-      <div className="rounded-lg bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">
-          Atividades
-        </h2>
-        {activities && activities.length > 0 ? (
-          <div className="space-y-4">
-            {activities.map((activity) => {
-              const activityUserArr = activity.user as unknown as Array<{
-                name: string
-              }> | null
-              const activityUser = activityUserArr?.[0] ?? null
-
-              return (
-                <div
-                  key={activity.id}
-                  className="flex items-start gap-3 border-l-2 border-gray-200 pl-4"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium uppercase text-gray-400">
-                        {activity.type}
-                      </span>
-                      {activityUser && (
-                        <span className="text-xs text-gray-400">
-                          por {activityUser.name}
-                        </span>
-                      )}
-                    </div>
-                    {activity.description && (
-                      <p className="mt-1 text-sm text-gray-700">
-                        {activity.description}
-                      </p>
-                    )}
-                    <div className="mt-1 text-xs text-gray-400">
-                      {new Date(activity.created_at).toLocaleString("pt-BR", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
+                        )
                       })}
                     </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400">Nenhuma conversa registrada.</p>
+          )}
+        </div>
+      )}
+
+      {activeTab === "timeline" && (
+        <div className="space-y-4">
+          {/* Link to full timeline page */}
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">Atividades</h2>
+            <Link
+              href={`/dashboard/leads/${id}/timeline`}
+              className="rounded-md bg-orange-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-orange-700"
+            >
+              Ver timeline completa
+            </Link>
           </div>
-        ) : (
-          <p className="text-sm text-gray-400">Nenhuma atividade registrada.</p>
-        )}
-      </div>
+
+          {/* Activities list */}
+          <div className="rounded-lg bg-white p-6 shadow-sm">
+            {activities && activities.length > 0 ? (
+              <div className="space-y-4">
+                {activities.map((activity) => {
+                  const activityUserArr = activity.user as unknown as Array<{
+                    name: string
+                  }> | null
+                  const activityUser = activityUserArr?.[0] ?? null
+
+                  return (
+                    <div
+                      key={activity.id}
+                      className="flex items-start gap-3 border-l-2 border-gray-200 pl-4"
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium uppercase text-gray-500">
+                            {activity.type}
+                          </span>
+                          {activityUser && (
+                            <span className="text-xs text-gray-400">
+                              por {activityUser.name}
+                            </span>
+                          )}
+                        </div>
+                        {activity.description && (
+                          <p className="mt-1 text-sm text-gray-700">
+                            {activity.description}
+                          </p>
+                        )}
+                        <div className="mt-1 text-xs text-gray-400">
+                          {new Date(activity.created_at).toLocaleString("pt-BR", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400">Nenhuma atividade registrada.</p>
+            )}
+          </div>
+
+          {/* Follow-up logs */}
+          {followUpLogs && followUpLogs.length > 0 && (
+            <div className="rounded-lg bg-white p-6 shadow-sm">
+              <h3 className="mb-4 text-sm font-semibold text-gray-900">
+                Follow-up logs
+              </h3>
+              <div className="space-y-3">
+                {followUpLogs.map((log) => (
+                  <div
+                    key={log.id}
+                    className="flex items-start gap-3 border-l-2 border-orange-200 pl-4"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-700">
+                          {log.type}
+                        </span>
+                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
+                          {log.status}
+                        </span>
+                      </div>
+                      {log.message && (
+                        <p className="mt-1 text-sm text-gray-700">{log.message}</p>
+                      )}
+                      <div className="mt-1 text-xs text-gray-400">
+                        {new Date(log.sent_at || log.created_at).toLocaleString(
+                          "pt-BR",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === "resumo" && (
+        <div className="rounded-lg bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Resumo IA
+            </h2>
+            <GenerateSummaryButton leadId={id} />
+          </div>
+          <div className="mt-4">
+            {lead.ai_summary ? (
+              <>
+                <p className="whitespace-pre-wrap text-sm text-gray-700">
+                  {lead.ai_summary}
+                </p>
+                {lead.updated_at && (
+                  <p className="mt-3 text-xs text-gray-400">
+                    Ultima atualizacao:{" "}
+                    {new Date(lead.updated_at).toLocaleString("pt-BR", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className="text-sm text-gray-400">
+                Nenhum resumo gerado pela IA. Clique em &quot;Gerar resumo&quot; para criar.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

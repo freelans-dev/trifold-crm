@@ -153,6 +153,13 @@ export default async function PipelinePage({
               Limpar
             </Link>
           )}
+
+          <Link
+            href="/dashboard/pipeline/config"
+            className="rounded-md border border-gray-300 px-4 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-50"
+          >
+            Config follow-up
+          </Link>
         </form>
       </div>
 
