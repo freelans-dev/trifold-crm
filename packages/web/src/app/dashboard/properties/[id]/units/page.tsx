@@ -215,6 +215,7 @@ export default async function PropertyUnitsPage({
                 <th className="px-4 py-2">Vagas</th>
                 <th className="px-4 py-2">Status</th>
                 <th className="px-4 py-2">Tipologia</th>
+                <th className="px-4 py-2"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -222,7 +223,14 @@ export default async function PropertyUnitsPage({
                 const typology = u.typology as unknown as { name: string } | null
                 return (
                   <tr key={u.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 font-medium">{u.identifier}</td>
+                    <td className="px-4 py-2 font-medium">
+                      <Link
+                        href={`/dashboard/properties/${id}/units/${u.id}`}
+                        className="text-orange-600 hover:text-orange-700 hover:underline"
+                      >
+                        {u.identifier}
+                      </Link>
+                    </td>
                     <td className="px-4 py-2">{u.floor}</td>
                     <td className="px-4 py-2">{u.position ?? "-"}</td>
                     <td className="px-4 py-2">{u.view_direction ?? "-"}</td>
@@ -231,28 +239,41 @@ export default async function PropertyUnitsPage({
                     </td>
                     <td className="px-4 py-2">{u.garage_count}</td>
                     <td className="px-4 py-2">
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                          u.status === "available"
-                            ? "bg-green-100 text-green-700"
-                            : u.status === "reserved"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : u.status === "sold"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-gray-100 text-gray-700"
-                        }`}
+                      <Link
+                        href={`/dashboard/properties/${id}/units/${u.id}`}
+                        className="inline-block"
                       >
-                        {u.status === "available"
-                          ? "Disponivel"
-                          : u.status === "reserved"
-                          ? "Reservada"
-                          : u.status === "sold"
-                          ? "Vendida"
-                          : u.status}
-                      </span>
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                            u.status === "available"
+                              ? "bg-green-100 text-green-700"
+                              : u.status === "reserved"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : u.status === "sold"
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {u.status === "available"
+                            ? "Disponivel"
+                            : u.status === "reserved"
+                            ? "Reservada"
+                            : u.status === "sold"
+                            ? "Vendida"
+                            : u.status}
+                        </span>
+                      </Link>
                     </td>
                     <td className="px-4 py-2 text-sm text-gray-500">
                       {typology?.name ?? "-"}
+                    </td>
+                    <td className="px-4 py-2 text-right">
+                      <Link
+                        href={`/dashboard/properties/${id}/units/${u.id}`}
+                        className="rounded-md bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 hover:bg-gray-200"
+                      >
+                        Editar
+                      </Link>
                     </td>
                   </tr>
                 )
@@ -260,7 +281,7 @@ export default async function PropertyUnitsPage({
               {(!units || units.length === 0) && (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={9}
                     className="px-4 py-8 text-center text-sm text-gray-500"
                   >
                     Nenhuma unidade encontrada com os filtros selecionados.

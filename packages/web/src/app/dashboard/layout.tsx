@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/analytics", label: "Analytics", icon: "◩" },
   { href: "/dashboard/treinamento", label: "Treinamento", icon: "◧" },
   { href: "/dashboard/configuracoes/pipeline", label: "Config", icon: "⚙" },
+  { href: "/dashboard/configuracoes/integracoes", label: "Integracoes", icon: "⟁" },
 ]
 
 export default async function DashboardLayout({

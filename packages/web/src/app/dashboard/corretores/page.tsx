@@ -1,5 +1,6 @@
 import { createClient } from "@web/lib/supabase/server"
 import { getServerUser } from "@web/lib/auth"
+import Link from "next/link"
 
 export default async function CorretoresPage() {
   const user = await getServerUser()
@@ -52,9 +53,19 @@ export default async function CorretoresPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Corretores</h1>
-        <p className="text-sm text-gray-500">
-          {brokers?.length ?? 0} corretores cadastrados
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="text-sm text-gray-500">
+            {brokers?.length ?? 0} corretores cadastrados
+          </p>
+          {isAdmin && (
+            <Link
+              href="/dashboard/corretores/novo"
+              className="rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
+            >
+              Novo Corretor
+            </Link>
+          )}
+        </div>
       </div>
 
       <div className="rounded-lg bg-white shadow-sm">

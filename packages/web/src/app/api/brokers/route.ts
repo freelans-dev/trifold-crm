@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@web/lib/supabase/server"
+import { createAdminClient } from "@web/lib/supabase/admin"
 
 export async function GET() {
   const supabase = await createClient()
@@ -103,9 +104,78 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json()
 
+  // If creating a new broker with email/password (full creation flow)
+  if (body.email && body.password && body.name) {
+    const adminSupabase = createAdminClient()
+
+    // Step 1: Create auth user
+    const { data: authData, error: authError } =
+      await adminSupabase.auth.admin.createUser({
+        email: body.email.trim(),
+        password: body.password,
+        email_confirm: true,
+      })
+
+    if (authError) {
+      return NextResponse.json(
+        { error: `Erro ao criar usuario: ${authError.message}` },
+        { status: 400 }
+      )
+    }
+
+    const authUser = authData.user
+
+    // Step 2: Create users table row
+    const { data: newUser, error: userError } = await adminSupabase
+      .from("users")
+      .insert({
+        auth_id: authUser.id,
+        org_id: appUser.org_id,
+        name: body.name.trim(),
+        email: body.email.trim(),
+        role: "broker",
+        is_active: true,
+      })
+      .select("id")
+      .single()
+
+    if (userError) {
+      // Rollback: delete auth user if users insert fails
+      await adminSupabase.auth.admin.deleteUser(authUser.id)
+      return NextResponse.json(
+        { error: `Erro ao criar usuario: ${userError.message}` },
+        { status: 500 }
+      )
+    }
+
+    // Step 3: Create broker record
+    const { data: broker, error: brokerError } = await adminSupabase
+      .from("brokers")
+      .insert({
+        org_id: appUser.org_id,
+        user_id: newUser.id,
+        creci: body.creci?.trim() || null,
+        type: body.type || "internal",
+        max_leads: body.max_leads ?? 50,
+        is_available: true,
+      })
+      .select()
+      .single()
+
+    if (brokerError) {
+      return NextResponse.json(
+        { error: `Erro ao criar corretor: ${brokerError.message}` },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ data: broker }, { status: 201 })
+  }
+
+  // Legacy flow: link existing user as broker via user_id
   if (!body.user_id) {
     return NextResponse.json(
-      { error: "user_id is required" },
+      { error: "user_id or (email, password, name) is required" },
       { status: 400 }
     )
   }
