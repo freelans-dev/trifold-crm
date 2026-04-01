@@ -169,9 +169,17 @@ export default async function PropertyDetailPage({
 
       {/* Units Table */}
       <div className="rounded-lg bg-white p-5 shadow-sm">
-        <h2 className="mb-3 text-lg font-semibold">
-          Unidades ({units?.length ?? 0})
-        </h2>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">
+            Unidades ({units?.length ?? 0})
+          </h2>
+          <Link
+            href={`/dashboard/properties/${id}/units`}
+            className="rounded-md bg-orange-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-orange-700"
+          >
+            Gerenciar unidades
+          </Link>
+        </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead>
@@ -183,6 +191,7 @@ export default async function PropertyDetailPage({
                 <th className="px-4 py-2">Area</th>
                 <th className="px-4 py-2">Vagas</th>
                 <th className="px-4 py-2">Status</th>
+                <th className="px-4 py-2"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -223,6 +232,14 @@ export default async function PropertyDetailPage({
                         ? "Vendida"
                         : u.status}
                     </span>
+                  </td>
+                  <td className="px-4 py-2 text-right">
+                    <Link
+                      href={`/dashboard/properties/${id}/units/${u.id}`}
+                      className="rounded-md bg-stone-100 px-2.5 py-1 text-xs font-medium text-stone-700 hover:bg-stone-200"
+                    >
+                      Editar
+                    </Link>
                   </td>
                 </tr>
               ))}

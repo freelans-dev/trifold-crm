@@ -35,8 +35,14 @@ const CONFIG_CARDS = [
   {
     href: "/dashboard/configuracoes/pipeline",
     icon: "▦",
-    title: "Pipeline",
-    description: "Etapas do funil de vendas",
+    title: "Etapas do Pipeline",
+    description: "Configurar etapas do funil de vendas",
+  },
+  {
+    href: "/dashboard/pipeline/config",
+    icon: "△",
+    title: "Follow-up",
+    description: "Regras de follow-up por etapa",
   },
 ]
 
