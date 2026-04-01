@@ -39,7 +39,7 @@ export function SidebarNav({ items, userName, userRole, basePath }: SidebarNavPr
         <div className="flex grow flex-col border-r border-stone-200 bg-white">
           {/* Logo */}
           <div className="flex h-16 items-center border-b border-stone-100 px-5">
-            <Image src="/logo-trifold.webp" alt="Trifold" width={36} height={36} />
+            <Image src="/logo-trifold.webp" alt="Trifold" width={72} height={72} />
           </div>
 
           {/* Nav Items */}
