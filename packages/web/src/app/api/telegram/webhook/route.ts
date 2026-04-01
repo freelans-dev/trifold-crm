@@ -287,16 +287,6 @@ export async function POST(request: NextRequest) {
       .update({ last_message_at: new Date().toISOString() })
       .eq("id", conversation.id)
 
-    // Handle voice messages — reply asking lead to type
-    if (message.voice) {
-      await sendTelegramMessage(
-        chatId,
-        "Oi! Recebi sua mensagem de voz, mas no momento nao consigo ouvir audios. " +
-          "Pode digitar sua mensagem, por favor? Assim consigo te ajudar melhor! 😊"
-      )
-      return NextResponse.json({ status: "ok" })
-    }
-
     // Process with Nicole AI
     if (conversation.is_ai_active) {
       // Show typing while Nicole thinks
