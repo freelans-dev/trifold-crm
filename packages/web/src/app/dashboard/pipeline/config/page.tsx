@@ -33,9 +33,9 @@ export default async function FollowUpConfigPage() {
         <h1 className="text-2xl font-bold text-gray-900">
           Configuracao de Follow-up
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Configure alertas e mensagens automaticas da Nicole por etapa do
-          pipeline
+        <p className="mt-1 text-sm text-stone-500">
+          Follow-up e ativo apenas apos agendamento. Antes disso, a Nicole atende 100%.
+          Se o corretor enviar mensagem, ele assume por 24h — depois a Nicole retoma.
         </p>
       </div>
 

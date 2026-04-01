@@ -119,15 +119,13 @@ export async function POST(request: NextRequest) {
       const daysSinceLastMessage =
         (now.getTime() - lastMessageDate.getTime()) / (1000 * 60 * 60 * 24)
 
-      // Check if broker has sent a message since the last lead/nicole message
-      const lastNonBrokerIdx = lastMessages.findIndex(
-        (m) => m.role === "user" || m.role === "assistant"
+      // Check if broker sent a message in the last 24h — if yes, broker owns the conversation until tomorrow
+      const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      const brokerSentRecently = lastMessages.some(
+        (m) => m.role === "broker" && new Date(m.created_at) > oneDayAgo
       )
-      const brokerSentSince = lastMessages
-        .slice(0, lastNonBrokerIdx >= 0 ? lastNonBrokerIdx : lastMessages.length)
-        .some((m) => m.role === "broker")
 
-      if (brokerSentSince) continue
+      if (brokerSentRecently) continue // Broker is handling, skip follow-up
 
       // Resolve property name for template
       const propertyArr = lead.properties as unknown as Array<{ name: string }> | null
