@@ -14,6 +14,25 @@ const IMAGE_MIME_TYPES = new Set([
   "image/jpg",
 ])
 
+async function sendTypingAction(chatId: string): Promise<void> {
+  await fetch(
+    `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendChatAction`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, action: "typing" }),
+      signal: AbortSignal.timeout(10000),
+    }
+  ).catch(() => {})
+}
+
+function calculateTypingDelay(text: string): number {
+  // Simulate human typing: ~40-60 chars per second + base delay
+  const charDelay = Math.min(text.length * 25, 3000) // max 3s per paragraph
+  const baseDelay = 800 + Math.random() * 400 // 800-1200ms base
+  return Math.round(baseDelay + charDelay)
+}
+
 async function sendTelegramMessage(chatId: string, text: string): Promise<void> {
   await fetch(
     `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
@@ -235,6 +254,9 @@ export async function POST(request: NextRequest) {
 
     // Process with Nicole AI
     if (conversation.is_ai_active) {
+      // Show typing while Nicole thinks
+      await sendTypingAction(chatId)
+
       try {
         const { processMessage, createAnthropicClient } = await import("@trifold/ai")
 
@@ -249,32 +271,30 @@ export async function POST(request: NextRequest) {
           mediaBlock,
         })
 
+        // Strip any remaining markdown from response
+        const cleanResponse = response
+          .replace(/\*\*/g, "")
+          .replace(/\*/g, "")
+          .replace(/^#{1,6}\s+/gm, "")
+          .replace(/^[-*]\s+/gm, "")
+          .replace(/`/g, "")
+
         // Split response into paragraphs and send each as separate message
-        const paragraphs = response
+        const paragraphs = cleanResponse
           .split(/\n\n+/)
           .map((p: string) => p.trim())
           .filter((p: string) => p.length > 0)
 
-        for (const paragraph of paragraphs) {
-          const sendResult = await fetch(
-            `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                chat_id: chatId,
-                text: paragraph,
-              }),
-              signal: AbortSignal.timeout(30000),
-            }
-          )
-          if (!sendResult.ok) {
-            console.error("Telegram send error:", await sendResult.text())
-          }
-          // Small delay between messages for natural feel
-          if (paragraphs.length > 1) {
-            await new Promise((r) => setTimeout(r, 800))
-          }
+        for (let i = 0; i < paragraphs.length; i++) {
+          // Show typing indicator before each message
+          await sendTypingAction(chatId)
+
+          // Human-like delay based on message length
+          const delay = calculateTypingDelay(paragraphs[i])
+          await new Promise((r) => setTimeout(r, delay))
+
+          // Send the message
+          await sendTelegramMessage(chatId, paragraphs[i])
         }
       } catch (aiError) {
         console.error("AI processing error:", aiError)

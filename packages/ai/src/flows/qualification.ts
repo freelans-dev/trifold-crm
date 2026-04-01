@@ -85,8 +85,12 @@ export function extractCollectedData(
     for (const pattern of namePatterns) {
       const match = aiResponse.match(pattern)
       if (match?.[1]) {
-        updated.name = match[1].trim()
-        break
+        const extractedName = match[1].trim()
+        // Never save the bot's own name as lead name
+        if (extractedName.toLowerCase() !== "nicole") {
+          updated.name = extractedName
+          break
+        }
       }
     }
   }
