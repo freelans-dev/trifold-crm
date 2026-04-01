@@ -14,6 +14,62 @@ const IMAGE_MIME_TYPES = new Set([
   "image/jpg",
 ])
 
+function prepareTextForTTS(text: string): string {
+  let result = text
+
+  // Tornar mais coloquial para soar natural no áudio
+  const coloquial: [RegExp, string][] = [
+    [/\bpara o\b/gi, "pro"],
+    [/\bpara a\b/gi, "pra"],
+    [/\bpara\b/gi, "pra"],
+    [/\bestá\b/gi, "tá"],
+    [/\bnão é\b/gi, "né"],
+    [/\bvocê está\b/gi, "você tá"],
+    [/\bestamos\b/gi, "a gente tá"],
+    [/\bnós temos\b/gi, "a gente tem"],
+    [/\bm²\b/gi, "metros quadrados"],
+    [/\bm2\b/gi, "metros quadrados"],
+    [/(\d+)m²/gi, "$1 metros quadrados"],
+    [/(\d+)m2/gi, "$1 metros quadrados"],
+    [/R\$\s?/gi, ""],
+    [/\b(\d{2})\/(\d{2})\/(\d{4})\b/g, "$1 de $2 de $3"],
+  ]
+
+  for (const [pattern, replacement] of coloquial) {
+    result = result.replace(pattern, replacement)
+  }
+
+  // Converter números por extenso (mais natural no áudio)
+  result = result
+    .replace(/\b2029\b/g, "dois mil e vinte e nove")
+    .replace(/\b2027\b/g, "dois mil e vinte e sete")
+    .replace(/\b2028\b/g, "dois mil e vinte e oito")
+    .replace(/\b1337\b/g, "mil trezentos e trinta e sete")
+    .replace(/\b547\b/g, "quinhentos e quarenta e sete")
+    .replace(/\b168\b/g, "cento e sessenta e oito")
+    .replace(/\b60\b/g, "sessenta")
+    .replace(/\b48\b/g, "quarenta e oito")
+    .replace(/\b83,66\b/g, "oitenta e três vírgula sessenta e seis")
+    .replace(/\b79,81\b/g, "setenta e nove vírgula oitenta e um")
+    .replace(/\b66,91\b/g, "sessenta e seis vírgula noventa e um")
+    .replace(/\b67\b/g, "sessenta e sete")
+    .replace(/\b20%\b/g, "vinte por cento")
+    .replace(/\b80 mil\b/gi, "oitenta mil")
+    .replace(/\b68 mil\b/gi, "sessenta e oito mil")
+    .replace(/\b68\.000\b/g, "sessenta e oito mil")
+
+  // Adicionar pausas naturais com reticências
+  result = result.replace(/\.\s/g, "... ")
+
+  // Limitar tamanho para TTS (muito longo fica monótono)
+  if (result.length > 300) {
+    const sentences = result.split(/\.\.\./)
+    result = sentences.slice(0, 3).join("... ") + "..."
+  }
+
+  return result.trim()
+}
+
 function fixAccents(text: string): string {
   const replacements: [RegExp, string][] = [
     [/\bvoce\b/gi, "você"],
@@ -403,9 +459,10 @@ export async function POST(request: NextRequest) {
             let audioBuffer: ArrayBuffer | null = null
 
             if (elevenLabsKey) {
-              // ElevenLabs TTS (much more natural)
+              // ElevenLabs TTS — Rachel voice with natural settings
+              const ttsText = prepareTextForTTS(cleanResponse)
               const ttsRes = await fetch(
-                "https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL",
+                "https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM?output_format=mp3_44100_128",
                 {
                   method: "POST",
                   headers: {
@@ -413,9 +470,14 @@ export async function POST(request: NextRequest) {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    text: cleanResponse,
+                    text: ttsText,
                     model_id: "eleven_multilingual_v2",
-                    voice_settings: { stability: 0.4, similarity_boost: 0.8 },
+                    voice_settings: {
+                      stability: 0.20,
+                      similarity_boost: 0.90,
+                      style: 0.45,
+                      use_speaker_boost: true,
+                    },
                   }),
                   signal: AbortSignal.timeout(30000),
                 }
