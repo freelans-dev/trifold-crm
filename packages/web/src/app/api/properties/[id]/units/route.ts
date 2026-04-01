@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@web/lib/supabase/server"
 
 export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ propertyId: string }> }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { propertyId } = await params
+  const { id } = await params
 
   const supabase = await createClient()
   const {
@@ -30,7 +30,7 @@ export async function GET(
   const { data: property } = await supabase
     .from("properties")
     .select("id")
-    .eq("id", propertyId)
+    .eq("id", id)
     .eq("org_id", appUser.org_id)
     .eq("is_active", true)
     .single()
@@ -39,25 +39,55 @@ export async function GET(
     return NextResponse.json({ error: "Property not found" }, { status: 404 })
   }
 
-  const { data: typologies, error } = await supabase
-    .from("typologies")
-    .select("*")
-    .eq("property_id", propertyId)
+  // Build query with optional filters
+  const searchParams = req.nextUrl.searchParams
+  const status = searchParams.get("status")
+  const floor = searchParams.get("floor")
+  const typologyId = searchParams.get("typology_id")
+
+  let query = supabase
+    .from("units")
+    .select("*, typologies(name)")
+    .eq("property_id", id)
     .eq("is_active", true)
-    .order("created_at", { ascending: false })
+    .order("floor", { ascending: true })
+    .order("identifier", { ascending: true })
+
+  if (status) {
+    query = query.eq("status", status)
+  }
+
+  if (floor) {
+    query = query.eq("floor", parseInt(floor, 10))
+  }
+
+  if (typologyId) {
+    query = query.eq("typology_id", typologyId)
+  }
+
+  const { data: units, error } = await query
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ data: typologies })
+  // Flatten typology name into each unit
+  const unitsWithTypology = units?.map((unit) => {
+    const { typologies, ...unitData } = unit
+    return {
+      ...unitData,
+      typology_name: typologies?.name ?? null,
+    }
+  })
+
+  return NextResponse.json({ data: unitsWithTypology })
 }
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ propertyId: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { propertyId } = await params
+  const { id } = await params
 
   const supabase = await createClient()
   const {
@@ -86,7 +116,7 @@ export async function POST(
   const { data: property } = await supabase
     .from("properties")
     .select("id")
-    .eq("id", propertyId)
+    .eq("id", id)
     .eq("org_id", appUser.org_id)
     .eq("is_active", true)
     .single()
@@ -99,22 +129,27 @@ export async function POST(
 
   // Validation
   const errors: string[] = []
-  if (!body.name?.trim()) errors.push("name is required")
+  if (!body.identifier?.trim()) errors.push("identifier is required")
+  if (body.floor === undefined || body.floor === null)
+    errors.push("floor is required")
+  if (!body.status?.trim()) errors.push("status is required")
+  else if (!["available", "reserved", "sold"].includes(body.status))
+    errors.push("status must be one of: available, reserved, sold")
 
   if (errors.length > 0) {
     return NextResponse.json({ error: errors.join(", ") }, { status: 400 })
   }
 
-  const { data: typology, error } = await supabase
-    .from("typologies")
+  const { data: unit, error } = await supabase
+    .from("units")
     .insert({
-      name: body.name.trim(),
-      description: body.description?.trim() || null,
-      bedrooms: body.bedrooms ?? null,
-      bathrooms: body.bathrooms ?? null,
+      identifier: body.identifier.trim(),
+      floor: body.floor,
+      status: body.status.trim(),
       area: body.area ?? null,
-      base_price: body.base_price ?? null,
-      property_id: propertyId,
+      price: body.price ?? null,
+      typology_id: body.typology_id ?? null,
+      property_id: id,
       is_active: true,
     })
     .select()
@@ -124,5 +159,5 @@ export async function POST(
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ data: typology }, { status: 201 })
+  return NextResponse.json({ data: unit }, { status: 201 })
 }
