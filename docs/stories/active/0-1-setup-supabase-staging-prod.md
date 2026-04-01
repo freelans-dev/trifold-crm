@@ -14,7 +14,7 @@ O sistema precisa de 2 ambientes completamente isolados para evitar que dados de
   - `NEXT_PUBLIC_SUPABASE_URL` (muda por ambiente)
   - `SUPABASE_SERVICE_ROLE_KEY` (muda por ambiente)
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (muda por ambiente)
-- [ ] AC8: RLS (Row Level Security) habilitado em ambos os projetos com as mesmas policies
+- [ ] AC8: RLS (Row Level Security) habilitado em ambos os projetos com as mesmas policies (staging: OK, prod: pendente)
 - [ ] AC9: Supabase Realtime habilitado em ambos (para monitoramento de conversas)
 - [ ] AC10: README do repo documenta que existem 2 projetos e como acessar cada um
 

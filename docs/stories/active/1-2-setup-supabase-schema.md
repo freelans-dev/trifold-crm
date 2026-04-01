@@ -4,17 +4,17 @@
 O Supabase e a fundacao de dados de todo o sistema. O schema precisa contemplar todas as entidades imobiliarias (empreendimentos, tipologias, unidades) alem das tabelas ja existentes no agente-linda (organizations, users, leads, conversations, messages, etc.). A extensao pgvector tambem precisa ser habilitada para RAG.
 
 ## Acceptance Criteria
-- [ ] AC1: Projeto Supabase criado (pode ser o mesmo da conta freelans-dev ou conta nova do cliente — a decidir)
-- [ ] AC2: Extensoes habilitadas: `pgvector`, `uuid-ossp`
-- [ ] AC3: Migration `001_base_schema.sql` criada com TODAS as tabelas base adaptadas do agente-linda: `organizations`, `users`, `leads`, `conversations`, `messages`, `kanban_stages`, `agent_prompts`, `agent_config`, `knowledge_base`, `conversation_state`, `activities`
-- [ ] AC4: Migration `002_property_schema.sql` criada com tabelas novas: `properties`, `typologies`, `units`, `property_media`, `brokers`, `broker_assignments`, `lead_property_interest`, `visit_feedback`
-- [ ] AC5: Migration `003_whatsapp_config.sql` criada com tabela `whatsapp_config` (substituindo `whatsapp_instances` do Z-API) com campos: `id`, `org_id`, `waba_id`, `phone_number_id`, `access_token`, `verify_token`, `webhook_url`, `coexistence_enabled`, `status`, `created_at`, `updated_at`
-- [ ] AC6: Todos os campos de `leads` incluem os campos imobiliarios novos: `property_interest_id`, `has_down_payment`, `preferred_bedrooms`, `preferred_floor`, `preferred_view`, `preferred_garage_count`, `qualification_status`, `qualification_score`, `source`, `utm_*`, `assigned_broker_id`, `ai_summary`, `visit_scheduled_at`
-- [ ] AC7: Todos os campos de `conversation_state` incluem: `current_property_id`, `qualification_step`, `collected_data`, `materials_sent`, `visit_proposed`
-- [ ] AC8: Enums criados: `property_status`, `unit_status`, `qualification_status`, `broker_type`, `lead_source`, `media_type`, `stage_type`, `interest_level`
-- [ ] AC9: Foreign keys e constraints definidos conforme diagrama de relacionamentos do PRD (secao 3.3)
-- [ ] AC10: Indexes criados em campos de busca frequente: `leads.phone`, `leads.assigned_broker_id`, `units.property_id`, `units.status`, `messages.conversation_id`
-- [ ] AC11: Supabase URL e keys obtidos e documentados no `.env.example`
+- [x] AC1: Projeto Supabase criado (staging: dsopqkqjkmhytudaaolv)
+- [x] AC2: Extensoes habilitadas: `vector`, `uuid-ossp`
+- [x] AC3: Migration `001_base_schema.sql` criada com TODAS as tabelas base adaptadas do agente-linda: `organizations`, `users`, `leads`, `conversations`, `messages`, `kanban_stages`, `agent_prompts`, `agent_config`, `knowledge_base`, `conversation_state`, `activities`
+- [x] AC4: Migration `002_property_schema.sql` criada com tabelas novas: `properties`, `typologies`, `units`, `property_media`, `brokers`, `broker_assignments`, `lead_property_interest`, `visit_feedback`
+- [x] AC5: Migration `003_whatsapp_config.sql` criada com tabela `whatsapp_config` (substituindo `whatsapp_instances` do Z-API) com campos: `id`, `org_id`, `waba_id`, `phone_number_id`, `access_token`, `verify_token`, `webhook_url`, `coexistence_enabled`, `status`, `created_at`, `updated_at`
+- [x] AC6: Todos os campos de `leads` incluem os campos imobiliarios novos: `property_interest_id`, `has_down_payment`, `preferred_bedrooms`, `preferred_floor`, `preferred_view`, `preferred_garage_count`, `qualification_status`, `qualification_score`, `source`, `utm_*`, `assigned_broker_id`, `ai_summary`, `visit_scheduled_at`
+- [x] AC7: Todos os campos de `conversation_state` incluem: `current_property_id`, `qualification_step`, `collected_data`, `materials_sent`, `visit_proposed`
+- [x] AC8: Enums criados: `property_status`, `unit_status`, `qualification_status`, `broker_type`, `lead_source`, `media_type`, `stage_type`, `interest_level`
+- [x] AC9: Foreign keys e constraints definidos conforme diagrama de relacionamentos do PRD (secao 3.3)
+- [x] AC10: Indexes criados em campos de busca frequente: `leads.phone`, `leads.assigned_broker_id`, `units.property_id`, `units.status`, `messages.conversation_id`
+- [x] AC11: Supabase URL e keys obtidos e documentados no `.env.example`
 
 ## Detalhes Tecnicos
 

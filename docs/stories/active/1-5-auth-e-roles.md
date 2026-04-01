@@ -4,18 +4,18 @@
 O sistema tem 3 tipos de usuario: admin (Alexandre — controle total), supervisor (Lucas/Marcao — monitora conversas, treina IA) e broker (corretores — ve apenas seus leads). O Supabase Auth com RLS garante que cada usuario so acessa o que deve. Sem auth, nao ha como proteger dados nem rotear usuarios para seus paineis.
 
 ## Acceptance Criteria
-- [ ] AC1: Supabase Auth habilitado com provider email/senha
-- [ ] AC2: Tabela `users` tem campo `role` com enum: `admin`, `supervisor`, `broker`
-- [ ] AC3: RLS habilitado em TODAS as tabelas
-- [ ] AC4: Policy de `organizations`: usuario so ve dados da sua org
-- [ ] AC5: Policy de `leads`: admin/supervisor veem todos os leads da org; broker ve apenas leads onde `assigned_broker_id` = seu broker_id
-- [ ] AC6: Policy de `properties`: todos da org podem ler; apenas admin/supervisor podem escrever
-- [ ] AC7: Policy de `units`: todos da org podem ler; campo `price` so visivel para admin/supervisor/broker (NAO para funcoes de IA)
-- [ ] AC8: Pagina de login funcional em `/login` com email + senha
-- [ ] AC9: Middleware de auth no Next.js: redireciona para `/login` se nao autenticado
-- [ ] AC10: Middleware de role: admin/supervisor vao para `/dashboard`, broker vai para `/broker`
-- [ ] AC11: Hook `useUser()` retorna usuario logado com role
-- [ ] AC12: Funcao `getServerUser()` para Server Components retorna usuario autenticado
+- [x] AC1: Supabase Auth habilitado com provider email/senha
+- [x] AC2: Tabela `users` tem campo `role` com enum: `admin`, `supervisor`, `broker`
+- [x] AC3: RLS habilitado em TODAS as tabelas (migration 004_rls_policies.sql)
+- [x] AC4: Policy de `organizations`: usuario so ve dados da sua org
+- [x] AC5: Policy de `leads`: admin/supervisor veem todos os leads da org; broker ve apenas leads onde `assigned_broker_id` = seu broker_id
+- [x] AC6: Policy de `properties`: todos da org podem ler; apenas admin/supervisor podem escrever
+- [x] AC7: Policy de `units`: todos da org podem ler; campo `price` so visivel para admin/supervisor/broker (NAO para funcoes de IA)
+- [x] AC8: Pagina de login funcional em `/login` com email + senha
+- [x] AC9: Middleware de auth no Next.js: redireciona para `/login` se nao autenticado
+- [x] AC10: Middleware de role: admin/supervisor vao para `/dashboard`, broker vai para `/broker`
+- [x] AC11: Hook `useUser()` retorna usuario logado com role
+- [x] AC12: Funcao `getServerUser()` para Server Components retorna usuario autenticado
 
 ## Detalhes Tecnicos
 
