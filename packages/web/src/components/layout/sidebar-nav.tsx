@@ -38,11 +38,8 @@ export function SidebarNav({ items, userName, userRole, basePath }: SidebarNavPr
       <aside className="hidden lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-56 lg:flex-col">
         <div className="flex grow flex-col border-r border-stone-200 bg-white">
           {/* Logo */}
-          <div className="flex h-16 items-center gap-2.5 border-b border-stone-100 px-5">
-            <Image src="/logo-trifold.webp" alt="Trifold" width={28} height={28} />
-            <span className="text-base font-semibold tracking-tight text-stone-900">
-              Trifold
-            </span>
+          <div className="flex h-16 items-center border-b border-stone-100 px-5">
+            <Image src="/logo-trifold.webp" alt="Trifold" width={36} height={36} />
           </div>
 
           {/* Nav Items */}
