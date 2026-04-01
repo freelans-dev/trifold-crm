@@ -18,6 +18,7 @@ import { VISIT_SCHEDULING_PROMPT } from "./visit-scheduling"
  */
 export function buildSystemPrompt(propertyContext?: string): string {
   const sections = [
+    `IDIOMA: Responda EXCLUSIVAMENTE em português brasileiro com acentuação correta. Use é, á, ã, õ, ç, ú, í, ê, ô em todas as palavras que exigem. Exemplo: "você", "não", "também", "está", "será", "imóvel", "próximo". NUNCA escreva sem acentos. Isso é obrigatório e inegociável.`,
     PERSONALITY_PROMPT,
     GUARDRAILS_PROMPT,
     QUALIFICATION_PROMPT,

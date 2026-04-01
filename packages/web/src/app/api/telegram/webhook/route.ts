@@ -334,10 +334,11 @@ export async function POST(request: NextRequest) {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                model: "tts-1",
-                voice: "nova", // Female voice
+                model: "tts-1-hd",
+                voice: "shimmer",
                 input: cleanResponse,
                 response_format: "opus",
+                speed: 1.0,
               }),
               signal: AbortSignal.timeout(30000),
             })
