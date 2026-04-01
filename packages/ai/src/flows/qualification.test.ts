@@ -238,7 +238,13 @@ describe("extractCollectedData", () => {
 
   it("extracts visit availability", () => {
     const result = extractCollectedData("Quero visitar o apartamento", {})
-    expect(result.visit_availability).toBe(true)
+    expect(result.visit_availability).toBeTruthy()
+  })
+
+  it("extracts visit with day/time", () => {
+    const result = extractCollectedData("Pode ser esse sábado às 10h", {})
+    expect(result.visit_availability).toBeTruthy()
+    expect(result.visit_availability).toContain("sábado")
   })
 
   it("preserves existing data and merges new extractions", () => {

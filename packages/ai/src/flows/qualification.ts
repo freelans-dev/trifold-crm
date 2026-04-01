@@ -169,15 +169,23 @@ export function extractCollectedData(
     }
   }
 
-  // Extract visit availability
+  // Extract visit availability — detect day/time mentions
   if (!updated.visit_availability) {
-    const visitPatterns = [
-      /(?:visita|conhecer|ver)\s+(?:no|na|neste|nesta)?\s*(?:sábado|sabado|domingo|segunda|terça|terca|quarta|quinta|sexta)/i,
-      /(?:disponível|disponivel|posso|quero)\s+(?:visitar|ir|conhecer)/i,
+    const visitKeywords = [
+      "sábado", "sabado", "domingo", "segunda", "terça", "terca",
+      "quarta", "quinta", "sexta", "amanhã", "amanha",
+      "semana que vem", "próxima semana", "proxima semana",
+      "pode ser", "vou passar", "vou aí", "vou ai",
+      "quero visitar", "quero conhecer", "quero ir",
+      "posso ir", "posso visitar", "posso passar",
+      "10h", "10 horas", "9h", "11h", "14h", "15h", "16h",
+      "de manhã", "de manha", "à tarde", "a tarde",
+      "esse sábado", "esse sabado", "nesse sábado",
     ]
-    for (const pattern of visitPatterns) {
-      if (pattern.test(aiResponse)) {
-        updated.visit_availability = true
+    for (const kw of visitKeywords) {
+      if (lower.includes(kw.toLowerCase())) {
+        // Store the actual message as visit info, not just boolean
+        updated.visit_availability = aiResponse.trim()
         break
       }
     }
