@@ -23,6 +23,7 @@ import {
   checkYardenGate,
   shouldHandoff,
   generateHandoffSummary,
+  updateLeadMemory,
 } from "../flows"
 import { isBusinessHours } from "../utils/business-hours"
 
@@ -170,11 +171,43 @@ export async function processMessageWithMetadata(
     }
   }
 
-  // 7. Build system prompt with flow context
+  // 6.3 Get conversation info (needed for lead memory and sync)
+  const { data: conversation } = await supabase
+    .from("conversations")
+    .select("lead_id, org_id")
+    .eq("id", conversationId)
+    .single()
+
+  // 6.5 Get current lead summary for memory context
+  let currentSummary: string | null = null
+  if (conversation?.lead_id) {
+    const { data: leadData } = await supabase
+      .from("leads")
+      .select("ai_summary")
+      .eq("id", conversation.lead_id)
+      .single()
+    currentSummary = leadData?.ai_summary ?? null
+  }
+
+  // 7. Build system prompt with flow context + datetime + memory
   const qualificationStep = getNextQualificationStep(collectedData)
   const qualificationScore = calculateQualificationScore(collectedData)
+
+  // Current datetime in Maringá timezone
+  const now = new Date()
+  const maringaDate = now.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo", weekday: "long", year: "numeric", month: "long", day: "numeric" })
+  const maringaTime = now.toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit" })
+  const dateTimeContext = `\nDATA E HORA ATUAL: ${maringaDate}, ${maringaTime} (horario de Maringa-PR)\n`
+
+  // Lead memory context
+  const memoryContext = currentSummary
+    ? `\nMEMORIA DO LEAD (informacoes de conversas anteriores):\n${currentSummary}\n\nUse essas informacoes para personalizar o atendimento. Chame pelo nome, referencie o que ja conversaram.\n`
+    : ""
+
   const systemPrompt =
     buildSystemPrompt(agentConfig, ragContext, state) +
+    dateTimeContext +
+    memoryContext +
     buildFlowContext(qualificationStep, qualificationScore, identifiedPropertyId) +
     yardenGateContext
 
@@ -232,7 +265,7 @@ export async function processMessageWithMetadata(
   // Then extract non-name data from AI response (property mentions, etc — but NOT name)
   const aiExtracted = extractCollectedData(assistantMessage, updatedData)
   // Preserve the name from user message only (AI response might say "Nicole" which is the bot name)
-  const finalData = { ...aiExtracted, name: updatedData.name ?? collectedData.name }
+  const finalData: Record<string, unknown> = { ...aiExtracted, name: updatedData.name ?? collectedData.name }
 
   // 10. Calculate updated score and check handoff
   const updatedScore = calculateQualificationScore(finalData)
@@ -256,13 +289,6 @@ export async function processMessageWithMetadata(
     ]
     handoffSummary = generateHandoffSummary(finalData, allMessages)
   }
-
-  // 10.5 Get lead info for sync operations
-  const { data: conversation } = await supabase
-    .from("conversations")
-    .select("lead_id, org_id")
-    .eq("id", conversationId)
-    .single()
 
   if (conversation?.lead_id) {
     const leadId = conversation.lead_id
@@ -379,6 +405,25 @@ export async function processMessageWithMetadata(
     qualification_step: updatedStep,
     current_property_id: identifiedPropertyId ?? state?.current_property_id ?? null,
   })
+
+  // 12.5 Update lead memory asynchronously (don't block response)
+  if (conversation?.lead_id) {
+    updateLeadMemory({
+      anthropic,
+      currentSummary,
+      userMessage: message,
+      assistantMessage,
+      collectedData: finalData,
+    }).then((newSummary) => {
+      if (newSummary && newSummary !== currentSummary) {
+        supabase
+          .from("leads")
+          .update({ ai_summary: newSummary })
+          .eq("id", conversation.lead_id)
+          .then(() => {})
+      }
+    }).catch(() => {})
+  }
 
   // 13. Return response with metadata
   return {
