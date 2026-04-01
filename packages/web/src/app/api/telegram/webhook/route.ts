@@ -459,6 +459,8 @@ export async function POST(request: NextRequest) {
           mediaBlock,
         })
 
+        console.log("Nicole response:", response ? response.slice(0, 80) + "..." : "EMPTY")
+
         // Strip markdown and fix common missing accents
         const cleanResponse = fixAccents(
           response
@@ -548,12 +550,12 @@ export async function POST(request: NextRequest) {
               ).catch(() => {})
               voiceSent = true
             }
-          } catch {
-            // Fallback to text
+          } catch (ttsErr) {
+            console.error("TTS error:", ttsErr)
           }
         }
 
-        // Send text only if voice was NOT sent (avoid duplicate)
+        // Always send text if voice wasn't sent (fallback)
         if (!voiceSent) {
           for (let i = 0; i < paragraphs.length; i++) {
             await sendTypingAction(chatId)
