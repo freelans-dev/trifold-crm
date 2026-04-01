@@ -5,7 +5,7 @@
  */
 
 interface BusinessHoursConfig {
-  business_hours: Record<string, { start: string; end: string }>
+  business_hours: Record<string, unknown>
 }
 
 const DAY_NAMES = [
@@ -36,6 +36,13 @@ const DAY_NAMES = [
  * ```
  */
 export function isBusinessHours(config: BusinessHoursConfig): boolean {
+  // If always_on is true (or config is just { always_on: true }), always return true
+  const bh = config.business_hours as Record<string, unknown>
+  if (bh?.always_on === true) return true
+
+  // Support both { hours: { monday: ... } } and flat { monday: ... } formats
+  const hoursConfig = (bh?.hours ?? bh ?? {}) as Record<string, { start: string; end: string }>
+
   const now = new Date()
 
   // Get current time in Sao Paulo timezone
@@ -62,7 +69,7 @@ export function isBusinessHours(config: BusinessHoursConfig): boolean {
     return false
   }
 
-  const dayConfig = config.business_hours[dayKey]
+  const dayConfig = hoursConfig[dayKey]
   if (!dayConfig) {
     // No config for this day means not a business day
     return false
