@@ -398,7 +398,7 @@ async function loadAgentConfig(
     return {
       personality_prompt: null,
       guardrails: [],
-      model_primary: "claude-sonnet-4-5-20250514",
+      model_primary: "claude-sonnet-4-6",
       temperature: 0.7,
       max_tokens: 1024,
     }
@@ -407,7 +407,7 @@ async function loadAgentConfig(
   return {
     personality_prompt: data.personality_prompt,
     guardrails: Array.isArray(data.guardrails) ? data.guardrails : [],
-    model_primary: data.model_primary ?? "claude-sonnet-4-5-20250514",
+    model_primary: data.model_primary ?? "claude-sonnet-4-6",
     temperature: data.temperature ?? 0.7,
     max_tokens: data.max_tokens ?? 1024,
     business_hours: data.business_hours as
