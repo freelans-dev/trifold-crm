@@ -118,6 +118,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ status: "ok" })
     }
 
+    // Check for Click-to-WhatsApp Ads referral data
+    const referral = value?.messages?.[0]?.referral
+    if (referral) {
+      const referralMetadata: Record<string, unknown> = {
+        source_url: referral.source_url ?? null,
+        headline: referral.headline ?? null,
+        body: referral.body ?? null,
+        ctwa_clid: referral.ctwa_clid ?? null,
+        media_type: referral.media_type ?? null,
+        image_url: referral.image_url ?? null,
+        video_url: referral.video_url ?? null,
+        thumbnail_url: referral.thumbnail_url ?? null,
+      }
+
+      // Update lead with CTWA source and referral data
+      await supabase
+        .from("leads")
+        .update({
+          source: "whatsapp_click_to_ad",
+          utm_source: "meta_ads",
+          utm_medium: "whatsapp_ctwa",
+          utm_campaign: referral.headline ?? null,
+          metadata: referralMetadata,
+        })
+        .eq("id", lead.id)
+    }
+
     // Find or create conversation
     let { data: conversation } = await supabase
       .from("conversations")
