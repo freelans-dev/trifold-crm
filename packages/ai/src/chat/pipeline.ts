@@ -56,6 +56,32 @@ interface Property {
   id: string
   name: string
   slug: string
+  status?: string
+  address?: string
+  neighborhood?: string
+  city?: string
+  state?: string
+  concept?: string
+  description?: string
+  amenities?: string[]
+  differentials?: string[]
+  delivery_date?: string
+  total_units?: number
+  total_floors?: number
+  units_per_floor?: number
+  commercial_rules?: Record<string, unknown>
+  faq?: Array<{ question: string; answer: string }>
+  typologies?: Array<{
+    name: string
+    private_area_m2: number
+    bedrooms: number
+    suites: number
+    has_balcony: boolean
+    balcony_bbq: boolean
+  }>
+  available_units?: number
+  reserved_units?: number
+  sold_units?: number
 }
 
 export interface MediaBlock {
@@ -199,6 +225,9 @@ export async function processMessageWithMetadata(
   const maringaTime = now.toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit" })
   const dateTimeContext = `\nDATA E HORA ATUAL: ${maringaDate}, ${maringaTime} (horario de Maringa-PR)\n`
 
+  // Property live data context
+  const propertyDataContext = buildPropertyDataContext(properties, identifiedPropertyId)
+
   // Lead memory context
   const memoryContext = currentSummary
     ? `\nMEMORIA DO LEAD (informacoes de conversas anteriores):\n${currentSummary}\n\nUse essas informacoes para personalizar o atendimento. Chame pelo nome, referencie o que ja conversaram.\n`
@@ -207,6 +236,7 @@ export async function processMessageWithMetadata(
   const systemPrompt =
     buildSystemPrompt(agentConfig, ragContext, state) +
     dateTimeContext +
+    propertyDataContext +
     memoryContext +
     buildFlowContext(qualificationStep, qualificationScore, identifiedPropertyId) +
     yardenGateContext
@@ -560,14 +590,31 @@ async function loadProperties(
 ): Promise<Property[]> {
   const { data, error } = await supabase
     .from("properties")
-    .select("id, name, slug")
+    .select(`
+      id, name, slug, status, address, neighborhood, city, state,
+      concept, description, amenities, differentials, delivery_date,
+      total_units, total_floors, units_per_floor, commercial_rules, faq,
+      typologies(name, private_area_m2, bedrooms, suites, has_balcony, balcony_bbq),
+      units(status)
+    `)
     .eq("org_id", orgId)
+    .eq("is_active", true)
 
   if (error || !data) {
     return []
   }
 
-  return data as Property[]
+  return data.map((p) => {
+    const units = (p.units ?? []) as Array<{ status: string }>
+    return {
+      ...p,
+      typologies: (p.typologies ?? []) as Property["typologies"],
+      available_units: units.filter((u) => u.status === "available").length,
+      reserved_units: units.filter((u) => u.status === "reserved").length,
+      sold_units: units.filter((u) => u.status === "sold").length,
+      units: undefined,
+    } as Property
+  })
 }
 
 function buildSystemPrompt(
@@ -716,4 +763,72 @@ async function updateConversationState(
   if (error) {
     console.error("Error updating conversation state:", error)
   }
+}
+
+function buildPropertyDataContext(
+  properties: Property[],
+  identifiedPropertyId: string | null
+): string {
+  if (properties.length === 0) return ""
+
+  const parts: string[] = ["\nDADOS ATUALIZADOS DOS EMPREENDIMENTOS (use estas informacoes para responder com precisao):"]
+
+  for (const p of properties) {
+    // If a property is identified, show full details for it; summary for others
+    const isSelected = p.id === identifiedPropertyId
+    const statusMap: Record<string, string> = {
+      planning: "Em planejamento",
+      launching: "Pre-lancamento",
+      selling: "Em comercializacao",
+      delivered: "Entregue",
+      sold_out: "Esgotado",
+    }
+
+    parts.push(`\n${p.name} (${statusMap[p.status ?? ""] ?? p.status})`)
+    parts.push(`Endereco: ${p.address ?? ""}${p.neighborhood ? ", " + p.neighborhood : ""} - ${p.city ?? ""}/${p.state ?? ""}`)
+
+    if (p.concept) parts.push(`Conceito: ${p.concept}`)
+    if (p.delivery_date) parts.push(`Entrega prevista: ${p.delivery_date}`)
+
+    // Unidades disponíveis (SEMPRE mostrar)
+    parts.push(`Unidades: ${p.available_units ?? 0} disponiveis, ${p.reserved_units ?? 0} reservadas, ${p.sold_units ?? 0} vendidas (total: ${p.total_units ?? 0})`)
+
+    if (p.total_floors) parts.push(`Andares: ${p.total_floors} total (${p.units_per_floor ?? 0} por andar)`)
+
+    // Tipologias
+    if (p.typologies && p.typologies.length > 0) {
+      const tipoTexts = p.typologies.map((t) => {
+        let desc = `${t.name}: ${t.private_area_m2}m2, ${t.bedrooms} quartos, ${t.suites} suites`
+        if (t.has_balcony) desc += ", sacada"
+        if (t.balcony_bbq) desc += " com churrasqueira"
+        return desc
+      })
+      parts.push(`Tipologias: ${tipoTexts.join(" | ")}`)
+    }
+
+    // Amenidades
+    if (p.amenities && (p.amenities as string[]).length > 0) {
+      parts.push(`Lazer: ${(p.amenities as string[]).join(", ")}`)
+    }
+
+    // Regras comerciais
+    if (p.commercial_rules) {
+      const rules = p.commercial_rules as Record<string, unknown>
+      if (rules.requires_down_payment) {
+        parts.push("IMPORTANTE: Exige entrada para compra")
+      }
+    }
+
+    // FAQ (se tiver e for o empreendimento selecionado)
+    if (isSelected && p.faq && (p.faq as unknown[]).length > 0) {
+      parts.push("FAQ aprovado:")
+      for (const item of p.faq as Array<{ question: string; answer: string }>) {
+        if (item.question && item.answer) {
+          parts.push(`  P: ${item.question} R: ${item.answer}`)
+        }
+      }
+    }
+  }
+
+  return parts.join("\n")
 }
