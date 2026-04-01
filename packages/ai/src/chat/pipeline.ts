@@ -648,7 +648,10 @@ function buildSystemPrompt(
       )
     }
     if (state.visit_proposed) {
-      parts.push("A visit has already been proposed to this lead.")
+      parts.push("VISITA JA AGENDADA! O lead JA confirmou dia e horario. NAO pergunte novamente quando ele quer ir. NAO pergunte dia, NAO pergunte horario. A visita esta marcada. Se ele perguntar algo, responda normalmente sem mencionar agendamento.")
+      if (state.collected_data && (state.collected_data as Record<string, unknown>).visit_availability) {
+        parts.push(`Visita confirmada: ${(state.collected_data as Record<string, unknown>).visit_availability}`)
+      }
     }
     parts.push("=== END CONVERSATION CONTEXT ===")
   }

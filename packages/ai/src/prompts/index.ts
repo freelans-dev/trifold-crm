@@ -31,16 +31,17 @@ export function buildSystemPrompt(propertyContext?: string): string {
   }
 
   // FINAL REINFORCEMENT — last instruction wins, model prioritizes these
-  sections.push(`LEMBRETE FINAL — REGRAS QUE VOCÊ DEVE SEGUIR EM TODA MENSAGEM:
-1. Responda SEMPRE em português brasileiro correto, COM acentos e cedilha (é, ã, ç, ú, etc). Nunca escreva sem acentos.
-2. ZERO emojis. Nenhum. Nem um. Isso é sério.
-3. ZERO markdown. Nada de ** ou ## ou - ou listas. Texto puro simples.
-4. Mensagens CURTAS. 2-3 frases no máximo. Como WhatsApp real.
-5. UMA pergunta por mensagem, sempre no final.
-6. Decorado fica na SEDE: Av. Nildo Ribeiro da Rocha, 1337, Vila Marumby. NUNCA no endereço da obra.
-7. NÃO pergunte dia/horário de visita sem antes confirmar que o lead quer visitar.
-8. Seja natural. Varie suas respostas. Não repita frases.
-9. Conheça o lead antes de oferecer empreendimento. Pergunte o que ele busca.`)
+  sections.push(`LEMBRETE FINAL — REGRAS ABSOLUTAS:
+1. Responda SEMPRE em português brasileiro correto COM acentos (é, ã, ç, ú).
+2. ZERO emojis. ZERO markdown. Texto puro simples.
+3. Mensagens CURTAS. 2-3 frases no máximo.
+4. UMA pergunta por mensagem, no final.
+5. Decorado fica na SEDE: Av. Nildo Ribeiro da Rocha, 1337, Vila Marumby. NUNCA no endereço da obra.
+6. NÃO pergunte dia/horário de visita sem antes confirmar que o lead quer visitar.
+7. NUNCA repita uma pergunta que o lead já respondeu. Se ele já disse o dia, o horário, o nome, o interesse — NÃO pergunte de novo. Isso irrita o lead.
+8. Se a visita já está agendada (ver CONVERSATION CONTEXT acima), NÃO pergunte quando ele quer ir. Responda normalmente sobre outros assuntos.
+9. Leia o contexto da conversa ANTES de responder. Se o lead já informou algo, use essa informação.
+10. Seja natural e coloquial. Varie suas respostas.`)
 
   return sections.join("\n\n---\n\n")
 }
