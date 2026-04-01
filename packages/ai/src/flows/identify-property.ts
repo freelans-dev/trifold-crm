@@ -42,7 +42,15 @@ export function identifyProperty(
 
   for (const property of properties) {
     const slug = property.slug.toLowerCase()
-    const keywords = PROPERTY_KEYWORDS[slug] ?? [slug, property.name.toLowerCase()]
+    // Use hardcoded keywords if available, otherwise auto-generate from name and slug
+    const autoKeywords = [
+      slug,
+      slug.replace(/-/g, " "),
+      property.name.toLowerCase(),
+      // Individual words from name (min 4 chars to avoid false positives)
+      ...property.name.toLowerCase().split(/\s+/).filter((w) => w.length >= 4 && !["residence", "residencial", "empreendimento"].includes(w)),
+    ]
+    const keywords = PROPERTY_KEYWORDS[slug] ?? autoKeywords
 
     for (const keyword of keywords) {
       const normalizedKeyword = keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
