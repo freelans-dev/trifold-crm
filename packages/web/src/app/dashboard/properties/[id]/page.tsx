@@ -9,7 +9,7 @@ export default async function PropertyDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  await getServerUser()
+  const appUser = await getServerUser()
   const supabase = await createClient()
 
   const { data: property } = await supabase
@@ -21,7 +21,7 @@ export default async function PropertyDetailPage({
 
   if (!property) notFound()
 
-  const [{ data: typologies }, { data: units }] = await Promise.all([
+  const [{ data: typologies }, { data: units }, { data: sales }] = await Promise.all([
     supabase
       .from("typologies")
       .select("*")
@@ -35,11 +35,26 @@ export default async function PropertyDetailPage({
       .eq("is_active", true)
       .order("floor")
       .order("identifier"),
+    supabase
+      .from("unit_sales")
+      .select("id, unit_id, client_name, sale_price, payment_method, sold_at, broker_id, units!inner(identifier, property_id)")
+      .eq("units.property_id", id)
+      .order("sold_at", { ascending: false })
+      .limit(20),
   ])
 
   const availableCount = units?.filter((u) => u.status === "available").length ?? 0
   const reservedCount = units?.filter((u) => u.status === "reserved").length ?? 0
   const soldCount = units?.filter((u) => u.status === "sold").length ?? 0
+
+  const isAdminOrSupervisor = ["admin", "supervisor"].includes(appUser.role)
+
+  const paymentMethodLabels: Record<string, string> = {
+    financiamento_bancario: "Financiamento bancario",
+    direto_construtora: "Direto construtora",
+    a_vista: "A vista",
+    misto: "Misto",
+  }
 
   return (
     <div className="space-y-6">
@@ -58,21 +73,31 @@ export default async function PropertyDetailPage({
             {property.address}, {property.city}/{property.state}
           </p>
         </div>
-        <span
-          className={`rounded-full px-3 py-1 text-sm font-medium ${
-            property.status === "selling"
-              ? "bg-green-100 text-green-700"
+        <div className="flex items-center gap-3">
+          {isAdminOrSupervisor && (
+            <Link
+              href={`/dashboard/properties/${id}/edit`}
+              className="rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
+            >
+              Editar empreendimento
+            </Link>
+          )}
+          <span
+            className={`rounded-full px-3 py-1 text-sm font-medium ${
+              property.status === "selling"
+                ? "bg-green-100 text-green-700"
+                : property.status === "launching"
+                ? "bg-blue-100 text-blue-700"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {property.status === "selling"
+              ? "Em venda"
               : property.status === "launching"
-              ? "bg-blue-100 text-blue-700"
-              : "bg-gray-100 text-gray-700"
-          }`}
-        >
-          {property.status === "selling"
-            ? "Em venda"
-            : property.status === "launching"
-            ? "Lancamento"
-            : property.status}
-        </span>
+              ? "Lancamento"
+              : property.status}
+          </span>
+        </div>
       </div>
 
       {/* Stats */}
@@ -163,7 +188,14 @@ export default async function PropertyDetailPage({
             <tbody className="divide-y divide-gray-100">
               {units?.map((u) => (
                 <tr key={u.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 font-medium">{u.identifier}</td>
+                  <td className="px-4 py-2 font-medium">
+                    <Link
+                      href={`/dashboard/properties/${id}/units/${u.id}`}
+                      className="text-orange-600 hover:underline"
+                    >
+                      {u.identifier}
+                    </Link>
+                  </td>
                   <td className="px-4 py-2">{u.floor}</td>
                   <td className="px-4 py-2">{u.position ?? "-"}</td>
                   <td className="px-4 py-2">{u.view_direction ?? "-"}</td>
@@ -198,6 +230,56 @@ export default async function PropertyDetailPage({
           </table>
         </div>
       </div>
+
+      {/* Sales History */}
+      {sales && sales.length > 0 && (
+        <div className="rounded-lg bg-white p-5 shadow-sm">
+          <h2 className="mb-3 text-lg font-semibold">
+            Vendas recentes ({sales.length})
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 text-sm">
+              <thead>
+                <tr className="text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-4 py-2">Unidade</th>
+                  <th className="px-4 py-2">Cliente</th>
+                  <th className="px-4 py-2">Valor</th>
+                  <th className="px-4 py-2">Pagamento</th>
+                  <th className="px-4 py-2">Data</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {sales.map((s) => {
+                  const unitInfo = s.units as unknown as { identifier: string }
+                  return (
+                    <tr key={s.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-2 font-medium">
+                        {unitInfo?.identifier ?? "-"}
+                      </td>
+                      <td className="px-4 py-2">{s.client_name ?? "-"}</td>
+                      <td className="px-4 py-2">
+                        {s.sale_price
+                          ? `R$ ${Number(s.sale_price).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+                          : "-"}
+                      </td>
+                      <td className="px-4 py-2">
+                        {s.payment_method
+                          ? paymentMethodLabels[s.payment_method] ?? s.payment_method
+                          : "-"}
+                      </td>
+                      <td className="px-4 py-2">
+                        {s.sold_at
+                          ? new Date(s.sold_at).toLocaleDateString("pt-BR")
+                          : "-"}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
