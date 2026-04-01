@@ -1,1 +1,6 @@
-export { processMessage, type ProcessMessageParams } from "./pipeline"
+export {
+  processMessage,
+  processMessageWithMetadata,
+  type ProcessMessageParams,
+  type ProcessMessageResult,
+} from "./pipeline"

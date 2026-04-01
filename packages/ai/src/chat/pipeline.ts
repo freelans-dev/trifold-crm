@@ -2,6 +2,16 @@ import type { SupabaseClient } from "@supabase/supabase-js"
 import type Anthropic from "@anthropic-ai/sdk"
 import { searchKnowledge } from "../rag/search"
 import { buildContextFromRAG } from "../rag/context-builder"
+import {
+  identifyProperty,
+  calculateQualificationScore,
+  getNextQualificationStep,
+  extractCollectedData,
+  checkYardenGate,
+  shouldHandoff,
+  generateHandoffSummary,
+} from "../flows"
+import { isBusinessHours } from "../utils/business-hours"
 
 interface ConversationState {
   id: string
@@ -25,6 +35,13 @@ interface AgentConfig {
   model_primary: string
   temperature: number
   max_tokens: number
+  business_hours?: Record<string, { start: string; end: string }>
+}
+
+interface Property {
+  id: string
+  name: string
+  slug: string
 }
 
 export interface ProcessMessageParams {
@@ -35,31 +52,76 @@ export interface ProcessMessageParams {
   orgId: string
 }
 
+export interface ProcessMessageResult {
+  response: string
+  handoff?: {
+    trigger: boolean
+    reason?: string
+    summary?: string
+  }
+  qualificationScore: number
+}
+
 /**
  * Main chat processing pipeline for Nicole AI.
  *
  * Steps:
  * 1. Load conversation state from DB
- * 2. Load conversation history (last 20 messages)
- * 3. Search RAG for relevant context
- * 4. Build system prompt (personality + guardrails + qualification + RAG context)
- * 5. Call Claude API with messages
- * 6. Save assistant response to messages table
- * 7. Update conversation state
- * 8. Return response text
+ * 2. Load agent config and check business hours
+ * 3. Load conversation history (last 20 messages)
+ * 4. Search RAG for relevant context
+ * 5. Identify property from message
+ * 6. Check Yarden gate if property identified
+ * 7. Build system prompt (personality + guardrails + qualification + RAG context + flow context)
+ * 8. Call Claude API with messages
+ * 9. Extract collected data from AI response
+ * 10. Calculate qualification score and check handoff
+ * 11. Save assistant response to messages table
+ * 12. Update conversation state with new collected data
+ * 13. Return response with metadata
  */
 export async function processMessage(
   params: ProcessMessageParams
 ): Promise<string> {
+  const result = await processMessageWithMetadata(params)
+  return result.response
+}
+
+export async function processMessageWithMetadata(
+  params: ProcessMessageParams
+): Promise<ProcessMessageResult> {
   const { supabase, anthropic, conversationId, message, orgId } = params
 
   // 1. Load conversation state
   const state = await loadConversationState(supabase, conversationId)
+  const collectedData: Record<string, unknown> = state?.collected_data ?? {}
 
-  // 2. Load conversation history (last 20 messages)
+  // 2. Load agent config and check business hours
+  const agentConfig = await loadAgentConfig(supabase, orgId)
+
+  if (agentConfig.business_hours) {
+    const withinHours = isBusinessHours({
+      business_hours: agentConfig.business_hours,
+    })
+    if (!withinHours) {
+      const offHoursResponse =
+        "Oi! Obrigada pelo contato. No momento estou fora do horario de atendimento. " +
+        "Vou guardar sua mensagem e retorno assim que possivel. Ate breve!"
+
+      await saveMessages(supabase, conversationId, message, offHoursResponse)
+      await updateConversationTimestamp(supabase, conversationId)
+
+      return {
+        response: offHoursResponse,
+        qualificationScore: calculateQualificationScore(collectedData),
+      }
+    }
+  }
+
+  // 3. Load conversation history (last 20 messages)
   const history = await loadConversationHistory(supabase, conversationId)
 
-  // 3. Search RAG for relevant context
+  // 4. Search RAG for relevant context
   const ragResults = await searchKnowledge(
     supabase,
     message,
@@ -68,11 +130,35 @@ export async function processMessage(
   )
   const ragContext = buildContextFromRAG(ragResults)
 
-  // 4. Load agent config and build system prompt
-  const agentConfig = await loadAgentConfig(supabase, orgId)
-  const systemPrompt = buildSystemPrompt(agentConfig, ragContext, state)
+  // 5. Identify property from message
+  const properties = await loadProperties(supabase, orgId)
+  const identifiedPropertyId = identifyProperty(
+    message,
+    collectedData,
+    properties
+  )
 
-  // 5. Build messages array and call Claude API
+  // 6. Check Yarden gate if property identified
+  let yardenGateContext = ""
+  if (identifiedPropertyId) {
+    const property = properties.find((p) => p.id === identifiedPropertyId)
+    if (property) {
+      const gateResult = checkYardenGate(property.slug, collectedData)
+      if (gateResult.blocked) {
+        yardenGateContext = `\n\n=== YARDEN GATE ===\n${gateResult.reason}\nSugestao: ${gateResult.suggestion}\n=== END YARDEN GATE ===`
+      }
+    }
+  }
+
+  // 7. Build system prompt with flow context
+  const qualificationStep = getNextQualificationStep(collectedData)
+  const qualificationScore = calculateQualificationScore(collectedData)
+  const systemPrompt =
+    buildSystemPrompt(agentConfig, ragContext, state) +
+    buildFlowContext(qualificationStep, qualificationScore, identifiedPropertyId) +
+    yardenGateContext
+
+  // 8. Build messages array and call Claude API
   const messages: Anthropic.MessageParam[] = [
     ...history.map(
       (msg): Anthropic.MessageParam => ({
@@ -94,14 +180,57 @@ export async function processMessage(
   const assistantMessage =
     response.content[0].type === "text" ? response.content[0].text : ""
 
-  // 6. Save the user message and assistant response to the messages table
+  // 9. Extract collected data from AI response
+  const updatedData = extractCollectedData(assistantMessage, collectedData)
+
+  // Also extract from user message
+  const finalData = extractCollectedData(message, updatedData)
+
+  // 10. Calculate updated score and check handoff
+  const updatedScore = calculateQualificationScore(finalData)
+  const updatedStep = getNextQualificationStep(finalData)
+
+  const handoffResult = shouldHandoff({
+    qualificationScore: updatedScore,
+    message,
+    conversationState: {
+      ...finalData,
+      visit_proposed: state?.visit_proposed ?? false,
+    },
+  })
+
+  let handoffSummary: string | undefined
+  if (handoffResult.trigger) {
+    const allMessages = [
+      ...history,
+      { role: "user" as const, content: message },
+      { role: "assistant" as const, content: assistantMessage },
+    ]
+    handoffSummary = generateHandoffSummary(finalData, allMessages)
+  }
+
+  // 11. Save the user message and assistant response to the messages table
   await saveMessages(supabase, conversationId, message, assistantMessage)
 
-  // 7. Update conversation state (last_message_at)
-  await updateConversationTimestamp(supabase, conversationId)
+  // 12. Update conversation state with new collected data
+  await updateConversationState(supabase, conversationId, {
+    collected_data: finalData,
+    qualification_step: updatedStep,
+    current_property_id: identifiedPropertyId ?? state?.current_property_id ?? null,
+  })
 
-  // 8. Return response text
-  return assistantMessage
+  // 13. Return response with metadata
+  return {
+    response: assistantMessage,
+    handoff: handoffResult.trigger
+      ? {
+          trigger: true,
+          reason: handoffResult.reason,
+          summary: handoffSummary,
+        }
+      : undefined,
+    qualificationScore: updatedScore,
+  }
 }
 
 async function loadConversationState(
@@ -148,7 +277,7 @@ async function loadAgentConfig(
   const { data, error } = await supabase
     .from("agent_config")
     .select(
-      "personality_prompt, guardrails, model_primary, temperature, max_tokens"
+      "personality_prompt, guardrails, model_primary, temperature, max_tokens, business_hours"
     )
     .eq("org_id", orgId)
     .eq("is_active", true)
@@ -170,7 +299,26 @@ async function loadAgentConfig(
     model_primary: data.model_primary ?? "claude-sonnet-4-5-20250514",
     temperature: data.temperature ?? 0.7,
     max_tokens: data.max_tokens ?? 1024,
+    business_hours: data.business_hours as
+      | Record<string, { start: string; end: string }>
+      | undefined,
   }
+}
+
+async function loadProperties(
+  supabase: SupabaseClient,
+  orgId: string
+): Promise<Property[]> {
+  const { data, error } = await supabase
+    .from("properties")
+    .select("id, name, slug")
+    .eq("org_id", orgId)
+
+  if (error || !data) {
+    return []
+  }
+
+  return data as Property[]
 }
 
 function buildSystemPrompt(
@@ -235,6 +383,33 @@ function buildSystemPrompt(
   return parts.join("\n")
 }
 
+function buildFlowContext(
+  qualificationStep: string,
+  qualificationScore: number,
+  identifiedPropertyId: string | null
+): string {
+  const parts: string[] = []
+
+  parts.push("")
+  parts.push("=== FLOW CONTEXT ===")
+  parts.push(`Qualification score: ${qualificationScore}/100`)
+  parts.push(`Next qualification step: ${qualificationStep}`)
+
+  if (identifiedPropertyId) {
+    parts.push(`Identified property ID: ${identifiedPropertyId}`)
+  }
+
+  if (qualificationScore >= 70) {
+    parts.push(
+      "NOTA: Lead com alta qualificacao. Priorize agendar visita ou transferir para corretor."
+    )
+  }
+
+  parts.push("=== END FLOW CONTEXT ===")
+
+  return parts.join("\n")
+}
+
 async function saveMessages(
   supabase: SupabaseClient,
   conversationId: string,
@@ -270,5 +445,32 @@ async function updateConversationTimestamp(
 
   if (error) {
     console.error("Error updating conversation timestamp:", error)
+  }
+}
+
+async function updateConversationState(
+  supabase: SupabaseClient,
+  conversationId: string,
+  updates: {
+    collected_data: Record<string, unknown>
+    qualification_step: string
+    current_property_id: string | null
+  }
+): Promise<void> {
+  const { error } = await supabase
+    .from("conversation_state")
+    .upsert(
+      {
+        conversation_id: conversationId,
+        collected_data: updates.collected_data,
+        qualification_step: updates.qualification_step,
+        current_property_id: updates.current_property_id,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "conversation_id" }
+    )
+
+  if (error) {
+    console.error("Error updating conversation state:", error)
   }
 }
