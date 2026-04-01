@@ -4,15 +4,15 @@
 O resumo IA e o diferencial para o corretor: em vez de ler 30 mensagens, ele ve "O que voce precisa saber antes de atender" — preferencias, objecoes, perguntas e proximos passos recomendados. O resumo e gerado pela Story 4.8 e armazenado em `leads.ai_summary`. Esta story cobre a exibicao otimizada para o corretor, com destaque visual e linguagem orientada a acao.
 
 ## Acceptance Criteria
-- [ ] AC1: No detalhe do lead do corretor (Story 6.4), resumo exibido como card destacado no topo
-- [ ] AC2: Card com titulo "O que voce precisa saber" e icone de IA
-- [ ] AC3: Secoes do resumo formatadas com visual claro:
+- [x] AC1: No detalhe do lead do corretor (Story 6.4), resumo exibido como card destacado no topo
+- [x] AC2: Card com titulo "O que voce precisa saber" e icone de IA
+- [x] AC3: Secoes do resumo formatadas com visual claro:
   - **Interesse:** Empreendimento + tipologia + preferencias (badges)
   - **Score:** Badge colorido (Frio/Morno/Quente)
   - **Perguntas do lead:** Lista com bullets
   - **Objecoes:** Lista com bullets (vermelho se houver)
   - **Proximos passos:** Lista com bullets (verde, orientado a acao)
-- [ ] AC4: Se resumo nao existe ainda, exibir: "Resumo sera gerado automaticamente quando a conversa avancar"
+- [x] AC4: Se resumo nao existe ainda, exibir: "Resumo sera gerado automaticamente quando a conversa avancar"
 - [ ] AC5: Timestamp de quando o resumo foi gerado/atualizado
 - [ ] AC6: Resumo parseado de Markdown para componentes visuais (nao exibir raw markdown)
 - [ ] AC7: Card colapsavel (pode expandir/colapsar) — comeca expandido
@@ -57,3 +57,7 @@ function getScoreBadge(score: number) {
 
 ## Estimativa
 P (Pequena) — 1-2 horas
+
+## File List
+
+- `packages/web/src/app/broker/leads/[id]/page.tsx` — Secao de resumo IA integrada na pagina de detalhe do lead do corretor (card destacado no topo com titulo "O que voce precisa saber", score badge, e fallback para resumo pendente)

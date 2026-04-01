@@ -4,14 +4,14 @@
 Quando um lead escreve para a Nicole, ela precisa identificar qual empreendimento interessa: Vind, Yarden, ou nao sabe. Se nao sabe, Nicole apresenta ambos com diferenciais. Se veio de anuncio Meta Ads, o empreendimento pode ja estar identificado pelo referral data (utm_content ou campanha). Essa identificacao direciona toda a conversa subsequente.
 
 ## Acceptance Criteria
-- [ ] AC1: Nicole identifica empreendimento quando lead menciona nome diretamente ("Vind", "Yarden", "aquele da Gleba Itororo", "o de 67m2")
-- [ ] AC2: Se lead veio de Meta Ads com UTM indicando empreendimento, Nicole ja sabe qual e e confirma
-- [ ] AC3: Se lead nao sabe qual quer, Nicole apresenta ambos de forma comparativa e concisa
-- [ ] AC4: Apresentacao comparativa inclui: nome, metragem, diferenciais-chave, localizacao, prazo de entrega
-- [ ] AC5: Apos identificacao, `conversation_state.current_property_id` e atualizado
-- [ ] AC6: Se lead mudar de ideia durante a conversa (ex: "na verdade quero saber do Yarden"), Nicole se adapta
-- [ ] AC7: Funcao `identifyProperty(message, conversationState)` que retorna property_id ou null
-- [ ] AC8: Dados do empreendimento identificado sao injetados no contexto da IA (RAG filtrado por property)
+- [x] AC1: Nicole identifica empreendimento quando lead menciona nome diretamente ("Vind", "Yarden", "aquele da Gleba Itororo", "o de 67m2")
+- [x] AC2: Se lead veio de Meta Ads com UTM indicando empreendimento, Nicole ja sabe qual e e confirma
+- [x] AC3: Se lead nao sabe qual quer, Nicole apresenta ambos de forma comparativa e concisa
+- [x] AC4: Apresentacao comparativa inclui: nome, metragem, diferenciais-chave, localizacao, prazo de entrega
+- [x] AC5: Apos identificacao, `conversation_state.current_property_id` e atualizado
+- [x] AC6: Se lead mudar de ideia durante a conversa (ex: "na verdade quero saber do Yarden"), Nicole se adapta
+- [x] AC7: Funcao `identifyProperty(message, conversationState)` que retorna property_id ou null
+- [x] AC8: Dados do empreendimento identificado sao injetados no contexto da IA (RAG filtrado por property)
 - [ ] AC9: Lead model atualiza campo `property_interest_id` quando identificado
 
 ## Detalhes Tecnicos
@@ -78,3 +78,6 @@ Pergunte qual deles chama mais atencao.
 
 ## Estimativa
 M (Media) — 2 horas
+
+## File List
+- `packages/ai/src/flows/identify-property.ts` — Logica de identificacao de empreendimento por mensagem, UTM e keywords

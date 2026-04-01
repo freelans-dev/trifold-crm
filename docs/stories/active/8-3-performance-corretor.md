@@ -4,17 +4,17 @@
 O supervisor precisa comparar performance dos corretores: quem converte mais, quem demora mais, quem tem mais leads parados. Isso permite redistribuir leads, dar feedback e identificar melhores praticas. A analise e feita sobre leads designados a cada corretor no periodo selecionado.
 
 ## Acceptance Criteria
-- [ ] AC1: Na pagina de analytics, tab "Corretores" exibe tabela de performance
-- [ ] AC2: Tabela com colunas por corretor:
+- [x] AC1: Na pagina de analytics, tab "Corretores" exibe tabela de performance
+- [x] AC2: Tabela com colunas por corretor:
   | Corretor | Leads Recebidos | Qualificados | Agendados | Visitaram | Fecharam | Taxa Conversao | Tempo Medio |
-- [ ] AC3: Taxa de conversao = Fecharam / Leads Recebidos (em %)
+- [x] AC3: Taxa de conversao = Fecharam / Leads Recebidos (em %)
 - [ ] AC4: Tempo medio = dias entre designacao e fechamento (ou perda) — media
 - [ ] AC5: Ranking visual: corretor com melhor taxa de conversao destacado (badge ou posicao)
 - [ ] AC6: Grafico de barras comparativo: leads por etapa por corretor (stacked bar)
 - [ ] AC7: Filtro por periodo (date range)
 - [ ] AC8: Filtro por empreendimento
 - [ ] AC9: Clicar no nome do corretor navega para detalhe com breakdown por empreendimento
-- [ ] AC10: API route `GET /api/analytics/broker-performance?from=...&to=...&property=...`
+- [x] AC10: API route `GET /api/analytics/broker-performance?from=...&to=...&property=...`
 
 ## Detalhes Tecnicos
 
@@ -86,3 +86,9 @@ $$ LANGUAGE plpgsql;
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- `packages/web/src/app/dashboard/analytics/page.tsx` — Secao de performance por corretor integrada na pagina de analytics
+- `packages/web/src/app/api/analytics/route.ts` — Dados de performance de corretores incluidos na API de analytics

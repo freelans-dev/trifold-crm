@@ -64,3 +64,9 @@ INSERT INTO agent_prompts (org_id, slug, name, content, is_active) VALUES
 
 ## Estimativa
 P (Pequena) — 1-2 horas
+
+## File List
+
+### Created/Modified
+- `supabase/seed.sql` — Seed SQL principal com organizacao, usuarios, kanban stages, agent config e agent prompts
+- `supabase/run-seed.ts` — Script TypeScript para execucao do seed

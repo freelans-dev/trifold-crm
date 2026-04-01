@@ -4,15 +4,15 @@
 O handoff e o momento em que a Nicole transfere o lead para um corretor humano. O lead NAO pode perceber que mudou de atendente — a transicao deve ser invisivel. O corretor recebe um resumo completo gerado pela IA com preferencias, perguntas, objecoes e score. Com Coexistence Mode, o corretor responde pelo WhatsApp Business App no celular — a Nicole para de responder automaticamente e o corretor assume. Os criterios de handoff sao: lead qualificado + pede valores detalhados, quer simulacao, agendou visita, pergunta fora do escopo, ou supervisao solicita.
 
 ## Acceptance Criteria
-- [ ] AC1: Criterios de handoff automatico definidos e funcionais:
+- [x] AC1: Criterios de handoff automatico definidos e funcionais:
   - Lead qualificado (score >= 70) E pede valores/simulacao
   - Lead agendou visita
   - Lead faz pergunta fora do escopo (preco exato, simulacao financeira)
   - Supervisao solicita handoff manual
-- [ ] AC2: Quando handoff e acionado, `conversation_state.handoff_triggered = true` e `handoff_reason` e registrado
-- [ ] AC3: Nicole envia ultima mensagem ao lead antes do handoff: "Vou te passar para o [nome do corretor] que e especialista no [empreendimento]. Ele vai te dar todos os detalhes!"
-- [ ] AC4: Ou se nao ha corretor designado ainda: "Vou falar com nosso especialista para te dar mais detalhes. Ele vai entrar em contato em breve!"
-- [ ] AC5: Resumo IA gerado automaticamente no momento do handoff com:
+- [x] AC2: Quando handoff e acionado, `conversation_state.handoff_triggered = true` e `handoff_reason` e registrado
+- [x] AC3: Nicole envia ultima mensagem ao lead antes do handoff: "Vou te passar para o [nome do corretor] que e especialista no [empreendimento]. Ele vai te dar todos os detalhes!"
+- [x] AC4: Ou se nao ha corretor designado ainda: "Vou falar com nosso especialista para te dar mais detalhes. Ele vai entrar em contato em breve!"
+- [x] AC5: Resumo IA gerado automaticamente no momento do handoff com:
   - Nome do lead
   - Empreendimento de interesse
   - Preferencias coletadas (quartos, andar, vista, garagem)
@@ -20,9 +20,9 @@ O handoff e o momento em que a Nicole transfere o lead para um corretor humano. 
   - Objecoes identificadas
   - Score de qualificacao
   - Proximos passos recomendados
-- [ ] AC6: Resumo salvo em `leads.ai_summary` (atualizado a cada handoff ou interacao significativa)
+- [x] AC6: Resumo salvo em `leads.ai_summary` (atualizado a cada handoff ou interacao significativa)
 - [ ] AC7: Lead designado automaticamente a corretor do empreendimento (se houver) via `leads.assigned_broker_id`
-- [ ] AC8: Status da conversa muda para `handed_off` — Nicole para de responder automaticamente
+- [x] AC8: Status da conversa muda para `handed_off` — Nicole para de responder automaticamente
 - [ ] AC9: Atividade registrada em `activities`: tipo `handoff`, com reason e broker_id
 - [ ] AC10: Lead move para kanban stage adequada: "Qualificado" ou "Visita Agendada"
 - [ ] AC11: Se nao houver corretor disponivel, lead fica em "Qualificado" sem designacao e notificacao vai para admin/supervisor
@@ -135,3 +135,6 @@ Ultimas mensagens: ${messages.slice(-10).map(m => `${m.sender_type}: ${m.content
 
 ## Estimativa
 G (Grande) — 3-4 horas
+
+## File List
+- `packages/ai/src/flows/handoff.ts` — Logica de handoff: shouldHandoff (criterios) e generateHandoffSummary (resumo para corretor)

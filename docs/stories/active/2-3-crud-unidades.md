@@ -4,15 +4,15 @@
 Cada apartamento e uma unidade individual com andar, posicao, vista, garagem e status (disponivel/reservado/vendido). Sao 108 unidades totais (48 Vind + 60 Yarden). O admin precisa visualizar e editar status; o corretor precisa saber quais estao disponiveis; a Nicole precisa informar disponiblidade sem revelar preco. Esta e a story mais complexa do Bloco 2.
 
 ## Acceptance Criteria
-- [ ] AC1: API route `GET /api/properties/[propertyId]/units` retorna unidades do empreendimento com paginacao
-- [ ] AC2: API route `GET /api/units/[id]` retorna unidade por ID (incluindo tipologia e property populados)
-- [ ] AC3: API route `POST /api/properties/[propertyId]/units` cria unidade vinculada ao empreendimento
-- [ ] AC4: API route `PATCH /api/units/[id]` atualiza unidade (status, preco, notas, etc.)
+- [x] AC1: API route `GET /api/properties/[propertyId]/units` retorna unidades do empreendimento com paginacao
+- [x] AC2: API route `GET /api/units/[id]` retorna unidade por ID (incluindo tipologia e property populados)
+- [x] AC3: API route `POST /api/properties/[propertyId]/units` cria unidade vinculada ao empreendimento
+- [x] AC4: API route `PATCH /api/units/[id]` atualiza unidade (status, preco, notas, etc.)
 - [ ] AC5: API route `POST /api/properties/[propertyId]/units/bulk` cria multiplas unidades de uma vez (para seed e import)
 - [ ] AC6: Campos suportados: identifier*, floor*, position, view_direction, garage_count*, garage_type, garage_area_m2, private_area_m2, status*, price (admin only), notes, typology_id
 - [ ] AC7: Status transitions validos: available -> reserved -> sold, available -> sold, reserved -> available (devolucao), qualquer -> available (reset admin)
 - [ ] AC8: Campo `price` NAO e retornado em APIs publicas ou funcoes de IA (so admin/supervisor/broker)
-- [ ] AC9: Pagina de listagem de unidades dentro do empreendimento com tabela: identificador, andar, posicao, vista, garagem, status, preco (admin only)
+- [x] AC9: Pagina de listagem de unidades dentro do empreendimento com tabela: identificador, andar, posicao, vista, garagem, status, preco (admin only)
 - [ ] AC10: Indicador visual de status: verde (disponivel), amarelo (reservado), vermelho (vendido)
 - [ ] AC11: Formulario de criacao/edicao de unidade individual
 - [ ] AC12: Contador de unidades por status no topo: X disponiveis / Y reservadas / Z vendidas
@@ -55,3 +55,10 @@ Cada apartamento e uma unidade individual com andar, posicao, vista, garagem e s
 
 ## Estimativa
 G (Grande) — 3-4 horas
+
+## File List
+
+### Created/Modified
+- `packages/web/src/app/api/properties/[propertyId]/units/route.ts` — GET (list), POST (create)
+- `packages/web/src/app/api/units/[id]/route.ts` — GET (detail), PATCH (update)
+- `packages/web/src/app/dashboard/properties/[id]/page.tsx` — Property detail page com tabela de unidades integrada

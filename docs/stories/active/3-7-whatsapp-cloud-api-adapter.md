@@ -4,18 +4,18 @@
 O canal de comunicacao principal e o WhatsApp Cloud API (numero oficial da Trifold no Meta). O adapter recebe mensagens via webhook, processa com a Nicole, e envia a resposta. Suporta texto, midia, e referral data de Click-to-WhatsApp Ads. O design segue adapter pattern para permitir trocar para Telegram (fallback) sem reescrever a logica. Esta story e o setup do Cloud API — Coexistence Mode e story separada (Bloco 6).
 
 ## Acceptance Criteria
-- [ ] AC1: Webhook endpoint `GET /api/whatsapp/webhook` responde ao verification challenge da Meta (verify_token)
-- [ ] AC2: Webhook endpoint `POST /api/whatsapp/webhook` recebe mensagens (text, image, document, audio, location)
-- [ ] AC3: Validacao de assinatura do webhook (X-Hub-Signature-256) com `META_APP_SECRET`
-- [ ] AC4: Mensagem recebida identifica/cria lead pelo numero de telefone (`wa_id`)
-- [ ] AC5: Mensagem do lead e salva na tabela `messages` com `sender_type = 'lead'`
-- [ ] AC6: Mensagem processada pelo pipeline: load state -> RAG -> Claude -> guardrails -> send response
-- [ ] AC7: Resposta da Nicole enviada via Cloud API `POST /v21.0/{phone_number_id}/messages`
-- [ ] AC8: Resposta salva na tabela `messages` com `sender_type = 'ai'`
+- [x] AC1: Webhook endpoint `GET /api/whatsapp/webhook` responde ao verification challenge da Meta (verify_token)
+- [x] AC2: Webhook endpoint `POST /api/whatsapp/webhook` recebe mensagens (text, image, document, audio, location)
+- [x] AC3: Validacao de assinatura do webhook (X-Hub-Signature-256) com `META_APP_SECRET`
+- [x] AC4: Mensagem recebida identifica/cria lead pelo numero de telefone (`wa_id`)
+- [x] AC5: Mensagem do lead e salva na tabela `messages` com `sender_type = 'lead'`
+- [x] AC6: Mensagem processada pelo pipeline: load state -> RAG -> Claude -> guardrails -> send response
+- [x] AC7: Resposta da Nicole enviada via Cloud API `POST /v21.0/{phone_number_id}/messages`
+- [x] AC8: Resposta salva na tabela `messages` com `sender_type = 'ai'`
 - [ ] AC9: Suporte a envio de midia (imagem, documento PDF) via Cloud API media upload
-- [ ] AC10: Captura de referral data quando lead vem de Click-to-WhatsApp Ads (`entry.changes[0].value.messages[0].referral`)
-- [ ] AC11: Adapter pattern: interface `MessagingAdapter` com metodos `sendText()`, `sendMedia()`, `parseIncoming()`
-- [ ] AC12: Se Cloud API nao estiver configurado (env vars vazias), log de warning e skip (nao crash)
+- [x] AC10: Captura de referral data quando lead vem de Click-to-WhatsApp Ads (`entry.changes[0].value.messages[0].referral`)
+- [x] AC11: Adapter pattern: interface `MessagingAdapter` com metodos `sendText()`, `sendMedia()`, `parseIncoming()`
+- [x] AC12: Se Cloud API nao estiver configurado (env vars vazias), log de warning e skip (nao crash)
 - [ ] AC13: Rate limiting basico: max 20 msg/s (limite do Coexistence Mode)
 - [ ] AC14: Retry com exponential backoff para falhas de envio (max 3 tentativas)
 
@@ -102,3 +102,8 @@ export async function POST(request: Request) {
 
 ## Estimativa
 G (Grande) — 3-4 horas
+
+## File List
+- `packages/bot/src/adapters/whatsapp-adapter.ts` — Implementacao do WhatsApp Cloud API adapter
+- `packages/bot/src/adapters/messaging-adapter.ts` — Interface MessagingAdapter (sendText, sendMedia, parseIncoming)
+- `packages/web/src/app/api/webhook/whatsapp/route.ts` — Webhook GET (verification challenge) e POST (receive message)

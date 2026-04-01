@@ -4,15 +4,15 @@
 Corretores sao usuarios do sistema com role `broker`. O admin precisa poder cadastrar, editar, ativar/desativar corretores e vincular cada um a 1+ empreendimentos. O numero de telefone Trifold e obrigatorio porque com Coexistence Mode o corretor responde via WhatsApp Business App vinculado ao numero oficial. A tabela `users` (com role `broker`) e `broker_assignments` (vinculo corretor <-> empreendimento) sao usadas.
 
 ## Acceptance Criteria
-- [ ] AC1: Pagina `/dashboard/settings/brokers` lista todos os corretores da org
-- [ ] AC2: Lista exibe: nome, email, telefone pessoal, empreendimentos vinculados (badges), status (ativo/inativo), total de leads designados
-- [ ] AC3: Botao "Novo corretor" abre formulario de criacao
-- [ ] AC4: Formulario de criacao: nome*, email*, telefone pessoal*, empreendimentos atribuidos* (multi-select: Vind, Yarden), status
+- [x] AC1: Pagina `/dashboard/settings/brokers` lista todos os corretores da org
+- [x] AC2: Lista exibe: nome, email, telefone pessoal, empreendimentos vinculados (badges), status (ativo/inativo), total de leads designados
+- [x] AC3: Botao "Novo corretor" abre formulario de criacao
+- [x] AC4: Formulario de criacao: nome*, email*, telefone pessoal*, empreendimentos atribuidos* (multi-select: Vind, Yarden), status
 - [ ] AC5: Ao criar corretor, usuario e criado na Supabase Auth com role `broker` e senha temporaria (ou convite por email)
-- [ ] AC6: Edicao: todos os campos editaveis exceto email (imutavel apos criacao)
-- [ ] AC7: Toggle ativo/inativo: corretor inativo nao recebe novos leads mas mantem leads existentes
-- [ ] AC8: Vincular/desvincular empreendimentos atualiza tabela `broker_assignments`
-- [ ] AC9: API routes: GET/POST `/api/brokers`, GET/PATCH/DELETE `/api/brokers/[id]`
+- [x] AC6: Edicao: todos os campos editaveis exceto email (imutavel apos criacao)
+- [x] AC7: Toggle ativo/inativo: corretor inativo nao recebe novos leads mas mantem leads existentes
+- [x] AC8: Vincular/desvincular empreendimentos atualiza tabela `broker_assignments`
+- [x] AC9: API routes: GET/POST `/api/brokers`, GET/PATCH/DELETE `/api/brokers/[id]`
 - [ ] AC10: Validacao: email unico, pelo menos 1 empreendimento vinculado
 - [ ] AC11: Ao desativar corretor, leads nao-finalizados sao listados com warning ("Este corretor tem X leads ativos")
 
@@ -72,3 +72,9 @@ async function createBroker(data: CreateBrokerInput) {
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+- `packages/web/src/app/dashboard/corretores/page.tsx` — Pagina de gestao de corretores com listagem, criacao e edicao
+- `packages/web/src/app/api/brokers/route.ts` — GET (list), POST (create)
+- `packages/web/src/app/api/brokers/[id]/route.ts` — GET (detail), PATCH (update), DELETE (deactivate)

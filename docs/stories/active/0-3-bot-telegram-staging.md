@@ -6,9 +6,9 @@ O ambiente staging usa Telegram como canal de comunicacao para testes. Isso perm
 ## Acceptance Criteria
 - [ ] AC1: Bot criado no Telegram via BotFather com username `@NicoleTrifoldBot`
 - [ ] AC2: Token do bot obtido e configurado como `TELEGRAM_BOT_TOKEN` no Vercel (scope: Preview/staging)
-- [ ] AC3: Webhook endpoint `POST /api/telegram/webhook` criado e funcional
+- [x] AC3: Webhook endpoint `POST /api/telegram/webhook` criado e funcional
 - [ ] AC4: Webhook registrado no Telegram via `setWebhook` apontando para URL de staging
-- [ ] AC5: Adapter `TelegramAdapter` implementado seguindo a interface `MessagingAdapter` (mesma da Story 3.7)
+- [x] AC5: Adapter `TelegramAdapter` implementado seguindo a interface `MessagingAdapter` (mesma da Story 3.7)
 - [ ] AC6: Mensagens recebidas no Telegram sao processadas pelo mesmo pipeline: load state -> RAG -> Claude -> guardrails -> send response
 - [ ] AC7: Mensagens salvas na tabela `messages` com campo `channel = 'telegram'` (vs `'whatsapp'` em prod)
 - [ ] AC8: Lead identificado pelo `chat_id` do Telegram (campo `phone` recebe `tg:{chat_id}` para diferenciar)
@@ -81,3 +81,9 @@ export function getAdapter(): MessagingAdapter {
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- `packages/bot/src/adapters/telegram-adapter.ts` — Implementacao do TelegramAdapter seguindo interface MessagingAdapter
+- `packages/web/src/app/api/telegram/webhook/route.ts` — Webhook POST handler para mensagens do Telegram

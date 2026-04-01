@@ -55,3 +55,17 @@ trifold-crm/
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- `turbo.json` — Configuracao de pipelines do Turborepo
+- `pnpm-workspace.yaml` — Workspace dos 5 packages
+- `package.json` — Root package com scripts dev/build/lint/type-check
+- `tsconfig.json` — Base TypeScript config
+- `.gitignore` — Inclui node_modules, .env*, .next, dist
+- `packages/web/` — Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, shadcn/ui
+- `packages/ai/` — Estrutura para Claude client (Anthropic SDK), prompts, guardrails, RAG
+- `packages/db/` — Supabase client (@supabase/supabase-js), types, migrations
+- `packages/bot/` — Estrutura para adapters de mensageria
+- `packages/shared/` — Types, utils e constants compartilhados

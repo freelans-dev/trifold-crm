@@ -65,3 +65,8 @@ function groupByCampaign(leads: Lead[]) {
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- (nenhum arquivo implementado ainda)

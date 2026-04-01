@@ -4,17 +4,17 @@
 A Nicole precisa responder perguntas especificas sobre Vind e Yarden: localizacao, metragem, tipologias, lazer, prazo de entrega, conceito. O RAG (Retrieval-Augmented Generation) busca informacoes relevantes na base de conhecimento antes de gerar a resposta, garantindo precisao e evitando alucinacoes. A base inclui dados dos empreendimentos (automatico do catalogo) + pares pergunta-resposta curados (FAQ).
 
 ## Acceptance Criteria
-- [ ] AC1: Extensao `pgvector` habilitada e tabela `knowledge_base` com campo `embedding` tipo `vector(1536)` ou `vector(3072)` (dependendo do modelo de embedding)
-- [ ] AC2: Funcao `generateEmbedding(text)` que gera embedding via API (Anthropic ou OpenAI embeddings)
-- [ ] AC3: Funcao `searchKnowledge(query, orgId, propertyId?, limit?)` que busca por similaridade cosine
-- [ ] AC4: Tabela `knowledge_base` com campos: `id`, `org_id`, `property_id` (opcional), `category`, `question`, `answer`, `embedding`, `is_active`, `created_at`
+- [x] AC1: Extensao `pgvector` habilitada e tabela `knowledge_base` com campo `embedding` tipo `vector(1536)` ou `vector(3072)` (dependendo do modelo de embedding)
+- [x] AC2: Funcao `generateEmbedding(text)` que gera embedding via API (Anthropic ou OpenAI embeddings)
+- [x] AC3: Funcao `searchKnowledge(query, orgId, propertyId?, limit?)` que busca por similaridade cosine
+- [x] AC4: Tabela `knowledge_base` com campos: `id`, `org_id`, `property_id` (opcional), `category`, `question`, `answer`, `embedding`, `is_active`, `created_at`
 - [ ] AC5: Seed com pelo menos 22 pares pergunta-resposta da base NLU existente (mencionada no PRD), adaptados para Vind e Yarden
-- [ ] AC6: Seed com dados automaticos extraidos dos empreendimentos: localizacao, conceito, diferenciais, metragem, tipologias, lazer, prazo de entrega
-- [ ] AC7: Funcao `buildContextFromRAG(query, orgId, propertyId?)` que retorna texto formatado para inserir no prompt
+- [x] AC6: Seed com dados automaticos extraidos dos empreendimentos: localizacao, conceito, diferenciais, metragem, tipologias, lazer, prazo de entrega
+- [x] AC7: Funcao `buildContextFromRAG(query, orgId, propertyId?)` que retorna texto formatado para inserir no prompt
 - [ ] AC8: Re-geracao de embeddings ao salvar/editar knowledge_base entry
 - [ ] AC9: API route `POST /api/knowledge-base` para admin adicionar novos pares
 - [ ] AC10: API route `GET /api/knowledge-base` para listar entries (com filtro por property e category)
-- [ ] AC11: RAG retorna top 5 resultados relevantes com score minimo de 0.7
+- [x] AC11: RAG retorna top 5 resultados relevantes com score minimo de 0.7
 
 ## Detalhes Tecnicos
 
@@ -83,3 +83,10 @@ INSERT INTO knowledge_base (org_id, property_id, category, question, answer) VAL
 
 ## Estimativa
 G (Grande) — 3-4 horas
+
+## File List
+- `packages/ai/src/rag/embeddings.ts` — Geracao de embeddings via API
+- `packages/ai/src/rag/search.ts` — Busca por similaridade cosine na knowledge_base
+- `packages/ai/src/rag/context-builder.ts` — Monta contexto formatado para inserir no prompt
+- `packages/ai/src/rag/index.ts` — Export central do modulo RAG
+- `supabase/migrations/005_rag_search_function.sql` — Funcao SQL match_knowledge para busca vetorial

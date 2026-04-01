@@ -4,19 +4,19 @@
 A Nicole e o diferencial do produto. Ela precisa ser simpatica, "boa praca", natural — NAO robotica. O tom e estrategico: informar o suficiente para despertar interesse, NUNCA o bastante para o lead decidir sem visitar. Gatilhos de convite ao stand sao essenciais ("venha tomar um cafe", "conheca o decorado"). Esta story define os prompts de sistema que dao vida a Nicole.
 
 ## Acceptance Criteria
-- [ ] AC1: Prompt `system_personality` criado e salvo na tabela `agent_prompts` com conteudo real (nao placeholder)
-- [ ] AC2: A personalidade define: nome (Nicole), empresa (Trifold Engenharia), cidade (Maringa-PR), tom (simpatica, boa praca, natural)
-- [ ] AC3: A personalidade instrui a Nicole a NUNCA revelar que e IA/bot (RN5 do PRD)
-- [ ] AC4: A personalidade inclui estrategia de comunicacao: despertar interesse sem saciar curiosidade
-- [ ] AC5: Gatilhos de convite definidos: "venha tomar um cafe no nosso stand", "conheca o decorado", "agende uma visita sem compromisso"
-- [ ] AC6: A personalidade define o que fazer quando nao sabe a resposta: redirecionar para visita ou corretor, NUNCA inventar
-- [ ] AC7: Prompt `guardrails` criado com as 6 restricoes do PRD (RN1-RN6): nao prometer materiais, nao simular financiamento, nao expor memorial, nao dar preco exato, nao revelar que e IA, nao inventar
-- [ ] AC8: Prompt `qualification_flow` criado com fluxo de qualificacao progressiva (nao formulario)
-- [ ] AC9: Prompt `property_presentation` criado com instrucoes de como apresentar Vind vs Yarden
-- [ ] AC10: Prompt `visit_scheduling` criado com instrucoes de como propor/confirmar visita
-- [ ] AC11: Prompt `handoff_summary` criado com formato de resumo para corretor
-- [ ] AC12: Prompt `off_hours` criado com mensagem fora do horario
-- [ ] AC13: Funcao `buildSystemPrompt(orgId)` que concatena todos os prompts ativos em um system prompt final
+- [x] AC1: Prompt `system_personality` criado e salvo na tabela `agent_prompts` com conteudo real (nao placeholder)
+- [x] AC2: A personalidade define: nome (Nicole), empresa (Trifold Engenharia), cidade (Maringa-PR), tom (simpatica, boa praca, natural)
+- [x] AC3: A personalidade instrui a Nicole a NUNCA revelar que e IA/bot (RN5 do PRD)
+- [x] AC4: A personalidade inclui estrategia de comunicacao: despertar interesse sem saciar curiosidade
+- [x] AC5: Gatilhos de convite definidos: "venha tomar um cafe no nosso stand", "conheca o decorado", "agende uma visita sem compromisso"
+- [x] AC6: A personalidade define o que fazer quando nao sabe a resposta: redirecionar para visita ou corretor, NUNCA inventar
+- [x] AC7: Prompt `guardrails` criado com as 6 restricoes do PRD (RN1-RN6): nao prometer materiais, nao simular financiamento, nao expor memorial, nao dar preco exato, nao revelar que e IA, nao inventar
+- [x] AC8: Prompt `qualification_flow` criado com fluxo de qualificacao progressiva (nao formulario)
+- [x] AC9: Prompt `property_presentation` criado com instrucoes de como apresentar Vind vs Yarden
+- [x] AC10: Prompt `visit_scheduling` criado com instrucoes de como propor/confirmar visita
+- [x] AC11: Prompt `handoff_summary` criado com formato de resumo para corretor
+- [x] AC12: Prompt `off_hours` criado com mensagem fora do horario
+- [x] AC13: Funcao `buildSystemPrompt(orgId)` que concatena todos os prompts ativos em um system prompt final
 - [ ] AC14: Testes manuais: enviar 5 mensagens de teste e validar tom/personalidade
 
 ## Detalhes Tecnicos
@@ -70,3 +70,14 @@ QUANDO NAO SOUBER:
 
 ## Estimativa
 M (Media) — 2-3 horas (requer calibracao cuidadosa do tom)
+
+## File List
+- `packages/ai/src/prompts/personality.ts` — Texto do prompt de personalidade da Nicole
+- `packages/ai/src/prompts/guardrails.ts` — Texto dos 6 guardrails (RN1-RN6)
+- `packages/ai/src/prompts/qualification.ts` — Fluxo de qualificacao progressiva
+- `packages/ai/src/prompts/property-presentation.ts` — Apresentacao comparativa Vind vs Yarden
+- `packages/ai/src/prompts/visit-scheduling.ts` — Instrucoes de agendamento de visita
+- `packages/ai/src/prompts/handoff-summary.ts` — Formato de resumo para corretor
+- `packages/ai/src/prompts/off-hours.ts` — Mensagem fora do horario comercial
+- `packages/ai/src/prompts/index.ts` — Export central + funcao buildSystemPrompt()
+- `scripts/seed-prompts.ts` — Script de seed dos prompts na tabela agent_prompts

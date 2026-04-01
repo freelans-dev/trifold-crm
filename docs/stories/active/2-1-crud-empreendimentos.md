@@ -4,17 +4,17 @@
 O empreendimento e a entidade raiz do negocio. Tudo gira em torno de Vind e Yarden. A Nicole precisa dos dados para responder leads, os corretores precisam para negociar, e o admin precisa de uma interface para cadastrar/editar. Esta story cobre o backend (API routes) e o frontend basico de listagem/cadastro. A interface admin completa (com tabs) e coberta no Bloco 5 (E5-F7).
 
 ## Acceptance Criteria
-- [ ] AC1: API route `GET /api/properties` retorna lista de empreendimentos da org do usuario autenticado
-- [ ] AC2: API route `GET /api/properties/[id]` retorna empreendimento completo por ID
-- [ ] AC3: API route `POST /api/properties` cria novo empreendimento (admin/supervisor only)
-- [ ] AC4: API route `PATCH /api/properties/[id]` atualiza empreendimento (admin/supervisor only)
-- [ ] AC5: API route `DELETE /api/properties/[id]` faz soft delete (is_active = false, admin only)
+- [x] AC1: API route `GET /api/properties` retorna lista de empreendimentos da org do usuario autenticado
+- [x] AC2: API route `GET /api/properties/[id]` retorna empreendimento completo por ID
+- [x] AC3: API route `POST /api/properties` cria novo empreendimento (admin/supervisor only)
+- [x] AC4: API route `PATCH /api/properties/[id]` atualiza empreendimento (admin/supervisor only)
+- [x] AC5: API route `DELETE /api/properties/[id]` faz soft delete (is_active = false, admin only)
 - [ ] AC6: Todos os campos do schema `properties` sao suportados nas APIs (nome, slug, status, endereco, conceito, amenities, FAQ, regras comerciais, etc.)
 - [ ] AC7: Slug e gerado automaticamente a partir do nome se nao fornecido
 - [ ] AC8: Validacao: nome obrigatorio, status valido, cidade obrigatoria, estado obrigatorio (2 chars)
-- [ ] AC9: Pagina `/dashboard/properties` lista empreendimentos com: nome, status, cidade, total unidades, data entrega
+- [x] AC9: Pagina `/dashboard/properties` lista empreendimentos com: nome, status, cidade, total unidades, data entrega
 - [ ] AC10: Pagina `/dashboard/properties/new` permite criar novo empreendimento
-- [ ] AC11: Pagina `/dashboard/properties/[id]` permite editar empreendimento existente
+- [x] AC11: Pagina `/dashboard/properties/[id]` permite editar empreendimento existente
 
 ## Detalhes Tecnicos
 
@@ -50,3 +50,11 @@ O empreendimento e a entidade raiz do negocio. Tudo gira em torno de Vind e Yard
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- `packages/web/src/app/api/properties/route.ts` — GET (list), POST (create)
+- `packages/web/src/app/api/properties/[id]/route.ts` — GET (detail), PATCH (update), DELETE (soft delete)
+- `packages/web/src/app/dashboard/properties/page.tsx` — Listagem de empreendimentos
+- `packages/web/src/app/dashboard/properties/[id]/page.tsx` — Detalhe/edicao de empreendimento

@@ -4,17 +4,17 @@
 O admin precisa poder definir os dias e horarios de atendimento da Nicole e a mensagem que ela envia fora do horario. A logica de horario comercial ja existe (Story 3.8) — esta story cobre a interface admin para configura-la.
 
 ## Acceptance Criteria
-- [ ] AC1: Pagina `/dashboard/settings/business-hours` exibe configuracao atual
-- [ ] AC2: **Dias da semana:** Toggle para cada dia (Seg-Dom), horario de inicio e fim por dia
-- [ ] AC3: **Horarios editaveis:** Input de hora (HH:MM) para inicio e fim de cada dia ativo
-- [ ] AC4: **Modo de atendimento fora do horario:**
+- [x] AC1: Pagina `/dashboard/settings/business-hours` exibe configuracao atual
+- [x] AC2: **Dias da semana:** Toggle para cada dia (Seg-Dom), horario de inicio e fim por dia
+- [x] AC3: **Horarios editaveis:** Input de hora (HH:MM) para inicio e fim de cada dia ativo
+- [x] AC4: **Modo de atendimento fora do horario:**
   - Opcao A: "Responder sempre" (Nicole atende 24/7)
   - Opcao B: "Basico fora do horario" (Nicole coleta dados basicos e informa que retornara)
   - Opcao C: "So no horario" (Nicole nao responde fora do horario)
-- [ ] AC5: **Mensagem fora do horario:** Textarea editavel com mensagem default: "Oi! No momento estamos fora do horario de atendimento. Deixe seu nome e o empreendimento que te interessa que retorno assim que possivel!"
-- [ ] AC6: **Fuso horario:** Select com fuso (default: America/Sao_Paulo)
-- [ ] AC7: Preview: mostra se "agora" esta dentro ou fora do horario configurado
-- [ ] AC8: Alteracoes salvas na tabela `agent_config` (campo `business_hours`)
+- [x] AC5: **Mensagem fora do horario:** Textarea editavel com mensagem default: "Oi! No momento estamos fora do horario de atendimento. Deixe seu nome e o empreendimento que te interessa que retorno assim que possivel!"
+- [x] AC6: **Fuso horario:** Select com fuso (default: America/Sao_Paulo)
+- [x] AC7: Preview: mostra se "agora" esta dentro ou fora do horario configurado
+- [x] AC8: Alteracoes salvas na tabela `agent_config` (campo `business_hours`)
 - [ ] AC9: API routes: GET/PATCH `/api/settings/business-hours`
 - [ ] AC10: Horarios default no seed: Seg-Sex 08:00-18:00, Sab 08:00-12:00, Dom desativado
 
@@ -53,3 +53,7 @@ interface BusinessHours {
 
 ## Estimativa
 P (Pequena) — 1-2 horas
+
+## File List
+
+- `packages/web/src/app/dashboard/configuracoes/horario/page.tsx` — Pagina de configuracao de horario comercial com toggles por dia, horarios, modo de atendimento e mensagem fora do horario

@@ -4,7 +4,7 @@
 A qualificacao e o core do valor da Nicole. Ela coleta dados do lead de forma PROGRESSIVA e NATURAL durante a conversa — nunca como formulario. Os dados coletados determinam o score de qualificacao, que por sua vez define quando fazer handoff ao corretor. A regra principal: quanto mais qualificado, mais valioso o lead para o corretor.
 
 ## Acceptance Criteria
-- [ ] AC1: Nicole coleta progressivamente (na ordem natural da conversa, nao sequencial forcado):
+- [x] AC1: Nicole coleta progressivamente (na ordem natural da conversa, nao sequencial forcado):
   - Nome do lead
   - Empreendimento de interesse (Vind/Yarden)
   - Numero de quartos desejado
@@ -14,15 +14,15 @@ A qualificacao e o core do valor da Nicole. Ela coleta dados do lead de forma PR
   - Tem entrada disponivel (obrigatorio para Yarden — story 3.5)
   - Como conheceu a Trifold
   - Disponibilidade para visita
-- [ ] AC2: `conversation_state.collected_data` e atualizado a cada dado coletado (jsonb)
-- [ ] AC3: `conversation_state.qualification_step` reflete a etapa atual: `greeting`, `collecting_interest`, `collecting_preferences`, `collecting_payment`, `qualified`, `scheduling_visit`
+- [x] AC2: `conversation_state.collected_data` e atualizado a cada dado coletado (jsonb)
+- [x] AC3: `conversation_state.qualification_step` reflete a etapa atual: `greeting`, `collecting_interest`, `collecting_preferences`, `collecting_payment`, `qualified`, `scheduling_visit`
 - [ ] AC4: Dados coletados sao sincronizados com a tabela `leads` (campos: `preferred_bedrooms`, `preferred_floor`, `preferred_view`, etc.)
-- [ ] AC5: Score de qualificacao calculado (0-100) baseado em completude dos dados coletados
-- [ ] AC6: Score >= 70 marca lead como `qualified` e dispara criterio de handoff
-- [ ] AC7: Nicole NAO faz perguntas em sequencia rapida — intercala com respostas sobre o empreendimento
-- [ ] AC8: Se lead ja forneceu dado em mensagem anterior, Nicole nao pergunta novamente
-- [ ] AC9: Funcao `extractLeadData(message, currentState)` que extrai dados da mensagem do lead usando Claude (Haiku)
-- [ ] AC10: Funcao `calculateQualificationScore(collectedData)` que retorna score 0-100
+- [x] AC5: Score de qualificacao calculado (0-100) baseado em completude dos dados coletados
+- [x] AC6: Score >= 70 marca lead como `qualified` e dispara criterio de handoff
+- [x] AC7: Nicole NAO faz perguntas em sequencia rapida — intercala com respostas sobre o empreendimento
+- [x] AC8: Se lead ja forneceu dado em mensagem anterior, Nicole nao pergunta novamente
+- [x] AC9: Funcao `extractLeadData(message, currentState)` que extrai dados da mensagem do lead usando Claude (Haiku)
+- [x] AC10: Funcao `calculateQualificationScore(collectedData)` que retorna score 0-100
 - [ ] AC11: Kanban stage do lead atualiza automaticamente: "Novo" -> "Em Qualificacao" quando primeira resposta, "Em Qualificacao" -> "Qualificado" quando score >= 70
 
 ## Detalhes Tecnicos
@@ -94,3 +94,6 @@ Retorne APENAS o JSON com campos que foram mencionados nesta mensagem. Campos na
 
 ## Estimativa
 G (Grande) — 3-4 horas
+
+## File List
+- `packages/ai/src/flows/qualification.ts` — Logica do fluxo de qualificacao: calculateQualificationScore, getNextQualificationStep, extractCollectedData

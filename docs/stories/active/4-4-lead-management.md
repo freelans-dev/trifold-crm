@@ -4,17 +4,17 @@
 O CRUD de leads e a base do CRM. Leads sao criados automaticamente quando alguem envia mensagem no WhatsApp/Telegram ou quando chega via webhook do Meta Ads, mas o admin tambem precisa poder criar/editar leads manualmente (ex: lead que ligou por telefone). Cada lead tem dados pessoais, preferencias imobiliarias, origem, score de qualificacao, corretor designado e resumo IA.
 
 ## Acceptance Criteria
-- [ ] AC1: API route `GET /api/leads` retorna lista paginada de leads da org (20 por pagina, cursor-based)
-- [ ] AC2: API route `GET /api/leads/[id]` retorna lead completo com: property_interest, assigned_broker, current_stage, conversations
-- [ ] AC3: API route `POST /api/leads` cria lead manualmente (admin/supervisor only) com campos minimos: nome, telefone
-- [ ] AC4: API route `PATCH /api/leads/[id]` atualiza dados do lead (admin/supervisor/broker designado)
-- [ ] AC5: API route `DELETE /api/leads/[id]` faz soft delete (`is_active = false`, admin only)
+- [x] AC1: API route `GET /api/leads` retorna lista paginada de leads da org (20 por pagina, cursor-based)
+- [x] AC2: API route `GET /api/leads/[id]` retorna lead completo com: property_interest, assigned_broker, current_stage, conversations
+- [x] AC3: API route `POST /api/leads` cria lead manualmente (admin/supervisor only) com campos minimos: nome, telefone
+- [x] AC4: API route `PATCH /api/leads/[id]` atualiza dados do lead (admin/supervisor/broker designado)
+- [x] AC5: API route `DELETE /api/leads/[id]` faz soft delete (`is_active = false`, admin only)
 - [ ] AC6: Campos suportados: nome, telefone, email, empreendimento de interesse, tipologia de interesse, preferencias (andar, vista, garagem, quartos), tem_entrada, status de qualificacao, score, corretor designado, notas, origem, UTM params
 - [ ] AC7: Validacao: telefone obrigatorio e unico (por org), formato brasileiro (+55...)
 - [ ] AC8: Se lead com mesmo telefone ja existe, retorna erro 409 com link para o lead existente
-- [ ] AC9: Pagina `/dashboard/leads` com tabela de leads: nome, telefone, empreendimento, etapa, corretor, score, ultimo contato
-- [ ] AC10: Tabela com ordenacao por colunas (nome, score, data, etapa)
-- [ ] AC11: Busca por nome ou telefone (search bar)
+- [x] AC9: Pagina `/dashboard/leads` com tabela de leads: nome, telefone, empreendimento, etapa, corretor, score, ultimo contato
+- [x] AC10: Tabela com ordenacao por colunas (nome, score, data, etapa)
+- [x] AC11: Busca por nome ou telefone (search bar)
 - [ ] AC12: Botao "Novo lead" abre modal/formulario de criacao
 
 ## Detalhes Tecnicos
@@ -69,3 +69,9 @@ export async function getLeads(orgId: string, options: {
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+- `packages/web/src/app/api/leads/route.ts` — GET (list paginado), POST (create)
+- `packages/web/src/app/api/leads/[id]/route.ts` — GET (detail), PATCH (update), DELETE (soft delete)
+- `packages/web/src/app/dashboard/leads/page.tsx` — Pagina de listagem com tabela, busca e ordenacao

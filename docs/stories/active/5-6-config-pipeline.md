@@ -4,13 +4,13 @@
 O admin precisa de uma interface visual para gerenciar as etapas do pipeline: criar novas etapas, editar nome/cor, reordenar via drag-and-drop, e definir etapas finais (ganho/perdido). O backend ja esta pronto (Story 4.2) — esta story cobre a interface admin.
 
 ## Acceptance Criteria
-- [ ] AC1: Pagina `/dashboard/settings/pipeline` exibe todas as etapas do pipeline em ordem
-- [ ] AC2: Cada etapa exibe: cor (sample), nome, tipo (normal/ganho/perdido), contagem de leads
+- [x] AC1: Pagina `/dashboard/settings/pipeline` exibe todas as etapas do pipeline em ordem
+- [x] AC2: Cada etapa exibe: cor (sample), nome, tipo (normal/ganho/perdido), contagem de leads
 - [ ] AC3: Drag-and-drop para reordenar etapas (salva automaticamente via API de reorder)
-- [ ] AC4: Botao "Nova etapa" abre modal com: nome*, cor* (color picker), tipo (normal/ganho/perdido)
-- [ ] AC5: Clique em etapa abre modal de edicao com mesmos campos
-- [ ] AC6: Botao "Remover" com confirmacao — desabilitado se etapa tem leads (tooltip explica)
-- [ ] AC7: Indicador visual de etapas finais: badge "Ganho" (verde) ou "Perdido" (cinza)
+- [x] AC4: Botao "Nova etapa" abre modal com: nome*, cor* (color picker), tipo (normal/ganho/perdido)
+- [x] AC5: Clique em etapa abre modal de edicao com mesmos campos
+- [x] AC6: Botao "Remover" com confirmacao — desabilitado se etapa tem leads (tooltip explica)
+- [x] AC7: Indicador visual de etapas finais: badge "Ganho" (verde) ou "Perdido" (cinza)
 - [ ] AC8: Preview do pipeline: mini-kanban abaixo mostrando como ficara
 - [ ] AC9: Validacao visual: se nao ha etapa "ganho" ou "perdido", warning amarelo
 - [ ] AC10: Alteracoes refletem imediatamente no pipeline kanban (Story 4.1)
@@ -50,3 +50,9 @@ async function handleReorder(stages: { id: string; position: number }[]) {
 
 ## Estimativa
 P (Pequena) — 1-2 horas
+
+## File List
+
+- `packages/web/src/app/dashboard/configuracoes/pipeline/page.tsx` — Pagina de configuracao das etapas do pipeline com modais de criacao/edicao
+- `packages/web/src/app/api/stages/route.ts` — API de gerenciamento de etapas (GET, POST)
+- `packages/web/src/app/api/stages/[id]/route.ts` — API de etapa individual (GET, PATCH, DELETE)

@@ -9,7 +9,7 @@ Quando a Nicole qualifica um lead, ele precisa ser designado a um corretor para 
 - [ ] AC3: Ao designar, `leads.assigned_broker_id` e atualizado
 - [ ] AC4: Activity log registrado: tipo `broker_assigned`, com nome do corretor e quem designou
 - [ ] AC5: No pipeline kanban, card do lead atualiza para mostrar o corretor designado
-- [ ] AC6: API route `PATCH /api/leads/[id]/assign` aceita `{ broker_id: string }` (admin/supervisor only)
+- [x] AC6: API route `PATCH /api/leads/[id]/assign` aceita `{ broker_id: string }` (admin/supervisor only)
 - [ ] AC7: API route `GET /api/brokers/available?property_id=xxx` retorna corretores que atendem o empreendimento
 - [ ] AC8: Validacao: corretor precisa estar ativo e vinculado ao empreendimento (via `broker_assignments`)
 - [ ] AC9: Se lead ja tem corretor, redesignacao e permitida (com confirmacao) e registra activity log
@@ -66,3 +66,7 @@ export async function assignBroker(leadId: string, brokerId: string, assignedBy:
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+- `packages/web/src/app/api/leads/[id]/assign/route.ts` — PATCH (designar corretor ao lead)

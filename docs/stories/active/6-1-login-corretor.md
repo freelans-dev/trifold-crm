@@ -4,16 +4,16 @@
 Corretores acessam o sistema com email e senha (Supabase Auth). Ao logar, o sistema verifica o role do usuario e redireciona automaticamente: admin/supervisor vai para `/dashboard`, corretor vai para `/broker`. O corretor NAO pode acessar rotas de admin. A pagina de login e unica — o redirect e baseado no role.
 
 ## Acceptance Criteria
-- [ ] AC1: Pagina de login `/login` funciona para todos os roles (admin, supervisor, broker)
-- [ ] AC2: Apos login com role `broker`, redirect automatico para `/broker` (painel do corretor)
-- [ ] AC3: Apos login com role `admin` ou `supervisor`, redirect para `/dashboard` (painel admin)
-- [ ] AC4: Middleware de rota: corretor NAO pode acessar `/dashboard/*` — redirect para `/broker`
-- [ ] AC5: Middleware de rota: admin/supervisor NAO pode acessar `/broker/*` — redirect para `/dashboard`
-- [ ] AC6: API de autenticacao valida role do usuario no banco apos login: `users.role`
-- [ ] AC7: Session persistente (Supabase Auth session com refresh token)
-- [ ] AC8: Botao "Sair" no header do painel do corretor
+- [x] AC1: Pagina de login `/login` funciona para todos os roles (admin, supervisor, broker)
+- [x] AC2: Apos login com role `broker`, redirect automatico para `/broker` (painel do corretor)
+- [x] AC3: Apos login com role `admin` ou `supervisor`, redirect para `/dashboard` (painel admin)
+- [x] AC4: Middleware de rota: corretor NAO pode acessar `/dashboard/*` — redirect para `/broker`
+- [x] AC5: Middleware de rota: admin/supervisor NAO pode acessar `/broker/*` — redirect para `/dashboard`
+- [x] AC6: API de autenticacao valida role do usuario no banco apos login: `users.role`
+- [x] AC7: Session persistente (Supabase Auth session com refresh token)
+- [x] AC8: Botao "Sair" no header do painel do corretor
 - [ ] AC9: Se corretor esta inativo (`is_active = false`), login retorna erro: "Sua conta esta desativada. Contate o administrador."
-- [ ] AC10: Layout do painel corretor: header com nome do corretor, empreendimentos vinculados, e botao sair
+- [x] AC10: Layout do painel corretor: header com nome do corretor, empreendimentos vinculados, e botao sair
 
 ## Detalhes Tecnicos
 
@@ -64,3 +64,8 @@ export async function middleware(request: NextRequest) {
 
 ## Estimativa
 M (Media) — 2 horas
+
+## File List
+
+- `packages/web/src/app/login/page.tsx` — Pagina de login unica com redirect por role (admin/supervisor para /dashboard, broker para /broker)
+- `packages/web/src/app/broker/layout.tsx` — Layout do painel do corretor com header, nome, empreendimentos vinculados e botao sair; redireciona nao-corretores para /dashboard

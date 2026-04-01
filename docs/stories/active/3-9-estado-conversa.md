@@ -4,16 +4,16 @@
 A Nicole precisa "lembrar" do que ja conversou com cada lead. Se o lead mandou mensagem ontem dizendo que se chama Joao e quer o Yarden, hoje a Nicole nao pode perguntar o nome de novo. O `conversation_state` persiste o contexto entre mensagens: dados coletados, etapa da qualificacao, empreendimento discutido, materiais ja enviados, se ja propos visita.
 
 ## Acceptance Criteria
-- [ ] AC1: Tabela `conversation_state` criada com campos: `id`, `conversation_id`, `lead_id`, `current_property_id`, `qualification_step`, `collected_data` (jsonb), `materials_sent` (jsonb), `visit_proposed` (boolean), `handoff_triggered` (boolean), `handoff_reason`, `is_active`, `created_at`, `updated_at`
-- [ ] AC2: Estado carregado automaticamente no inicio de cada processamento de mensagem
-- [ ] AC3: Estado criado automaticamente na primeira mensagem do lead (se nao existir)
-- [ ] AC4: Estado atualizado apos cada interacao com novos dados coletados
-- [ ] AC5: `qualification_step` reflete corretamente a etapa: `greeting` -> `collecting_interest` -> `collecting_preferences` -> `collecting_payment` -> `qualified` -> `scheduling_visit` -> `handed_off`
-- [ ] AC6: `collected_data` acumula dados sem sobrescrever anteriores (merge, nao replace)
+- [x] AC1: Tabela `conversation_state` criada com campos: `id`, `conversation_id`, `lead_id`, `current_property_id`, `qualification_step`, `collected_data` (jsonb), `materials_sent` (jsonb), `visit_proposed` (boolean), `handoff_triggered` (boolean), `handoff_reason`, `is_active`, `created_at`, `updated_at`
+- [x] AC2: Estado carregado automaticamente no inicio de cada processamento de mensagem
+- [x] AC3: Estado criado automaticamente na primeira mensagem do lead (se nao existir)
+- [x] AC4: Estado atualizado apos cada interacao com novos dados coletados
+- [x] AC5: `qualification_step` reflete corretamente a etapa: `greeting` -> `collecting_interest` -> `collecting_preferences` -> `collecting_payment` -> `qualified` -> `scheduling_visit` -> `handed_off`
+- [x] AC6: `collected_data` acumula dados sem sobrescrever anteriores (merge, nao replace)
 - [ ] AC7: `materials_sent` registra IDs de materiais ja enviados para evitar duplicatas
-- [ ] AC8: `visit_proposed` marca true quando Nicole propos visita (para nao propor repetidamente)
-- [ ] AC9: Estado e incluido no contexto do prompt para Claude (resumo dos dados ja coletados)
-- [ ] AC10: Funcao `loadConversationState(conversationId)` e `updateConversationState(id, updates)`
+- [x] AC8: `visit_proposed` marca true quando Nicole propos visita (para nao propor repetidamente)
+- [x] AC9: Estado e incluido no contexto do prompt para Claude (resumo dos dados ja coletados)
+- [x] AC10: Funcao `loadConversationState(conversationId)` e `updateConversationState(id, updates)`
 - [ ] AC11: Se lead retoma conversa apos pausa longa (> 24h), Nicole retoma naturalmente referenciando dados ja coletados
 
 ## Detalhes Tecnicos
@@ -82,3 +82,7 @@ export function mergeCollectedData(
 
 ## Estimativa
 M (Media) — 2 horas
+
+## File List
+- `packages/ai/src/chat/pipeline.ts` — Pipeline principal: carrega e salva conversation_state a cada mensagem processada (loadConversationState, updateConversationState)
+- `supabase/migrations/001_base_schema.sql` — Tabela conversation_state criada nesta migration

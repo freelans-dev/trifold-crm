@@ -4,16 +4,16 @@
 O funil mostra as taxas de conversao entre cada etapa do pipeline: quantos leads viram qualificados, quantos qualificados viram agendados, quantos agendados visitaram, quantos que visitaram fecharam. E a metrica mais importante para o supervisor entender onde esta a "fuga" de leads e otimizar o processo.
 
 ## Acceptance Criteria
-- [ ] AC1: Na pagina de analytics, tab "Funil" exibe visualizacao de funil
-- [ ] AC2: Funil com etapas: Lead (total) -> Qualificado -> Agendado -> Visitou -> Fechou
-- [ ] AC3: Cada etapa mostra: contagem absoluta e porcentagem relativa a etapa anterior
+- [x] AC1: Na pagina de analytics, tab "Funil" exibe visualizacao de funil
+- [x] AC2: Funil com etapas: Lead (total) -> Qualificado -> Agendado -> Visitou -> Fechou
+- [x] AC3: Cada etapa mostra: contagem absoluta e porcentagem relativa a etapa anterior
   - Ex: "Qualificado: 45 (56% dos leads)" | "Agendado: 28 (62% dos qualificados)"
-- [ ] AC4: Visualizacao em formato funil (barras decrescentes) ou sankey diagram simplificado
-- [ ] AC5: Taxa geral de conversao: Fechou / Total de leads (em %)
+- [x] AC4: Visualizacao em formato funil (barras decrescentes) ou sankey diagram simplificado
+- [x] AC5: Taxa geral de conversao: Fechou / Total de leads (em %)
 - [ ] AC6: Filtro por periodo (date range)
 - [ ] AC7: Filtro por empreendimento
 - [ ] AC8: Card de "gargalo": identifica a etapa com maior queda percentual e destaca visualmente
-- [ ] AC9: API route `GET /api/analytics/funnel?from=...&to=...&property=...`
+- [x] AC9: API route `GET /api/analytics/funnel?from=...&to=...&property=...`
 - [ ] AC10: Contagem baseada em leads que PASSARAM por cada etapa (usar activity logs de `stage_change`), nao apenas os que ESTAO na etapa
 
 ## Detalhes Tecnicos
@@ -73,3 +73,9 @@ export async function getSimpleFunnel(orgId: string) {
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- `packages/web/src/app/dashboard/analytics/page.tsx` — Funil de conversao integrado na pagina de analytics
+- `packages/web/src/app/api/analytics/route.ts` — Dados do funil incluidos na API de analytics

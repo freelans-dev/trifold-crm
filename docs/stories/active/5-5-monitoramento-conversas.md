@@ -4,19 +4,19 @@
 O supervisor precisa ver todas as conversas ativas em tempo real — quem esta sendo atendido pela Nicole, quem esta com corretor, quem esta aguardando. Isso e classificado como CORE no brief da Trifold. O monitoramento usa Supabase Realtime para atualizar sem refresh. O supervisor pode clicar em qualquer conversa para ver o historico completo e, futuramente (P1), intervir.
 
 ## Acceptance Criteria
-- [ ] AC1: Pagina `/dashboard/conversations` lista todas as conversas ativas da org
-- [ ] AC2: Cada conversa exibe: nome do lead, empreendimento, ultima mensagem (truncada em 80 chars), timestamp, status, corretor (se designado)
-- [ ] AC3: **Status da conversa** com indicador visual:
+- [x] AC1: Pagina `/dashboard/conversations` lista todas as conversas ativas da org
+- [x] AC2: Cada conversa exibe: nome do lead, empreendimento, ultima mensagem (truncada em 80 chars), timestamp, status, corretor (se designado)
+- [x] AC3: **Status da conversa** com indicador visual:
   - Verde: Nicole atendendo (conversation_state.handoff_triggered = false)
   - Azul: Corretor atendendo (handoff_triggered = true, broker assigned)
   - Amarelo: Aguardando (ultimo msg do lead sem resposta ha >5 min)
   - Cinza: Inativa (sem mensagem ha >24h)
 - [ ] AC4: Lista atualiza em tempo real via Supabase Realtime (nova mensagem, mudanca de status)
-- [ ] AC5: Filtro por status (Todos, Nicole, Corretor, Aguardando, Inativa)
-- [ ] AC6: Filtro por empreendimento e corretor
-- [ ] AC7: Clicar em conversa navega para `/dashboard/leads/[id]` (detalhe do lead com conversa)
-- [ ] AC8: Badge de contagem por status no topo: "Nicole: 5 | Corretor: 3 | Aguardando: 2"
-- [ ] AC9: Ordenacao por ultima mensagem (mais recente primeiro)
+- [x] AC5: Filtro por status (Todos, Nicole, Corretor, Aguardando, Inativa)
+- [x] AC6: Filtro por empreendimento e corretor
+- [x] AC7: Clicar em conversa navega para `/dashboard/leads/[id]` (detalhe do lead com conversa)
+- [x] AC8: Badge de contagem por status no topo: "Nicole: 5 | Corretor: 3 | Aguardando: 2"
+- [x] AC9: Ordenacao por ultima mensagem (mais recente primeiro)
 - [ ] AC10: Indicador de "digitando" se mensagem chegou nos ultimos 3 segundos
 
 ## Detalhes Tecnicos
@@ -79,3 +79,7 @@ const channel = supabase
 
 ## Estimativa
 G (Grande) — 3-4 horas
+
+## File List
+
+- `packages/web/src/app/dashboard/conversas/page.tsx` — Pagina de monitoramento de conversas com lista, filtros e indicadores de status

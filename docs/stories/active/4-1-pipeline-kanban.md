@@ -4,16 +4,16 @@
 O pipeline kanban e o visual core do CRM — e onde o supervisor e admin acompanham todos os leads em tempo real. Cada coluna e uma etapa do funil (Novo, Qualificado, Agendado, etc.) e cada card e um lead. O board suporta drag-and-drop para mover leads entre etapas. A base e adaptada do agente-linda (`packages/web/src/app/dashboard/pipeline/`) que ja tem kanban funcional — precisa adaptar para o contexto imobiliario (empreendimento, corretor, score).
 
 ## Acceptance Criteria
-- [ ] AC1: Pagina `/dashboard/pipeline` renderiza board kanban com colunas baseadas na tabela `kanban_stages` (ordenadas por `position`)
-- [ ] AC2: Cada coluna mostra o nome da etapa, cor, e contagem de leads
-- [ ] AC3: Cards de lead exibem: nome, empreendimento de interesse, corretor designado (avatar/iniciais), tempo na etapa, score de qualificacao (badge colorido)
-- [ ] AC4: Drag-and-drop funcional: mover card entre colunas atualiza `leads.current_stage_id` no banco
+- [x] AC1: Pagina `/dashboard/pipeline` renderiza board kanban com colunas baseadas na tabela `kanban_stages` (ordenadas por `position`)
+- [x] AC2: Cada coluna mostra o nome da etapa, cor, e contagem de leads
+- [x] AC3: Cards de lead exibem: nome, empreendimento de interesse, corretor designado (avatar/iniciais), tempo na etapa, score de qualificacao (badge colorido)
+- [x] AC4: Drag-and-drop funcional: mover card entre colunas atualiza `leads.current_stage_id` no banco
 - [ ] AC5: Ao mover lead, registra activity log: `stage_change` com stage anterior e novo
 - [ ] AC6: Board atualiza em tempo real via Supabase Realtime (novo lead aparece, mudanca de etapa reflete)
-- [ ] AC7: Card clicavel — ao clicar, navega para `/dashboard/leads/[id]` (detalhe do lead — Story 4.5)
+- [x] AC7: Card clicavel — ao clicar, navega para `/dashboard/leads/[id]` (detalhe do lead — Story 4.5)
 - [ ] AC8: Board responsivo — em mobile, colunas viram lista vertical com swipe
-- [ ] AC9: Loading skeleton enquanto carrega dados
-- [ ] AC10: Empty state por coluna ("Nenhum lead nesta etapa")
+- [x] AC9: Loading skeleton enquanto carrega dados
+- [x] AC10: Empty state por coluna ("Nenhum lead nesta etapa")
 
 ## Detalhes Tecnicos
 
@@ -87,3 +87,10 @@ interface LeadCardProps {
 
 ## Estimativa
 G (Grande) — 3-4 horas
+
+## File List
+
+- `packages/web/src/app/dashboard/pipeline/page.tsx` — Pagina do pipeline kanban
+- `packages/web/src/components/pipeline/kanban-board.tsx` — Board completo com drag-and-drop
+- `packages/web/src/components/pipeline/kanban-column.tsx` — Coluna individual do kanban
+- `packages/web/src/components/pipeline/lead-card.tsx` — Card do lead com dados imobiliarios

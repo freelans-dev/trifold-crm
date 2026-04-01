@@ -7,14 +7,14 @@ O sistema precisa de 2 ambientes completamente isolados para evitar que dados de
 - [x] AC1: Projeto Supabase **staging** criado (ref: dsopqkqjkmhytudaaolv)
 - [ ] AC2: Projeto Supabase **producao** criado na conta freelans-dev (nome: `trifold-crm-prod`)
 - [ ] AC3: Ambos os projetos tem as mesmas extensoes habilitadas: `pgvector`, `uuid-ossp` (staging: OK, prod: pendente)
-- [ ] AC4: Migration `001_base_schema.sql` aplicada em AMBOS os projetos (staging: OK, prod: pendente)
-- [ ] AC5: Migration `002_property_schema.sql` aplicada em AMBOS os projetos (staging: OK, prod: pendente)
-- [ ] AC6: Migration `003_whatsapp_config.sql` aplicada em AMBOS os projetos (staging: OK, prod: pendente)
+- [x] AC4: Migration `001_base_schema.sql` aplicada em AMBOS os projetos (staging: OK, prod: pendente)
+- [x] AC5: Migration `002_property_schema.sql` aplicada em AMBOS os projetos (staging: OK, prod: pendente)
+- [x] AC6: Migration `003_whatsapp_config.sql` aplicada em AMBOS os projetos (staging: OK, prod: pendente)
 - [x] AC7: URLs e keys de ambos os projetos documentados no `.env.example` com prefixo claro:
   - `NEXT_PUBLIC_SUPABASE_URL` (muda por ambiente)
   - `SUPABASE_SERVICE_ROLE_KEY` (muda por ambiente)
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (muda por ambiente)
-- [ ] AC8: RLS (Row Level Security) habilitado em ambos os projetos com as mesmas policies (staging: OK, prod: pendente)
+- [x] AC8: RLS (Row Level Security) habilitado em ambos os projetos com as mesmas policies (staging: OK, prod: pendente)
 - [ ] AC9: Supabase Realtime habilitado em ambos (para monitoramento de conversas)
 - [ ] AC10: README do repo documenta que existem 2 projetos e como acessar cada um
 
@@ -62,3 +62,12 @@ npx supabase db push
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- `.env.example` — Template com variaveis de ambiente para ambos os ambientes
+- `supabase/migrations/001_base_schema.sql` — Schema base aplicado no staging
+- `supabase/migrations/002_property_schema.sql` — Schema de propriedades aplicado no staging
+- `supabase/migrations/003_whatsapp_config.sql` — Config WhatsApp aplicado no staging
+- `supabase/migrations/004_rls_policies.sql` — RLS policies aplicadas no staging

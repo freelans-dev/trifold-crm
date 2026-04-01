@@ -122,3 +122,13 @@ CREATE TABLE units (
 
 ## Estimativa
 G (Grande) — 3-4 horas
+
+## File List
+
+### Created/Modified
+- `supabase/migrations/001_base_schema.sql` — Tabelas base: organizations, users, leads, conversations, messages, kanban_stages, agent_prompts, agent_config, knowledge_base, conversation_state, activities
+- `supabase/migrations/002_property_schema.sql` — Tabelas: properties, typologies, units, property_media, brokers, broker_assignments, lead_property_interest, visit_feedback
+- `supabase/migrations/003_whatsapp_config.sql` — Tabela whatsapp_config
+- `packages/db/src/index.ts` — Supabase client export
+- `packages/db/src/types.ts` — Types TypeScript gerados
+- `.env.example` — Template com todas as variaveis

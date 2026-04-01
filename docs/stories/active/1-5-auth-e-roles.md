@@ -64,3 +64,14 @@ CREATE POLICY "broker_own_leads" ON leads
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- `supabase/migrations/004_rls_policies.sql` — Todas as RLS policies
+- `packages/web/src/app/login/page.tsx` — Pagina de login com email + senha
+- `packages/web/src/app/login/actions.ts` — Server action de login
+- `packages/web/src/middleware.ts` — Auth + role redirect middleware
+- `packages/web/src/lib/auth.ts` — getServerUser() e helpers de auth
+- `packages/web/src/hooks/use-user.ts` — Hook client-side useUser()
+- `packages/db/src/server.ts` — Supabase server client (com cookies)

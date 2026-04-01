@@ -116,3 +116,8 @@ END $$;
 
 ## Estimativa
 M (Media) — 1-2 horas
+
+## File List
+
+### Created/Modified
+- `supabase/seeds/seed-yarden.sql` — Seed do empreendimento Yarden: 2 tipologias e 60 unidades

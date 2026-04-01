@@ -4,15 +4,15 @@
 Os guardrails sao a camada de seguranca que impede a Nicole de cometer erros criticos. Sao 6 restricoes definidas pela Trifold por razoes juridicas e comerciais. A Nicole NUNCA deve: prometer materiais de acabamento, simular financiamento, expor memorial descritivo, dar preco exato, revelar que e IA, ou inventar informacao. Violacao de qualquer guardrail e incidente critico.
 
 ## Acceptance Criteria
-- [ ] AC1: Guardrail RN1 ativo: Nicole NAO promete materiais/acabamentos especificos. Se perguntarem sobre piso/revestimento/acabamento, responde "os acabamentos serao definidos no memorial descritivo final, venha conhecer o decorado para ter uma ideia do padrao"
-- [ ] AC2: Guardrail RN2 ativo: Nicole NAO faz simulacao financeira. Se perguntarem "quanto fica a parcela?", responde "as condicoes dependem do seu perfil, o corretor pode fazer uma simulacao personalizada presencialmente"
-- [ ] AC3: Guardrail RN3 ativo: Nicole NAO expoe memorial descritivo tecnico. Se pedirem memorial, responde "o memorial completo esta disponivel no stand de vendas, posso agendar uma visita?"
-- [ ] AC4: Guardrail RN4 ativo: Nicole NAO da preco exato por unidade. Se perguntarem preco, responde com faixa generica (se configurada) ou direciona ao corretor
-- [ ] AC5: Guardrail RN5 ativo: Nicole NAO revela que e IA/bot. Se perguntarem, diz que e da equipe comercial
-- [ ] AC6: Guardrail RN6 ativo: Nicole NAO inventa informacao. Se nao sabe, diz que vai verificar e sugere visita
-- [ ] AC7: Funcao `applyGuardrails(response, context)` que verifica a resposta ANTES de enviar e corrige/bloqueia se necessario
+- [x] AC1: Guardrail RN1 ativo: Nicole NAO promete materiais/acabamentos especificos. Se perguntarem sobre piso/revestimento/acabamento, responde "os acabamentos serao definidos no memorial descritivo final, venha conhecer o decorado para ter uma ideia do padrao"
+- [x] AC2: Guardrail RN2 ativo: Nicole NAO faz simulacao financeira. Se perguntarem "quanto fica a parcela?", responde "as condicoes dependem do seu perfil, o corretor pode fazer uma simulacao personalizada presencialmente"
+- [x] AC3: Guardrail RN3 ativo: Nicole NAO expoe memorial descritivo tecnico. Se pedirem memorial, responde "o memorial completo esta disponivel no stand de vendas, posso agendar uma visita?"
+- [x] AC4: Guardrail RN4 ativo: Nicole NAO da preco exato por unidade. Se perguntarem preco, responde com faixa generica (se configurada) ou direciona ao corretor
+- [x] AC5: Guardrail RN5 ativo: Nicole NAO revela que e IA/bot. Se perguntarem, diz que e da equipe comercial
+- [x] AC6: Guardrail RN6 ativo: Nicole NAO inventa informacao. Se nao sabe, diz que vai verificar e sugere visita
+- [x] AC7: Funcao `applyGuardrails(response, context)` que verifica a resposta ANTES de enviar e corrige/bloqueia se necessario
 - [ ] AC8: Log de violacao tentada: quando IA tenta violar guardrail, registra em `activities` como `guardrail_triggered` com tipo de guardrail
-- [ ] AC9: Guardrails sao configurados na tabela `agent_prompts` (slug: `guardrails`) e podem ser editados pelo admin
+- [x] AC9: Guardrails sao configurados na tabela `agent_prompts` (slug: `guardrails`) e podem ser editados pelo admin
 - [ ] AC10: Teste: enviar 6 mensagens que tentam violar cada guardrail e confirmar que Nicole responde adequadamente
 
 ## Detalhes Tecnicos
@@ -58,3 +58,6 @@ export function checkGuardrailViolation(
 
 ## Estimativa
 M (Media) — 2 horas
+
+## File List
+- `packages/ai/src/prompts/guardrails.ts` — Definicao dos 6 guardrails (RN1-RN6) com instrucoes de prompt e respostas padrao

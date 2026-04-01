@@ -4,15 +4,15 @@
 A Nicole precisa respeitar horario comercial. Fora do horario, envia mensagem personalizada informando que vai responder no proximo dia util e coleta dados basicos (nome, interesse). O admin configura dias e horarios. Para o MVP, o padrao e segunda a sexta, 8h-18h, horario de Brasilia.
 
 ## Acceptance Criteria
-- [ ] AC1: Tabela `agent_config` tem campos `business_hours_start` (ex: "08:00"), `business_hours_end` (ex: "18:00"), `business_days` (ex: [1,2,3,4,5] = seg-sex), `timezone` (ex: "America/Sao_Paulo")
-- [ ] AC2: Funcao `isBusinessHours(config)` retorna true/false baseado no horario atual vs config
-- [ ] AC3: Fora do horario, Nicole envia mensagem configuravel (prompt `off_hours`)
-- [ ] AC4: Mensagem fora do horario coleta dados basicos: "Oi! Nosso horario de atendimento e de segunda a sexta, das 8h as 18h. Mas me conta: qual seu nome e qual empreendimento te interessa? Assim que voltarmos, ja te respondo com tudo!"
-- [ ] AC5: Dados coletados fora do horario sao salvos normalmente no `conversation_state`
+- [x] AC1: Tabela `agent_config` tem campos `business_hours_start` (ex: "08:00"), `business_hours_end` (ex: "18:00"), `business_days` (ex: [1,2,3,4,5] = seg-sex), `timezone` (ex: "America/Sao_Paulo")
+- [x] AC2: Funcao `isBusinessHours(config)` retorna true/false baseado no horario atual vs config
+- [x] AC3: Fora do horario, Nicole envia mensagem configuravel (prompt `off_hours`)
+- [x] AC4: Mensagem fora do horario coleta dados basicos: "Oi! Nosso horario de atendimento e de segunda a sexta, das 8h as 18h. Mas me conta: qual seu nome e qual empreendimento te interessa? Assim que voltarmos, ja te respondo com tudo!"
+- [x] AC5: Dados coletados fora do horario sao salvos normalmente no `conversation_state`
 - [ ] AC6: Quando horario comercial volta, Nicole retoma conversa naturalmente: "Bom dia, [nome]! Vi que voce mandou mensagem ontem sobre o [empreendimento]. Vamos conversar?"
 - [ ] AC7: Configuracao de horario editavel pelo admin no painel (story E5-F10, mas a logica precisa existir agora)
-- [ ] AC8: Seed com horario default: seg-sex 08:00-18:00, America/Sao_Paulo
-- [ ] AC9: Modo configuravel: `always` (responde sempre), `business_only` (so no horario), `basic_off_hours` (resposta basica fora do horario — padrao)
+- [x] AC8: Seed com horario default: seg-sex 08:00-18:00, America/Sao_Paulo
+- [x] AC9: Modo configuravel: `always` (responde sempre), `business_only` (so no horario), `basic_off_hours` (resposta basica fora do horario — padrao)
 
 ## Detalhes Tecnicos
 
@@ -74,3 +74,6 @@ if (!withinHours && config.off_hours_mode === 'basic_off_hours') {
 
 ## Estimativa
 P (Pequena) — 1 hora
+
+## File List
+- `packages/ai/src/utils/business-hours.ts` — Funcao isBusinessHours() com suporte a timezone, dias da semana e modos de operacao

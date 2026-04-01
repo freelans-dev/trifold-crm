@@ -58,3 +58,10 @@ NODE_ENV=development
 
 ## Estimativa
 P (Pequena) — 1 hora
+
+## File List
+
+### Created/Modified
+- `.env.example` — Template com todas as variaveis necessarias
+- `packages/db/src/client.ts` — Supabase client com env vars
+- `packages/ai/src/client.ts` — Anthropic client com env vars

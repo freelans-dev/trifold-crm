@@ -4,14 +4,14 @@
 CI/CD desde o dia 1. Cada push para `main` deve gerar deploy automatico na Vercel. Isso permite que stakeholders vejam progresso em tempo real e elimina deploys manuais. O dominio temporario da Vercel e suficiente para o MVP; dominio customizado (`crm.3fold`) vem depois.
 
 ## Acceptance Criteria
-- [ ] AC1: Projeto `trifold-crm` criado na Vercel vinculado ao repo GitHub `freelans-dev/trifold-crm`
-- [ ] AC2: Root directory configurado como `packages/web` (ou Turborepo root com build filter)
-- [ ] AC3: Auto-deploy habilitado para branch `main`
-- [ ] AC4: Preview deploys habilitados para pull requests
-- [ ] AC5: Build command funciona: `turbo build --filter=web`
+- [x] AC1: Projeto `trifold-crm` criado na Vercel vinculado ao repo GitHub `freelans-dev/trifold-crm`
+- [x] AC2: Root directory configurado como `packages/web` (ou Turborepo root com build filter)
+- [x] AC3: Auto-deploy habilitado para branch `main`
+- [x] AC4: Preview deploys habilitados para pull requests
+- [x] AC5: Build command funciona: `turbo build --filter=web`
 - [ ] AC6: Environment variables de producao configuradas na Vercel (Supabase URL, Supabase Anon Key)
-- [ ] AC7: Deploy inicial funciona e retorna pagina placeholder (landing ou dashboard shell)
-- [ ] AC8: URL do deploy acessivel e funcional (ex: `trifold-crm.vercel.app`)
+- [x] AC7: Deploy inicial funciona e retorna pagina placeholder (landing ou dashboard shell)
+- [x] AC8: URL do deploy acessivel e funcional (ex: `trifold-crm.vercel.app`)
 
 ## Detalhes Tecnicos
 
@@ -35,3 +35,9 @@ CI/CD desde o dia 1. Cada push para `main` deve gerar deploy automatico na Verce
 
 ## Estimativa
 P (Pequena) — 1 hora
+
+## File List
+
+### Created/Modified
+- `vercel.json` — Configuracao de monorepo para deploy Vercel
+- `packages/web/next.config.ts` — Configuracao base Next.js

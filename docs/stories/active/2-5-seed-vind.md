@@ -100,3 +100,8 @@ END $$;
 
 ## Estimativa
 P (Pequena) — 1 hora
+
+## File List
+
+### Created/Modified
+- `supabase/seeds/seed-vind.sql` — Seed do empreendimento Vind: 1 tipologia e 48 unidades

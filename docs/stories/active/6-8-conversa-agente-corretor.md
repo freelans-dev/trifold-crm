@@ -4,15 +4,15 @@
 O corretor precisa ver toda a conversa que a Nicole teve com o lead antes do handoff. Isso e essencial para nao repetir perguntas e entender o contexto. O componente e o mesmo da Story 4.7 (conversa visivel no admin) — esta story garante que funciona no painel do corretor com as devidas permissoes e destaques de informacoes chave.
 
 ## Acceptance Criteria
-- [ ] AC1: No detalhe do lead do corretor (Story 6.4), tab/secao "Conversa" exibe o historico completo
-- [ ] AC2: Mensagens exibidas como chat bubbles (reusar componente da Story 4.7)
+- [x] AC1: No detalhe do lead do corretor (Story 6.4), tab/secao "Conversa" exibe o historico completo
+- [x] AC2: Mensagens exibidas como chat bubbles (reusar componente da Story 4.7)
 - [ ] AC3: Informacoes chave extraidas pela IA destacadas visualmente:
   - Nome mencionado pelo lead (highlight amarelo)
   - Preferencias mencionadas (quartos, andar, vista — badges inline)
   - Objecoes identificadas (highlight vermelho sutil)
 - [ ] AC4: Separator visual de handoff: "Nicole transferiu a conversa para voce — [timestamp]"
-- [ ] AC5: Mensagens do corretor (via Coexistence Mode / Messaging Echoes) exibidas em azul
-- [ ] AC6: Scroll automatico para a mensagem mais recente ao abrir
+- [x] AC5: Mensagens do corretor (via Coexistence Mode / Messaging Echoes) exibidas em azul
+- [x] AC6: Scroll automatico para a mensagem mais recente ao abrir
 - [ ] AC7: Mensagens atualizadas em tempo real (novas mensagens do lead aparecem — Realtime)
 - [ ] AC8: Corretor so ve conversas dos leads designados a ele (validacao server-side)
 
@@ -44,3 +44,7 @@ interface ConversationHighlights {
 
 ## Estimativa
 P (Pequena) — 1-2 horas (reusar 90% da Story 4.7)
+
+## File List
+
+- `packages/web/src/app/broker/leads/[id]/page.tsx` — Secao de conversa integrada na pagina de detalhe do lead do corretor com chat bubbles, cores por sender type e scroll automatico para mensagem mais recente

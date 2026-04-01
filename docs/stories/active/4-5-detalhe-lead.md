@@ -4,17 +4,17 @@
 A pagina de detalhe do lead e onde o supervisor/admin ve TUDO sobre um lead: dados pessoais, preferencias imobiliarias, historico da conversa com o agente, resumo IA, timeline de atividades, empreendimento de interesse e notas. E a pagina mais acessada do CRM — o supervisor abre para decidir proximos passos, e o corretor abre para entender o lead antes de atender.
 
 ## Acceptance Criteria
-- [ ] AC1: Pagina `/dashboard/leads/[id]` renderiza com todas as secoes do lead
-- [ ] AC2: **Header:** Nome do lead, telefone (clicavel para WhatsApp), email, etapa atual (badge com cor), score (badge), corretor designado, botao "Editar"
-- [ ] AC3: **Secao Dados:** Empreendimento de interesse, tipologia, preferencias (quartos, andar, vista, garagem), tem entrada, origem (badge), UTM params
-- [ ] AC4: **Secao Resumo IA:** Card com `ai_summary` gerado automaticamente — preferencias, objecoes, perguntas, proximos passos recomendados
-- [ ] AC5: **Secao Conversa:** Historico completo de mensagens (agente + lead + corretor) — exibido como chat bubbles com timestamp e sender type (IA = roxo, Lead = cinza, Corretor = azul, Supervisor = vermelho)
-- [ ] AC6: **Secao Timeline:** Activity logs em ordem cronologica reversa (mais recente primeiro)
+- [x] AC1: Pagina `/dashboard/leads/[id]` renderiza com todas as secoes do lead
+- [x] AC2: **Header:** Nome do lead, telefone (clicavel para WhatsApp), email, etapa atual (badge com cor), score (badge), corretor designado, botao "Editar"
+- [x] AC3: **Secao Dados:** Empreendimento de interesse, tipologia, preferencias (quartos, andar, vista, garagem), tem entrada, origem (badge), UTM params
+- [x] AC4: **Secao Resumo IA:** Card com `ai_summary` gerado automaticamente — preferencias, objecoes, perguntas, proximos passos recomendados
+- [x] AC5: **Secao Conversa:** Historico completo de mensagens (agente + lead + corretor) — exibido como chat bubbles com timestamp e sender type (IA = roxo, Lead = cinza, Corretor = azul, Supervisor = vermelho)
+- [x] AC6: **Secao Timeline:** Activity logs em ordem cronologica reversa (mais recente primeiro)
 - [ ] AC7: **Secao Notas:** Area para adicionar notas em texto livre (admin/supervisor/corretor)
 - [ ] AC8: **Acoes rapidas:** Mover para etapa (dropdown), Designar corretor (dropdown), Marcar visita agendada
 - [ ] AC9: Secao conversa carrega via scroll infinito (ultimas 50 mensagens, load more ao scrollar pra cima)
 - [ ] AC10: Dados atualizados em tempo real via Supabase Realtime (nova mensagem aparece, mudanca de etapa reflete)
-- [ ] AC11: Layout em tabs ou sidebar: Dados | Conversa | Timeline | Notas
+- [x] AC11: Layout em tabs ou sidebar: Dados | Conversa | Timeline | Notas
 
 ## Detalhes Tecnicos
 
@@ -73,3 +73,7 @@ const senderStyles = {
 
 ## Estimativa
 G (Grande) — 3-4 horas
+
+## File List
+
+- `packages/web/src/app/dashboard/leads/[id]/page.tsx` — Pagina de detalhe do lead com header, dados, resumo IA, conversa e timeline

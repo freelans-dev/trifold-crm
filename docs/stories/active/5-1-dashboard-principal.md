@@ -4,20 +4,20 @@
 O dashboard e a primeira pagina que o admin/supervisor ve ao logar. Precisa dar uma visao rapida do estado do negocio: quantos leads entraram hoje, quantos estao qualificados, quantas visitas agendadas, como esta o pipeline. Nao e analytics completo (Bloco 7) — e um painel operacional para decisoes do dia-a-dia.
 
 ## Acceptance Criteria
-- [ ] AC1: Pagina `/dashboard` renderiza dashboard com metricas e graficos
-- [ ] AC2: **Cards de metricas** (4 cards no topo):
+- [x] AC1: Pagina `/dashboard` renderiza dashboard com metricas e graficos
+- [x] AC2: **Cards de metricas** (4 cards no topo):
   - Leads hoje (total de leads criados hoje)
   - Leads qualificados (score >= 70, esta semana)
   - Visitas agendadas (esta semana)
   - Taxa de qualificacao (qualificados / total, este mes, em %)
-- [ ] AC3: **Pipeline resumido**: Mini-bar chart horizontal com contagem de leads por etapa (Novo: 12, Qualificado: 8, etc.)
-- [ ] AC4: **Leads sem corretor**: Contagem + lista dos 5 leads mais recentes sem `assigned_broker_id` — link rapido para designar
+- [x] AC3: **Pipeline resumido**: Mini-bar chart horizontal com contagem de leads por etapa (Novo: 12, Qualificado: 8, etc.)
+- [x] AC4: **Leads sem corretor**: Contagem + lista dos 5 leads mais recentes sem `assigned_broker_id` — link rapido para designar
 - [ ] AC5: **Ultimas conversas ativas**: Lista das 5 conversas mais recentes com: nome do lead, ultima mensagem (truncada), timestamp, status (agente/corretor/aguardando)
-- [ ] AC6: **Leads por empreendimento**: Mini-donut chart ou badges: Vind (X), Yarden (Y), Nao definido (Z)
+- [x] AC6: **Leads por empreendimento**: Mini-donut chart ou badges: Vind (X), Yarden (Y), Nao definido (Z)
 - [ ] AC7: Metricas calculadas via API route `GET /api/dashboard/metrics` (server-side)
 - [ ] AC8: Periodo selecionavel: Hoje, Esta semana, Este mes (altera todas as metricas)
 - [ ] AC9: Dados atualizados a cada 30 segundos (polling) ou via Realtime
-- [ ] AC10: Loading skeletons enquanto carrega
+- [x] AC10: Loading skeletons enquanto carrega
 
 ## Detalhes Tecnicos
 
@@ -64,3 +64,7 @@ export async function GET(request: Request) {
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+- `packages/web/src/app/dashboard/page.tsx` — Pagina principal do dashboard com cards de metricas, pipeline resumido e distribuicao por empreendimento

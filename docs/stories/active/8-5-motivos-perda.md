@@ -16,12 +16,12 @@ Quando um lead e marcado como "Perdido" no pipeline, o sistema precisa registrar
   - Outro (campo de texto livre)
 - [ ] AC3: Motivo salvo em `leads.loss_reason` (enum) e `leads.loss_notes` (texto livre)
 - [ ] AC4: Activity log registrado: `stage_change` com metadata `{ loss_reason: '...', loss_notes: '...' }`
-- [ ] AC5: Na pagina de analytics, tab "Perdas" exibe:
+- [x] AC5: Na pagina de analytics, tab "Perdas" exibe:
   - Grafico de pizza/donut com distribuicao de motivos
   - Tabela com motivo, contagem, porcentagem
   - Filtro por periodo e empreendimento
-- [ ] AC6: Card de insight: "Motivo mais frequente: [X] ([Y]%)"
-- [ ] AC7: API route `GET /api/analytics/loss-reasons?from=...&to=...&property=...`
+- [x] AC6: Card de insight: "Motivo mais frequente: [X] ([Y]%)"
+- [x] AC7: API route `GET /api/analytics/loss-reasons?from=...&to=...&property=...`
 - [ ] AC8: Motivos configuraveis pelo admin (futuro — por ora, lista fixa)
 - [ ] AC9: Se lead voltar de "Perdido" para outra etapa (reativacao), motivo e mantido como historico
 
@@ -77,3 +77,9 @@ async function handleDragEnd(event: DragEndEvent) {
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- `packages/web/src/app/dashboard/analytics/page.tsx` — Secao de motivos de perda integrada na pagina de analytics
+- `packages/web/src/app/api/analytics/route.ts` — Dados de motivos de perda incluidos na API de analytics

@@ -4,11 +4,11 @@
 Tipologias representam os modelos de planta de cada empreendimento. Vind tem 1 tipologia (67m2, 2 suites). Yarden tem 2 (Tipologia A: 83,66m2, 2 suites | Tipologia B: 79,81m2, 2 dorm + 1 suite). A Nicole usa tipologias para responder perguntas sobre metragem, quartos e diferenciais. As unidades individuais sao vinculadas a tipologias.
 
 ## Acceptance Criteria
-- [ ] AC1: API route `GET /api/properties/[propertyId]/typologies` retorna tipologias do empreendimento
-- [ ] AC2: API route `GET /api/typologies/[id]` retorna tipologia por ID
-- [ ] AC3: API route `POST /api/properties/[propertyId]/typologies` cria tipologia vinculada ao empreendimento
-- [ ] AC4: API route `PATCH /api/typologies/[id]` atualiza tipologia
-- [ ] AC5: API route `DELETE /api/typologies/[id]` faz soft delete
+- [x] AC1: API route `GET /api/properties/[propertyId]/typologies` retorna tipologias do empreendimento
+- [x] AC2: API route `GET /api/typologies/[id]` retorna tipologia por ID
+- [x] AC3: API route `POST /api/properties/[propertyId]/typologies` cria tipologia vinculada ao empreendimento
+- [x] AC4: API route `PATCH /api/typologies/[id]` atualiza tipologia
+- [x] AC5: API route `DELETE /api/typologies/[id]` faz soft delete
 - [ ] AC6: Campos suportados: nome, metragem privativa, metragem total, dormitorios, suites, banheiros, sacada (bool), churrasqueira na sacada (bool), diferenciais (jsonb), descricao
 - [ ] AC7: Validacao: nome obrigatorio, property_id obrigatorio e valido
 - [ ] AC8: Componente de listagem de tipologias dentro da pagina de empreendimento (tab ou secao)
@@ -41,3 +41,9 @@ Tipologias representam os modelos de planta de cada empreendimento. Vind tem 1 t
 
 ## Estimativa
 M (Media) — 2 horas
+
+## File List
+
+### Created/Modified
+- `packages/web/src/app/api/properties/[propertyId]/typologies/route.ts` — GET (list), POST (create)
+- `packages/web/src/app/api/typologies/[id]/route.ts` — GET (detail), PATCH (update), DELETE (soft delete)
