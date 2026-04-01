@@ -17,57 +17,87 @@ const IMAGE_MIME_TYPES = new Set([
 function prepareTextForTTS(text: string): string {
   let result = text
 
-  // Tornar mais coloquial para soar natural no áudio
-  const coloquial: [RegExp, string][] = [
-    [/\bpara o\b/gi, "pro"],
-    [/\bpara a\b/gi, "pra"],
-    [/\bpara\b/gi, "pra"],
-    [/\bestá\b/gi, "tá"],
-    [/\bnão é\b/gi, "né"],
-    [/\bvocê está\b/gi, "você tá"],
-    [/\bestamos\b/gi, "a gente tá"],
-    [/\bnós temos\b/gi, "a gente tem"],
-    [/\bm²\b/gi, "metros quadrados"],
-    [/\bm2\b/gi, "metros quadrados"],
-    [/(\d+)m²/gi, "$1 metros quadrados"],
-    [/(\d+)m2/gi, "$1 metros quadrados"],
-    [/R\$\s?/gi, ""],
-    [/\b(\d{2})\/(\d{2})\/(\d{4})\b/g, "$1 de $2 de $3"],
+  // Primeiro: expandir abreviações que o TTS lê errado
+  const expansions: [RegExp, string][] = [
+    // Horários
+    [/\b(\d{1,2})h\s?às\s?(\d{1,2})h/gi, (_, a, b) => `${numberToWords(a)} às ${numberToWords(b)}`],
+    [/\b(\d{1,2})h(\d{2})?/gi, (_, h, m) => m ? `${numberToWords(h)} e ${numberToWords(m)}` : `${numberToWords(h)} horas`],
+    [/\bdas\s+(\d{1,2})\s+às\s+(\d{1,2})/gi, (_, a, b) => `das ${numberToWords(a)} às ${numberToWords(b)}`],
+    // Unidades
+    [/(\d+)\s?m²/gi, (_, n) => `${numberToWords(n)} metros quadrados`],
+    [/(\d+)\s?m2/gi, (_, n) => `${numberToWords(n)} metros quadrados`],
+    [/\b(\d+)%/gi, (_, n) => `${numberToWords(n)} por cento`],
+    // Dinheiro
+    [/R\$\s?(\d[\d.,]*)/gi, (_, v) => `${v.replace(/\./g, "")} reais`],
+    // Datas/anos
+    [/\b2029\b/g, "dois mil e vinte e nove"],
+    [/\b2027\b/g, "dois mil e vinte e sete"],
+    [/\b2028\b/g, "dois mil e vinte e oito"],
+    [/\b2026\b/g, "dois mil e vinte e seis"],
+    // Endereços
+    [/\b1337\b/g, "mil trezentos e trinta e sete"],
+    [/\b547\b/g, "quinhentos e quarenta e sete"],
+    [/\b168\b/g, "cento e sessenta e oito"],
+    // Metragens
+    [/\b83,66\b/g, "oitenta e três"],
+    [/\b79,81\b/g, "quase oitenta"],
+    [/\b66,91\b/g, "quase sessenta e sete"],
+    // Abreviações
+    [/\bAv\.\b/gi, "Avenida"],
+    [/\bR\.\b/gi, "Rua"],
+    [/\bseg\b/gi, "segunda"],
+    [/\bsex\b/gi, "sexta"],
+    [/\bsáb\b/gi, "sábado"],
+    [/\bdom\b/gi, "domingo"],
   ]
 
-  for (const [pattern, replacement] of coloquial) {
-    result = result.replace(pattern, replacement)
+  for (const [pattern, replacement] of expansions) {
+    if (typeof replacement === "string") {
+      result = result.replace(pattern, replacement)
+    } else {
+      result = result.replace(pattern, replacement as (...args: string[]) => string)
+    }
   }
 
-  // Converter números por extenso (mais natural no áudio)
+  // Tornar coloquial
   result = result
-    .replace(/\b2029\b/g, "dois mil e vinte e nove")
-    .replace(/\b2027\b/g, "dois mil e vinte e sete")
-    .replace(/\b2028\b/g, "dois mil e vinte e oito")
-    .replace(/\b1337\b/g, "mil trezentos e trinta e sete")
-    .replace(/\b547\b/g, "quinhentos e quarenta e sete")
-    .replace(/\b168\b/g, "cento e sessenta e oito")
-    .replace(/\b60\b/g, "sessenta")
-    .replace(/\b48\b/g, "quarenta e oito")
-    .replace(/\b83,66\b/g, "oitenta e três vírgula sessenta e seis")
-    .replace(/\b79,81\b/g, "setenta e nove vírgula oitenta e um")
-    .replace(/\b66,91\b/g, "sessenta e seis vírgula noventa e um")
-    .replace(/\b67\b/g, "sessenta e sete")
-    .replace(/\b20%\b/g, "vinte por cento")
-    .replace(/\b80 mil\b/gi, "oitenta mil")
-    .replace(/\b68 mil\b/gi, "sessenta e oito mil")
-    .replace(/\b68\.000\b/g, "sessenta e oito mil")
+    .replace(/\bpara o\b/gi, "pro")
+    .replace(/\bpara a\b/gi, "pra")
+    .replace(/\bpara\b/gi, "pra")
+    .replace(/\bnão é\b/gi, "né")
+    .replace(/\bao meio dia\b/gi, "ao meio-dia")
+    .replace(/\bsegunda a sexta\b/gi, "segunda à sexta")
 
-  // Adicionar pausas naturais com reticências
-  result = result.replace(/\.\s/g, "... ")
+  // Pausas naturais entre frases
+  result = result.replace(/\.\s+/g, ". ... ")
+  result = result.replace(/!\s+/g, "! ... ")
 
-  // Limitar tamanho para TTS (muito longo fica monótono)
-  if (result.length > 300) {
-    const sentences = result.split(/\.\.\./)
-    result = sentences.slice(0, 3).join("... ") + "..."
+  // Limitar tamanho (longo fica monótono)
+  if (result.length > 400) {
+    const sentences = result.split(/[.!]/).filter(s => s.trim())
+    result = sentences.slice(0, 3).join(". ") + "."
   }
 
   return result.trim()
+}
+
+function numberToWords(n: string | number): string {
+  const num = typeof n === "string" ? parseInt(n, 10) : n
+  const words: Record<number, string> = {
+    0: "zero", 1: "uma", 2: "duas", 3: "três", 4: "quatro", 5: "cinco",
+    6: "seis", 7: "sete", 8: "oito", 9: "nove", 10: "dez",
+    11: "onze", 12: "doze", 13: "treze", 14: "quatorze", 15: "quinze",
+    16: "dezesseis", 17: "dezessete", 18: "dezoito", 19: "dezenove",
+    20: "vinte", 30: "trinta", 40: "quarenta", 48: "quarenta e oito",
+    50: "cinquenta", 60: "sessenta", 67: "sessenta e sete", 80: "oitenta",
+  }
+  if (words[num]) return words[num]
+  if (num < 100) {
+    const tens = Math.floor(num / 10) * 10
+    const ones = num % 10
+    return (words[tens] ?? String(tens)) + (ones ? " e " + (words[ones] ?? String(ones)) : "")
+  }
+  return String(num)
 }
 
 function fixAccents(text: string): string {
