@@ -68,9 +68,9 @@ function prepareTextForTTS(text: string): string {
     .replace(/\bao meio dia\b/gi, "ao meio-dia")
     .replace(/\bsegunda a sexta\b/gi, "segunda à sexta")
 
-  // Pausas naturais entre frases
-  result = result.replace(/\.\s+/g, ". ... ")
-  result = result.replace(/!\s+/g, "! ... ")
+  // Pausas curtas e naturais entre frases (vírgula força pausa sutil no TTS)
+  result = result.replace(/\.\s+/g, ", ")
+  result = result.replace(/!\s+/g, ", ")
 
   // Limitar tamanho (longo fica monótono)
   if (result.length > 400) {
@@ -503,9 +503,9 @@ export async function POST(request: NextRequest) {
                     text: ttsText,
                     model_id: "eleven_multilingual_v2",
                     voice_settings: {
-                      stability: 0.20,
-                      similarity_boost: 0.90,
-                      style: 0.45,
+                      stability: 0.10,
+                      similarity_boost: 0.95,
+                      style: 0.65,
                       use_speaker_boost: true,
                     },
                   }),
