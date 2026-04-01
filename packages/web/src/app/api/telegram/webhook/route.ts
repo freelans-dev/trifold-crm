@@ -146,8 +146,8 @@ export async function POST(request: NextRequest) {
           orgId,
         })
 
-        // Send via Telegram
-        await fetch(
+        // Send via Telegram (with extended timeout for DNS resolution)
+        const sendResult = await fetch(
           `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
           {
             method: "POST",
@@ -155,10 +155,13 @@ export async function POST(request: NextRequest) {
             body: JSON.stringify({
               chat_id: chatId,
               text: response,
-              parse_mode: "Markdown",
             }),
+            signal: AbortSignal.timeout(30000),
           }
         )
+        if (!sendResult.ok) {
+          console.error("Telegram send error:", await sendResult.text())
+        }
       } catch (aiError) {
         console.error("AI processing error:", aiError)
         // Send fallback message
@@ -171,8 +174,9 @@ export async function POST(request: NextRequest) {
               chat_id: chatId,
               text: "Oi! Tive um probleminha tecnico. Pode repetir sua mensagem?",
             }),
+            signal: AbortSignal.timeout(30000),
           }
-        )
+        ).catch(() => {})
       }
     }
 
