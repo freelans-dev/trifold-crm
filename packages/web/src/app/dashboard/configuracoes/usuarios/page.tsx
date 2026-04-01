@@ -49,7 +49,7 @@ export default async function UsuariosPage() {
         </div>
         {isAdmin && (
           <Link
-            href="/dashboard/corretores/novo"
+            href="/dashboard/configuracoes/usuarios/novo"
             className="rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
           >
             Novo usuario

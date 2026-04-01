@@ -1,0 +1,152 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+
+export default function NovoUsuarioPage() {
+  const router = useRouter()
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setError("")
+    setLoading(true)
+
+    const form = new FormData(e.currentTarget)
+    const name = form.get("name") as string
+    const email = form.get("email") as string
+    const password = form.get("password") as string
+    const role = form.get("role") as string
+
+    if (!name || !email || !password || !role) {
+      setError("Preencha todos os campos")
+      setLoading(false)
+      return
+    }
+
+    if (password.length < 6) {
+      setError("Senha deve ter no minimo 6 caracteres")
+      setLoading(false)
+      return
+    }
+
+    const res = await fetch("/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, role }),
+    })
+
+    if (!res.ok) {
+      const data = await res.json()
+      setError(data.error || "Erro ao criar usuario")
+      setLoading(false)
+      return
+    }
+
+    router.push("/dashboard/configuracoes/usuarios")
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <Link
+          href="/dashboard/configuracoes/usuarios"
+          className="text-sm text-stone-500 hover:text-stone-700"
+        >
+          &larr; Usuarios
+        </Link>
+        <h1 className="mt-1 text-2xl font-bold text-stone-900">Novo Usuario</h1>
+        <p className="mt-1 text-sm text-stone-500">
+          Criar acesso ao sistema. Usuarios com perfil "Corretor" tambem aparecem como corretores no pipeline.
+        </p>
+      </div>
+
+      <div className="rounded-xl bg-white p-6 shadow-sm">
+        <form onSubmit={handleSubmit} className="max-w-md space-y-4">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-stone-700">
+              Nome completo
+            </label>
+            <input
+              name="name"
+              type="text"
+              required
+              className="block w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-orange-300 focus:bg-white focus:ring-2 focus:ring-orange-100"
+              placeholder="Nome do usuario"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-stone-700">
+              Email
+            </label>
+            <input
+              name="email"
+              type="email"
+              required
+              className="block w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-orange-300 focus:bg-white focus:ring-2 focus:ring-orange-100"
+              placeholder="email@empresa.com"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-stone-700">
+              Senha
+            </label>
+            <input
+              name="password"
+              type="password"
+              required
+              minLength={6}
+              className="block w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-orange-300 focus:bg-white focus:ring-2 focus:ring-orange-100"
+              placeholder="Minimo 6 caracteres"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-stone-700">
+              Perfil de acesso
+            </label>
+            <select
+              name="role"
+              required
+              className="block w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-orange-300 focus:bg-white focus:ring-2 focus:ring-orange-100"
+            >
+              <option value="">Selecione...</option>
+              <option value="admin">Administrador — acesso total ao sistema</option>
+              <option value="supervisor">Supervisor — monitora conversas, treina IA, ve metricas</option>
+              <option value="broker">Corretor — pipeline proprio, leads designados, agenda</option>
+            </select>
+            <p className="mt-1 text-xs text-stone-400">
+              Corretores so veem seus proprios leads e agenda. Supervisores veem tudo mas nao configuram. Admins tem acesso total.
+            </p>
+          </div>
+
+          {error && (
+            <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+              {error}
+            </div>
+          )}
+
+          <div className="flex items-center gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="rounded-lg bg-orange-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-700 disabled:opacity-50"
+            >
+              {loading ? "Criando..." : "Criar usuario"}
+            </button>
+            <Link
+              href="/dashboard/configuracoes/usuarios"
+              className="text-sm text-stone-500 hover:text-stone-700"
+            >
+              Cancelar
+            </Link>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
