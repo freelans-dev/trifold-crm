@@ -267,7 +267,14 @@ export async function processMessageWithMetadata(
     }
   }
 
-  userContent.push({ type: "text", text: message })
+  // Inject visit reminder directly into the message context if visit is scheduled
+  let messageWithContext = message
+  if (state?.visit_proposed) {
+    const visitInfo = (state.collected_data as Record<string, unknown>)?.visit_availability ?? ""
+    messageWithContext = `[SISTEMA: A visita deste lead JÁ está confirmada para ${visitInfo}. NÃO pergunte dia nem horário. Se ele perguntar algo, confirme: "Sua visita tá marcada pra ${visitInfo}, te espero lá!"]\n\n${message}`
+  }
+
+  userContent.push({ type: "text", text: messageWithContext })
 
   const messages: Anthropic.MessageParam[] = [
     ...history.map(
