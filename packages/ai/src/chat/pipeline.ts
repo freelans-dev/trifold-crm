@@ -1,4 +1,17 @@
 import type { SupabaseClient } from "@supabase/supabase-js"
+
+type ImageMimeType = "image/jpeg" | "image/png" | "image/gif" | "image/webp"
+
+function normalizeImageMimeType(mime: string): ImageMimeType {
+  const map: Record<string, ImageMimeType> = {
+    "image/jpg": "image/jpeg",
+    "image/jpeg": "image/jpeg",
+    "image/png": "image/png",
+    "image/gif": "image/gif",
+    "image/webp": "image/webp",
+  }
+  return map[mime.toLowerCase()] ?? "image/jpeg"
+}
 import type Anthropic from "@anthropic-ai/sdk"
 import { searchKnowledge } from "../rag/search"
 import { buildContextFromRAG } from "../rag/context-builder"
@@ -174,11 +187,7 @@ export async function processMessageWithMetadata(
         type: "image",
         source: {
           type: "base64",
-          media_type: params.mediaBlock.mimeType as
-            | "image/jpeg"
-            | "image/png"
-            | "image/gif"
-            | "image/webp",
+          media_type: normalizeImageMimeType(params.mediaBlock.mimeType),
           data: params.mediaBlock.base64,
         },
       })
@@ -217,11 +226,13 @@ export async function processMessageWithMetadata(
   const assistantMessage =
     response.content[0].type === "text" ? response.content[0].text : ""
 
-  // 9. Extract collected data from AI response
-  const updatedData = extractCollectedData(assistantMessage, collectedData)
+  // 9. Extract collected data from user message FIRST (name comes from user, not AI)
+  const updatedData = extractCollectedData(message, collectedData)
 
-  // Also extract from user message
-  const finalData = extractCollectedData(message, updatedData)
+  // Then extract non-name data from AI response (property mentions, etc — but NOT name)
+  const aiExtracted = extractCollectedData(assistantMessage, updatedData)
+  // Preserve the name from user message only (AI response might say "Nicole" which is the bot name)
+  const finalData = { ...aiExtracted, name: updatedData.name ?? collectedData.name }
 
   // 10. Calculate updated score and check handoff
   const updatedScore = calculateQualificationScore(finalData)
