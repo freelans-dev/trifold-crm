@@ -74,9 +74,42 @@ export async function POST(request: NextRequest) {
   let mediaBlock: MediaBlock | undefined
   let mediaMetadata: { media_type?: string; media_url?: string } = {}
 
-  // Handle voice messages — ask user to type instead
+  // Handle voice messages — transcribe with OpenAI Whisper
   if (message.voice) {
-    text = text || "[Mensagem de voz recebida]"
+    const fileId = message.voice.file_id as string
+    const fileUrl = await getTelegramFileUrl(TELEGRAM_BOT_TOKEN, fileId)
+
+    if (fileUrl && process.env.OPENAI_API_KEY) {
+      try {
+        // Download audio file
+        const audioRes = await fetch(fileUrl, { signal: AbortSignal.timeout(15000) })
+        const audioBuffer = await audioRes.arrayBuffer()
+
+        // Transcribe with OpenAI Whisper
+        const formData = new FormData()
+        formData.append("file", new Blob([audioBuffer], { type: "audio/ogg" }), "voice.ogg")
+        formData.append("model", "whisper-1")
+        formData.append("language", "pt")
+
+        const whisperRes = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+          body: formData,
+          signal: AbortSignal.timeout(30000),
+        })
+
+        if (whisperRes.ok) {
+          const whisperData = await whisperRes.json() as { text: string }
+          text = whisperData.text || "[Áudio não reconhecido]"
+        } else {
+          text = "[Mensagem de voz recebida]"
+        }
+      } catch {
+        text = "[Mensagem de voz recebida]"
+      }
+    } else {
+      text = text || "[Mensagem de voz recebida]"
+    }
     mediaMetadata = { media_type: "voice" }
   }
 
@@ -285,15 +318,51 @@ export async function POST(request: NextRequest) {
           .map((p: string) => p.trim())
           .filter((p: string) => p.length > 0)
 
-        for (let i = 0; i < paragraphs.length; i++) {
-          // Show typing indicator before each message
-          await sendTypingAction(chatId)
+        // If lead sent voice, respond with voice too (TTS)
+        const respondWithVoice = mediaMetadata.media_type === "voice" && process.env.OPENAI_API_KEY
 
-          // Human-like delay based on message length
+        if (respondWithVoice) {
+          // Send voice response via OpenAI TTS
+          await sendTypingAction(chatId)
+          try {
+            const ttsRes = await fetch("https://api.openai.com/v1/audio/speech", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                model: "tts-1",
+                voice: "nova", // Female voice
+                input: cleanResponse,
+                response_format: "opus",
+              }),
+              signal: AbortSignal.timeout(30000),
+            })
+
+            if (ttsRes.ok) {
+              const audioBuffer = await ttsRes.arrayBuffer()
+              const audioBlob = new Blob([audioBuffer], { type: "audio/ogg" })
+
+              const formData = new FormData()
+              formData.append("chat_id", chatId)
+              formData.append("voice", audioBlob, "response.ogg")
+
+              await fetch(
+                `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendVoice`,
+                { method: "POST", body: formData, signal: AbortSignal.timeout(30000) }
+              ).catch(() => {})
+            }
+          } catch {
+            // Fallback to text if TTS fails
+          }
+        }
+
+        // Always send text too (for accessibility and chat history)
+        for (let i = 0; i < paragraphs.length; i++) {
+          await sendTypingAction(chatId)
           const delay = calculateTypingDelay(paragraphs[i])
           await new Promise((r) => setTimeout(r, delay))
-
-          // Send the message
           await sendTelegramMessage(chatId, paragraphs[i])
         }
       } catch (aiError) {
