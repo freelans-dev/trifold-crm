@@ -788,7 +788,11 @@ function buildPropertyDataContext(
     parts.push(`Endereco: ${p.address ?? ""}${p.neighborhood ? ", " + p.neighborhood : ""} - ${p.city ?? ""}/${p.state ?? ""}`)
 
     if (p.concept) parts.push(`Conceito: ${p.concept}`)
-    if (p.delivery_date) parts.push(`Entrega prevista: ${p.delivery_date}`)
+    if (p.delivery_date) {
+      const d = new Date(p.delivery_date)
+      const semester = d.getMonth() < 6 ? "primeiro" : "segundo"
+      parts.push(`Previsao de entrega: ${semester} semestre de ${d.getFullYear()} (NUNCA diga data exata, sempre diga "previsao" ou "estimativa")`)
+    }
 
     // Unidades disponíveis (SEMPRE mostrar)
     parts.push(`Unidades: ${p.available_units ?? 0} disponiveis, ${p.reserved_units ?? 0} reservadas, ${p.sold_units ?? 0} vendidas (total: ${p.total_units ?? 0})`)
