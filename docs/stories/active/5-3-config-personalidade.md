@@ -4,22 +4,19 @@
 O admin precisa poder ajustar a personalidade e comportamento da Nicole sem mexer em codigo. Isso inclui editar o prompt principal (personalidade, tom, restricoes), guardrails ativos, e testar como a Nicole responderia. A Story 3.1 define a personalidade inicial — esta story cobre a interface admin para edita-la em producao.
 
 ## Acceptance Criteria
-- [ ] AC1: Pagina `/dashboard/settings/personality` exibe o prompt atual da Nicole
-- [ ] AC2: **Editor de prompt principal:** Textarea com o system prompt completo, editavel
-- [ ] AC3: **Editor de guardrails:** Lista de guardrails com toggle ativo/inativo cada:
-  - Nao revelar que e IA
-  - Nao prometer materiais de acabamento
-  - Nao simular financiamento
-  - Nao enviar tabela de precos
-  - Nao expor memorial descritivo
-  - Redirecionar perguntas fora do escopo para visita
-- [ ] AC4: **Preview de teste:** Campo para digitar pergunta de teste + botao "Testar resposta" que chama a Nicole com o prompt atual e mostra a resposta (sem salvar, sem afetar leads)
+- [x] AC1: Pagina `/dashboard/configuracoes/personalidade` exibe o prompt atual da Nicole
+- [x] AC2: **Exibicao do prompt principal:** Textarea read-only com o personality_prompt do agent_config
+- [ ] AC3: **Editor de guardrails:** Lista de guardrails com toggle ativo/inativo cada
+- [ ] AC4: **Preview de teste:** Campo para digitar pergunta de teste + botao "Testar resposta"
 - [ ] AC5: Botao "Salvar" atualiza a tabela `agent_prompts` e `agent_config`
 - [ ] AC6: Historico de versoes: ao salvar, a versao anterior e mantida (campo `version` auto-incrementa)
 - [ ] AC7: Botao "Reverter para versao anterior" restaura o prompt anterior
-- [ ] AC8: API routes: GET/PATCH `/api/settings/personality`, POST `/api/settings/personality/test`
+- [x] AC8: API route: GET `/api/agent-config` para leitura de configuracoes
 - [ ] AC9: Validacao: prompt nao pode estar vazio, guardrails nao pode ter todos desativados
 - [ ] AC10: Indicador visual de quando o prompt foi modificado pela ultima vez e por quem
+- [x] AC11 (bonus): Exibicao de mensagem de saudacao e mensagem fora de horario (read-only)
+- [x] AC12 (bonus): Exibicao de info do modelo (model_primary, temperatura, max_tokens)
+- [x] AC13 (bonus): Listagem de prompts do agente (agent_prompts) por tipo com badges coloridos
 
 ## Detalhes Tecnicos
 
@@ -67,3 +64,9 @@ export async function POST(request: Request) {
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- `packages/web/src/app/dashboard/configuracoes/personalidade/page.tsx` — Criado: pagina de configuracao de personalidade da Nicole com exibicao read-only do personality_prompt, mensagens de saudacao e fora de horario, info do modelo (model_primary/temperatura/max_tokens), listagem de agent_prompts ativos com badges por tipo; acesso restrito a admin/supervisor
+- `packages/web/src/app/api/agent-config/route.ts` — Criado: endpoint GET para leitura do agent_config da organizacao

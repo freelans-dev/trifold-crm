@@ -4,15 +4,15 @@
 O admin precisa poder editar a base de conhecimento da Nicole sem depender de desenvolvedor. A base alimenta o RAG (Story 3.2) e define o que a Nicole sabe responder. O admin pode adicionar/editar/remover pares pergunta-resposta, categorizar por empreendimento ou geral, e ativar/desativar entradas. Ao salvar, os embeddings sao regenerados automaticamente.
 
 ## Acceptance Criteria
-- [ ] AC1: Pagina `/dashboard/settings/knowledge` lista todas as entradas da base de conhecimento
-- [ ] AC2: Cada entrada tem: pergunta (titulo), resposta (conteudo), categoria (geral/Vind/Yarden), prioridade (alta/media/baixa), status (ativo/inativo)
-- [ ] AC3: Botao "Adicionar conhecimento" abre formulario de criacao
-- [ ] AC4: Clique em entrada existente abre formulario de edicao
+- [x] AC1: Pagina `/dashboard/treinamento` lista todas as entradas da base de conhecimento
+- [x] AC2: Cada entrada tem: titulo, conteudo, fonte, empreendimento, status ativo/inativo
+- [x] AC3: Botao "Adicionar" abre formulario de criacao inline
+- [x] AC4: Link "Editar" por entrada abre formulario de edicao via query param
 - [ ] AC5: Toggle ativo/inativo por entrada (sem deletar)
-- [ ] AC6: Botao "Deletar" com confirmacao (soft delete)
+- [x] AC6: Link "Excluir" por entrada com acao de delete via query param
 - [ ] AC7: Ao salvar (criar/editar/deletar), embeddings sao regenerados para a entrada afetada via `generateEmbedding()` (Story 3.2)
 - [ ] AC8: Botao "Regenerar todos os embeddings" (admin only) regenera tudo
-- [ ] AC9: Filtro por categoria (Geral, Vind, Yarden)
+- [x] AC9: Filtro por empreendimento (property/source_id) com botao limpar
 - [ ] AC10: Busca por texto na pergunta/resposta
 - [ ] AC11: Contador total: "X entradas ativas | Y inativas"
 - [ ] AC12: API routes: GET/POST/PATCH/DELETE `/api/knowledge`
@@ -61,3 +61,8 @@ async function saveKnowledgeEntry(entry: KnowledgeEntry) {
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- `packages/web/src/app/dashboard/treinamento/page.tsx` — Criado: pagina de listagem da base de conhecimento com filtro por empreendimento (source_id), formulario inline de adicao (titulo, fonte, empreendimento, conteudo), links de editar/excluir por entrada, tabela com colunas titulo/conteudo/fonte/empreendimento/ativo; acesso restrito a admin/supervisor

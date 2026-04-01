@@ -4,17 +4,17 @@
 Com dezenas ou centenas de leads no pipeline, o supervisor precisa filtrar para encontrar subconjuntos relevantes: leads de um empreendimento especifico, leads sem corretor (precisam ser designados), leads de uma campanha Meta Ads, etc. Os filtros aplicam no kanban board inteiro — as colunas mostram apenas os leads que atendem aos criterios.
 
 ## Acceptance Criteria
-- [ ] AC1: Barra de filtros acima do kanban board com filtros combinaveis (AND logic)
-- [ ] AC2: Filtro por **empreendimento de interesse** (select com opcoes: Todos, Vind, Yarden, Nao definido)
-- [ ] AC3: Filtro por **corretor designado** (select: Todos, Sem corretor, [lista de corretores ativos])
+- [x] AC1: Barra de filtros acima do kanban board com filtros combinaveis (AND logic)
+- [x] AC2: Filtro por **empreendimento de interesse** (select com opcoes: Todos, Vind, Yarden, Nao definido)
+- [x] AC3: Filtro por **corretor designado** (select: Todos, Sem corretor, [lista de corretores ativos])
 - [ ] AC4: Filtro por **origem** (select: Todos, WhatsApp, Meta Ads, Site, Indicacao)
-- [ ] AC5: Filtro por **score de qualificacao** (range: 0-100, slider ou faixas: Frio <30, Morno 30-69, Quente >=70)
+- [x] AC5: Filtro por **score de qualificacao** (range: 0-100, slider ou faixas: Frio <30, Morno 30-69, Quente >=70)
 - [ ] AC6: Filtro por **periodo de entrada** (date range picker: de/ate)
-- [ ] AC7: Filtros persistem na URL via query params (ex: `/dashboard/pipeline?property=vind&broker=none`)
+- [x] AC7: Filtros persistem na URL via query params (ex: `/dashboard/pipeline?property=vind&broker=none`)
 - [ ] AC8: Badge no botao de filtro mostra quantos filtros estao ativos
-- [ ] AC9: Botao "Limpar filtros" reseta todos os filtros
-- [ ] AC10: Contagem de leads por coluna reflete os filtros aplicados
-- [ ] AC11: Performance: filtros aplicados no lado do servidor (query Supabase com WHERE clauses)
+- [x] AC9: Botao "Limpar filtros" reseta todos os filtros
+- [x] AC10: Contagem de leads por coluna reflete os filtros aplicados
+- [x] AC11: Performance: filtros aplicados no lado do servidor (query Supabase com WHERE clauses)
 
 ## Detalhes Tecnicos
 
@@ -68,3 +68,8 @@ interface PipelineFilters {
 
 ## Estimativa
 M (Media) — 2-3 horas
+
+## File List
+
+### Created/Modified
+- `packages/web/src/app/dashboard/pipeline/page.tsx` — Atualizado: adicionada barra de filtros (empreendimento, corretor, score) com submit via form e botao "Limpar" condicional; filtros aplicados server-side via searchParams com query Supabase; contagem total de leads reflete filtros

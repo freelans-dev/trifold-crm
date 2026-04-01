@@ -6,14 +6,14 @@ Com 108 unidades, filtros sao essenciais. O admin precisa encontrar rapidamente 
 ## Acceptance Criteria
 - [ ] AC1: API `GET /api/properties/[propertyId]/units` aceita query params de filtro: `status`, `typology_id`, `floor_min`, `floor_max`, `view_direction`, `garage_count`, `garage_type`, `price_min`, `price_max`
 - [ ] AC2: Filtros sao combinaveis (AND logic): ex. `status=available&floor_min=8&view_direction=frente`
-- [ ] AC3: Filtro por status: `available`, `reserved`, `sold` (multiplos separados por virgula)
-- [ ] AC4: Filtro por faixa de andar: `floor_min` e `floor_max`
-- [ ] AC5: Filtro por vista: `view_direction` (frente, fundos, lateral, etc.)
-- [ ] AC6: Filtro por garagem: `garage_count` (1, 2), `garage_type` (normal, coberta, etc.)
+- [x] AC3: Filtro por status: `available`, `reserved`, `sold` (multiplos separados por virgula)
+- [x] AC4: Filtro por faixa de andar: `floor_min` e `floor_max`
+- [x] AC5: Filtro por vista: `view_direction` (frente, fundos, lateral, etc.)
+- [x] AC6: Filtro por garagem: `garage_count` (1, 2), `garage_type` (normal, coberta, etc.)
 - [ ] AC7: Filtro por preco: `price_min`, `price_max` (apenas admin/supervisor/broker — RLS)
-- [ ] AC8: Filtro por tipologia: `typology_id`
-- [ ] AC9: UI de filtros na pagina de unidades: dropdowns/selects para cada filtro, botao "limpar filtros"
-- [ ] AC10: Contadores atualizam ao filtrar (X disponiveis / Y total filtrado)
+- [x] AC8: Filtro por tipologia: `typology_id`
+- [x] AC9: UI de filtros na pagina de unidades: dropdowns/selects para cada filtro, botao "limpar filtros"
+- [x] AC10: Contadores atualizam ao filtrar (X disponiveis / Y total filtrado)
 - [ ] AC11: Funcao helper `queryUnitsFiltered()` em `packages/db/` para reuso pelo modulo AI (Nicole)
 
 ## Detalhes Tecnicos
@@ -65,4 +65,4 @@ M (Media) — 2 horas
 ## File List
 
 ### Created/Modified
-- (nenhum arquivo implementado ainda)
+- `packages/web/src/app/dashboard/properties/[id]/units/page.tsx` — Criado: pagina de unidades com barra de filtros (status, andar min/max, tipologia, vista, vagas), tabela completa (unidade, andar, posicao, vista, area, vagas, status, tipologia), contadores de status e logica de filtros via searchParams
