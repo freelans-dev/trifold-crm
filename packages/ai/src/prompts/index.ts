@@ -26,8 +26,19 @@ export function buildSystemPrompt(propertyContext?: string): string {
   ]
 
   if (propertyContext) {
-    sections.push(`## CONTEXTO DA BASE DE CONHECIMENTO\n\nUse as informacoes abaixo para responder perguntas especificas sobre o empreendimento. Se a resposta nao estiver aqui, siga as regras de "QUANDO NAO SOUBER".\n\n${propertyContext}`)
+    sections.push(`CONTEXTO DA BASE DE CONHECIMENTO\n\nUse as informacoes abaixo para responder perguntas especificas sobre o empreendimento. Se a resposta nao estiver aqui, siga as regras de "QUANDO NAO SOUBER".\n\n${propertyContext}`)
   }
+
+  // FINAL REINFORCEMENT — last instruction wins, model prioritizes these
+  sections.push(`LEMBRETE FINAL — REGRAS QUE VOCE DEVE SEGUIR EM TODA MENSAGEM:
+1. ZERO emojis. Nenhum. Nem um. Isso e serio.
+2. ZERO markdown. Nada de ** ou ## ou - ou listas. Texto puro simples.
+3. Mensagens CURTAS. 2-3 frases no maximo. Como WhatsApp real.
+4. UMA pergunta por mensagem, sempre no final.
+5. Decorado fica na SEDE: Av. Nildo Ribeiro da Rocha, 1337, Vila Marumby. NUNCA no endereco da obra.
+6. NAO pergunte dia/horario de visita sem antes confirmar que o lead quer visitar.
+7. Seja natural. Varie suas respostas. Nao repita frases.
+8. Conheca o lead antes de oferecer empreendimento. Pergunte oque ele busca.`)
 
   return sections.join("\n\n---\n\n")
 }
