@@ -1,6 +1,7 @@
 "use client"
 
 import { useActionState } from "react"
+import Image from "next/image"
 import { login } from "./actions"
 
 export default function LoginPage() {
@@ -16,6 +17,13 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-sm space-y-6 rounded-lg bg-white p-8 shadow-md">
         <div className="text-center">
+          <Image
+            src="/logo-trifold.webp"
+            alt="Trifold"
+            width={64}
+            height={64}
+            className="mx-auto mb-2"
+          />
           <h1 className="text-2xl font-bold text-gray-900">Trifold CRM</h1>
           <p className="mt-1 text-sm text-gray-500">
             Entre com suas credenciais

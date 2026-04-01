@@ -3,4 +3,5 @@ export {
   processMessageWithMetadata,
   type ProcessMessageParams,
   type ProcessMessageResult,
+  type MediaBlock,
 } from "./pipeline"

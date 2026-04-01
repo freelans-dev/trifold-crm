@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 import crypto from "crypto"
+import type { MediaBlock } from "@trifold/ai"
 
 function getSupabaseAdmin() {
   return createClient(
@@ -56,15 +57,37 @@ export async function POST(request: NextRequest) {
   }
 
   const msg = messages[0]
-  if (msg.type !== "text") {
-    return NextResponse.json({ status: "ok" })
-  }
-
   const from = msg.from as string
-  const text = msg.text?.body as string
   const messageId = msg.id as string
 
   const supabase = getSupabaseAdmin()
+
+  // Determine text, media block, and metadata based on message type
+  let text: string = ""
+  let mediaBlock: MediaBlock | undefined
+  let mediaMetadata: { media_type?: string; media_url?: string } = {}
+  let isVoiceMessage = false
+
+  const IMAGE_MIME_TYPES = new Set([
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "image/jpg",
+  ])
+
+  if (msg.type === "text") {
+    text = msg.text?.body as string
+  } else if (msg.type === "audio" || msg.type === "voice") {
+    isVoiceMessage = true
+    text = "[Mensagem de voz recebida]"
+    mediaMetadata = { media_type: "voice" }
+  } else if (msg.type === "image" || msg.type === "document") {
+    // These will be handled after we have the config for auth
+  } else {
+    // Unsupported message type
+    return NextResponse.json({ status: "ok" })
+  }
 
   try {
     // Get org + whatsapp config
@@ -80,6 +103,77 @@ export async function POST(request: NextRequest) {
     }
 
     const orgId = config.org_id
+
+    // Download media for image/document messages (needs access_token from config)
+    if (msg.type === "image" && msg.image?.id) {
+      try {
+        const mediaRes = await fetch(
+          `https://graph.facebook.com/v21.0/${msg.image.id}`,
+          {
+            headers: { Authorization: `Bearer ${config.access_token}` },
+            signal: AbortSignal.timeout(10000),
+          }
+        )
+        if (mediaRes.ok) {
+          const mediaData = (await mediaRes.json()) as { url: string; mime_type?: string }
+          const fileRes = await fetch(mediaData.url, {
+            headers: { Authorization: `Bearer ${config.access_token}` },
+            signal: AbortSignal.timeout(30000),
+          })
+          if (fileRes.ok) {
+            const buffer = await fileRes.arrayBuffer()
+            const base64 = Buffer.from(buffer).toString("base64")
+            const mimeType = mediaData.mime_type || fileRes.headers.get("content-type") || "image/jpeg"
+            mediaBlock = { type: "image", base64, mimeType }
+            mediaMetadata = { media_type: "image" }
+          }
+        }
+      } catch (err) {
+        console.error("WhatsApp image download error:", err)
+      }
+      text = msg.image?.caption || "O que voce acha desta imagem?"
+    }
+
+    if (msg.type === "document" && msg.document?.id) {
+      try {
+        const mediaRes = await fetch(
+          `https://graph.facebook.com/v21.0/${msg.document.id}`,
+          {
+            headers: { Authorization: `Bearer ${config.access_token}` },
+            signal: AbortSignal.timeout(10000),
+          }
+        )
+        if (mediaRes.ok) {
+          const mediaData = (await mediaRes.json()) as { url: string; mime_type?: string }
+          const fileRes = await fetch(mediaData.url, {
+            headers: { Authorization: `Bearer ${config.access_token}` },
+            signal: AbortSignal.timeout(30000),
+          })
+          if (fileRes.ok) {
+            const buffer = await fileRes.arrayBuffer()
+            const base64 = Buffer.from(buffer).toString("base64")
+            const mimeType = mediaData.mime_type || fileRes.headers.get("content-type") || "application/octet-stream"
+            if (IMAGE_MIME_TYPES.has(mimeType)) {
+              mediaBlock = { type: "image", base64, mimeType }
+              mediaMetadata = { media_type: "image" }
+            } else if (mimeType === "application/pdf") {
+              mediaBlock = { type: "document", base64, mimeType }
+              mediaMetadata = { media_type: "document" }
+            } else {
+              mediaMetadata = { media_type: "document" }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("WhatsApp document download error:", err)
+      }
+      text = text || msg.document?.caption || "Recebi um documento."
+    }
+
+    // If no text content and no media, skip
+    if (!text && !mediaBlock) {
+      return NextResponse.json({ status: "ok" })
+    }
 
     // Find or create lead
     let { data: lead } = await supabase
@@ -178,7 +272,10 @@ export async function POST(request: NextRequest) {
       conversation_id: conversation.id,
       role: "user",
       content: text,
-      metadata: { whatsapp_message_id: messageId },
+      metadata: {
+        whatsapp_message_id: messageId,
+        ...mediaMetadata,
+      },
     })
 
     // Update conversation timestamp
@@ -186,6 +283,29 @@ export async function POST(request: NextRequest) {
       .from("conversations")
       .update({ last_message_at: new Date().toISOString() })
       .eq("id", conversation.id)
+
+    // Handle voice/audio messages — reply asking lead to type
+    if (isVoiceMessage) {
+      const whatsappUrl = `https://graph.facebook.com/v21.0/${config.phone_number_id}/messages`
+      await fetch(whatsappUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${config.access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to: from,
+          type: "text",
+          text: {
+            body:
+              "Oi! Recebi sua mensagem de voz, mas no momento nao consigo ouvir audios. " +
+              "Pode digitar sua mensagem, por favor? Assim consigo te ajudar melhor!",
+          },
+        }),
+      })
+      return NextResponse.json({ status: "ok" })
+    }
 
     // If AI is active, process with Nicole
     if (conversation.is_ai_active) {
@@ -200,6 +320,7 @@ export async function POST(request: NextRequest) {
         conversationId: conversation.id,
         message: text,
         orgId,
+        mediaBlock,
       })
 
       // Send response via WhatsApp

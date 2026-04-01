@@ -44,12 +44,19 @@ interface Property {
   slug: string
 }
 
+export interface MediaBlock {
+  type: "image" | "document"
+  base64: string
+  mimeType: string
+}
+
 export interface ProcessMessageParams {
   supabase: SupabaseClient
   anthropic: Anthropic
   conversationId: string
   message: string
   orgId: string
+  mediaBlock?: MediaBlock
 }
 
 export interface ProcessMessageResult {
@@ -159,6 +166,36 @@ export async function processMessageWithMetadata(
     yardenGateContext
 
   // 8. Build messages array and call Claude API
+  const userContent: Anthropic.ContentBlockParam[] = []
+
+  if (params.mediaBlock) {
+    if (params.mediaBlock.type === "image") {
+      userContent.push({
+        type: "image",
+        source: {
+          type: "base64",
+          media_type: params.mediaBlock.mimeType as
+            | "image/jpeg"
+            | "image/png"
+            | "image/gif"
+            | "image/webp",
+          data: params.mediaBlock.base64,
+        },
+      })
+    } else if (params.mediaBlock.type === "document") {
+      userContent.push({
+        type: "document",
+        source: {
+          type: "base64",
+          media_type: params.mediaBlock.mimeType as "application/pdf",
+          data: params.mediaBlock.base64,
+        },
+      })
+    }
+  }
+
+  userContent.push({ type: "text", text: message })
+
   const messages: Anthropic.MessageParam[] = [
     ...history.map(
       (msg): Anthropic.MessageParam => ({
@@ -166,7 +203,7 @@ export async function processMessageWithMetadata(
         content: msg.content,
       })
     ),
-    { role: "user", content: message },
+    { role: "user", content: userContent },
   ]
 
   const response = await anthropic.messages.create({

@@ -1,8 +1,30 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
+import type { MediaBlock } from "@trifold/ai"
+import { getTelegramFileUrl, downloadFileAsBase64 } from "@trifold/bot"
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
 const TELEGRAM_WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET
+
+const IMAGE_MIME_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "image/jpg",
+])
+
+async function sendTelegramMessage(chatId: string, text: string): Promise<void> {
+  await fetch(
+    `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text }),
+      signal: AbortSignal.timeout(30000),
+    }
+  ).catch(() => {})
+}
 
 // If Telegram is not configured, return 404
 export async function POST(request: NextRequest) {
@@ -21,13 +43,80 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json()
   const message = body.message
-  if (!message?.text) {
+  if (!message) {
     return NextResponse.json({ status: "ok" })
   }
 
   const chatId = String(message.chat.id)
-  const text = message.text as string
   const from = `tg:${chatId}`
+
+  // Determine message content and media
+  let text: string = message.text ?? ""
+  let mediaBlock: MediaBlock | undefined
+  let mediaMetadata: { media_type?: string; media_url?: string } = {}
+
+  // Handle voice messages — ask user to type instead
+  if (message.voice) {
+    text = text || "[Mensagem de voz recebida]"
+    mediaMetadata = { media_type: "voice" }
+  }
+
+  // Handle photo messages
+  if (message.photo && Array.isArray(message.photo) && message.photo.length > 0) {
+    const largestPhoto = message.photo[message.photo.length - 1]
+    const fileId = largestPhoto.file_id as string
+
+    const fileUrl = await getTelegramFileUrl(TELEGRAM_BOT_TOKEN, fileId)
+    if (fileUrl) {
+      const fileData = await downloadFileAsBase64(fileUrl)
+      if (fileData) {
+        mediaBlock = {
+          type: "image",
+          base64: fileData.base64,
+          mimeType: fileData.mimeType,
+        }
+        mediaMetadata = { media_type: "image", media_url: fileUrl }
+      }
+    }
+    text = text || message.caption || "O que voce acha desta imagem?"
+  }
+
+  // Handle document messages
+  if (message.document) {
+    const doc = message.document
+    const fileId = doc.file_id as string
+    const mimeType = (doc.mime_type as string) || "application/octet-stream"
+
+    const fileUrl = await getTelegramFileUrl(TELEGRAM_BOT_TOKEN, fileId)
+    if (fileUrl) {
+      const fileData = await downloadFileAsBase64(fileUrl)
+      if (fileData) {
+        if (IMAGE_MIME_TYPES.has(mimeType)) {
+          mediaBlock = {
+            type: "image",
+            base64: fileData.base64,
+            mimeType: fileData.mimeType,
+          }
+          mediaMetadata = { media_type: "image", media_url: fileUrl }
+        } else if (mimeType === "application/pdf") {
+          mediaBlock = {
+            type: "document",
+            base64: fileData.base64,
+            mimeType: fileData.mimeType,
+          }
+          mediaMetadata = { media_type: "document", media_url: fileUrl }
+        } else {
+          mediaMetadata = { media_type: "document", media_url: fileUrl }
+        }
+      }
+    }
+    text = text || message.caption || "Recebi um documento."
+  }
+
+  // If no text and no media content, skip
+  if (!text && !mediaBlock) {
+    return NextResponse.json({ status: "ok" })
+  }
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -123,13 +212,26 @@ export async function POST(request: NextRequest) {
       conversation_id: conversation.id,
       role: "user",
       content: text,
-      metadata: { telegram_message_id: message.message_id },
+      metadata: {
+        telegram_message_id: message.message_id,
+        ...mediaMetadata,
+      },
     })
 
     await supabase
       .from("conversations")
       .update({ last_message_at: new Date().toISOString() })
       .eq("id", conversation.id)
+
+    // Handle voice messages — reply asking lead to type
+    if (message.voice) {
+      await sendTelegramMessage(
+        chatId,
+        "Oi! Recebi sua mensagem de voz, mas no momento nao consigo ouvir audios. " +
+          "Pode digitar sua mensagem, por favor? Assim consigo te ajudar melhor! 😊"
+      )
+      return NextResponse.json({ status: "ok" })
+    }
 
     // Process with Nicole AI
     if (conversation.is_ai_active) {
@@ -144,6 +246,7 @@ export async function POST(request: NextRequest) {
           conversationId: conversation.id,
           message: text,
           orgId,
+          mediaBlock,
         })
 
         // Split response into paragraphs and send each as separate message
@@ -176,18 +279,10 @@ export async function POST(request: NextRequest) {
       } catch (aiError) {
         console.error("AI processing error:", aiError)
         // Send fallback message
-        await fetch(
-          `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              chat_id: chatId,
-              text: "Oi! Tive um probleminha tecnico. Pode repetir sua mensagem?",
-            }),
-            signal: AbortSignal.timeout(30000),
-          }
-        ).catch(() => {})
+        await sendTelegramMessage(
+          chatId,
+          "Oi! Tive um probleminha tecnico. Pode repetir sua mensagem?"
+        )
       }
     }
 

@@ -23,6 +23,7 @@ interface KanbanColumnProps {
     assigned_broker_id: string | null
     created_at: string
     updated_at: string
+    ai_summary?: string | null
     properties?: { name: string } | null
     users?: { name: string } | null
   }>

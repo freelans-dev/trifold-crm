@@ -1,2 +1,3 @@
 export * from "./types/lead"
 export * from "./constants/pipeline"
+export * from "./constants/lead-fields"

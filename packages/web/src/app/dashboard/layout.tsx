@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { getServerUser } from "@web/lib/auth"
 import { logout } from "@web/app/login/actions"
 
@@ -14,8 +15,9 @@ export default async function DashboardLayout({
       <nav className="border-b bg-white">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
           <div className="flex items-center gap-6">
-            <Link href="/dashboard" className="text-lg font-bold text-orange-600">
-              Trifold CRM
+            <Link href="/dashboard" className="flex items-center gap-2">
+              <Image src="/logo-trifold.webp" alt="Trifold" width={32} height={32} />
+              <span className="text-lg font-bold text-orange-600">Trifold CRM</span>
             </Link>
             <div className="flex items-center gap-4 text-sm">
               <Link
