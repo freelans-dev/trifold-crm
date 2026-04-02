@@ -114,12 +114,21 @@ export default async function AgendaPage({
     date?: string
     view?: string
     apt?: string
+    mark_completed?: string
   }>
 }) {
   await getServerUser()
   const supabase = await createClient()
   const params = await searchParams
   const view = params.view ?? "week" // week, month, day
+
+  // Handle mark_completed action
+  if (params.mark_completed) {
+    await supabase
+      .from("appointments")
+      .update({ status: "completed" })
+      .eq("id", params.mark_completed)
+  }
 
   // Determine the current week
   const today = new Date()
@@ -203,6 +212,8 @@ export default async function AgendaPage({
     selectedApt =
       (appointments.find((a) => a.id === params.apt) as Appointment) ?? null
   }
+
+  const nowMs = Date.now()
 
   const dayNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
   const monthNames = [
@@ -314,6 +325,7 @@ export default async function AgendaPage({
                 const property = extractRelation<RelatedProperty>(apt.property)
                 const s = statusConfig[apt.status] ?? statusConfig.scheduled
                 const time = new Date(apt.scheduled_at)
+                const isPastScheduled = apt.status === "scheduled" && time.getTime() < nowMs
                 return (
                   <div key={apt.id} className={`rounded-lg border p-4 ${s.border} ${s.bg}`}>
                     <div className="flex items-start justify-between">
@@ -331,7 +343,25 @@ export default async function AgendaPage({
                         </p>
                         {apt.notes && <p className="mt-2 text-xs text-stone-500">{apt.notes}</p>}
                       </div>
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${s.bg} ${s.color}`}>{s.label}</span>
+                      <div className="flex items-center gap-2">
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${s.bg} ${s.color}`}>{s.label}</span>
+                        {apt.status === "completed" && lead && (
+                          <Link
+                            href={`/dashboard/leads/${lead.id}?tab=timeline`}
+                            className="rounded-md bg-stone-600 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-stone-700"
+                          >
+                            Ver feedback
+                          </Link>
+                        )}
+                        {isPastScheduled && (
+                          <Link
+                            href={`/dashboard/agenda?view=day&date=${formatDateISO(selectedDate)}&mark_completed=${apt.id}${params.broker_id ? `&broker_id=${params.broker_id}` : ""}`}
+                            className="rounded-md bg-orange-600 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-orange-700"
+                          >
+                            Marcar como realizado
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )
