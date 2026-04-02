@@ -14,7 +14,7 @@ function slugify(text: string): string {
 
 const STATUS_OPTIONS = [
   { value: "planning", label: "Planejamento" },
-  { value: "launching", label: "Lancamento" },
+  { value: "launching", label: "Lançamento" },
   { value: "selling", label: "Em venda" },
   { value: "delivered", label: "Entregue" },
   { value: "sold_out", label: "Esgotado" },
@@ -148,7 +148,7 @@ export default function NewPropertyPage() {
         {/* Address */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Endereco
+            Endereço
           </label>
           <input
             type="text"
@@ -215,7 +215,7 @@ export default function NewPropertyPage() {
         {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Descricao
+            Descrição
           </label>
           <textarea
             value={description}

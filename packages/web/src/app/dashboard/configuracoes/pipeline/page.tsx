@@ -44,11 +44,11 @@ export default async function PipelineConfigPage() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead>
             <tr className="text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              <th className="px-6 py-3">Posicao</th>
+              <th className="px-6 py-3">Posição</th>
               <th className="px-6 py-3">Nome</th>
               <th className="px-6 py-3">Tipo</th>
               <th className="px-6 py-3">Cor</th>
-              <th className="px-6 py-3">Padrao</th>
+              <th className="px-6 py-3">Padrão</th>
               {isAdmin && <th className="px-6 py-3"></th>}
             </tr>
           </thead>

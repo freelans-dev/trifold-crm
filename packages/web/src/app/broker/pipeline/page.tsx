@@ -42,7 +42,7 @@ export default async function BrokerPipelinePage() {
       {leads?.length === 0 ? (
         <div className="rounded-lg bg-white p-12 text-center shadow-sm">
           <p className="text-gray-500">
-            Voce nao tem leads designados. Novos leads serao atribuidos pelo
+            Você não tem leads designados. Novos leads serão atribuídos pelo
             supervisor.
           </p>
         </div>

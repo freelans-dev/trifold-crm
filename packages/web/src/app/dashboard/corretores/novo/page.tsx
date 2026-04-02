@@ -1,8 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+
+interface Property {
+  id: string
+  name: string
+}
 
 export default function NovoCorretorPage() {
   const router = useRouter()
@@ -14,6 +19,14 @@ export default function NovoCorretorPage() {
   const [type, setType] = useState<"internal" | "external">("internal")
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [properties, setProperties] = useState<Property[]>([])
+  const [selectedProperties, setSelectedProperties] = useState<string[]>([])
+
+  useEffect(() => {
+    fetch("/api/properties").then(r => r.json()).then(d => {
+      setProperties(d.data ?? [])
+    }).catch(() => {})
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -38,6 +51,20 @@ export default function NovoCorretorPage() {
         setError(json.error || "Erro ao criar corretor")
         setSaving(false)
         return
+      }
+
+      const { data: newBroker } = await res.json()
+
+      // Vincular empreendimentos selecionados
+      const brokerId = newBroker?.id ?? newBroker?.broker_id
+      if (brokerId && selectedProperties.length > 0) {
+        for (const propId of selectedProperties) {
+          await fetch(`/api/brokers/${brokerId}/assignments`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ property_id: propId }),
+          })
+        }
       }
 
       router.push("/dashboard/corretores")
@@ -138,6 +165,34 @@ export default function NovoCorretorPage() {
             </select>
           </div>
         </div>
+
+        {/* Empreendimentos */}
+        {properties.length > 0 && (
+          <div className="mt-4">
+            <label className="mb-2 block text-sm font-medium text-stone-700">
+              Empreendimentos que este corretor atende
+            </label>
+            <div className="flex flex-wrap gap-3">
+              {properties.map((p) => (
+                <label key={p.id} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedProperties.includes(p.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedProperties([...selectedProperties, p.id])
+                      } else {
+                        setSelectedProperties(selectedProperties.filter(id => id !== p.id))
+                      }
+                    }}
+                    className="h-4 w-4 rounded border-stone-300 text-orange-600 focus:ring-orange-500"
+                  />
+                  <span className="text-sm text-stone-700">{p.name}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
 
         {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 

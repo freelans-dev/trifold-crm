@@ -41,13 +41,13 @@ export default async function PersonalidadePage() {
           href="/dashboard/configuracoes/pipeline"
           className="text-sm text-gray-500 hover:text-gray-700"
         >
-          &larr; Configuracoes
+          &larr; Configurações
         </Link>
         <h1 className="mt-1 text-2xl font-bold text-gray-900">
           Personalidade da Nicole
         </h1>
         <p className="mt-1 text-sm text-gray-500">
-          Configuracoes de personalidade e comportamento da IA
+          Configurações de personalidade e comportamento da IA
         </p>
       </div>
 
@@ -69,7 +69,7 @@ export default async function PersonalidadePage() {
               className="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700"
             />
             <p className="mt-1 text-xs text-gray-400">
-              Somente leitura. Edicao disponivel em breve.
+              Somente leitura. Edição disponível em breve.
             </p>
           </div>
 

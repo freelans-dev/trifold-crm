@@ -210,7 +210,7 @@ export default async function TreinamentoPage({
                         : "bg-gray-100 text-gray-500"
                     }`}
                   >
-                    {entry.is_active ? "Sim" : "Nao"}
+                    {entry.is_active ? "Sim" : "Não"}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">

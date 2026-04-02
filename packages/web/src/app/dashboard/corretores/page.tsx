@@ -177,10 +177,18 @@ export default async function CorretoresPage() {
                   </td>
                   {isAdmin && (
                     <td className="px-6 py-4 text-right">
-                      <ToggleAvailability
-                        brokerId={broker.id}
-                        isAvailable={broker.is_available}
-                      />
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={`/dashboard/corretores/${broker.id}`}
+                          className="rounded-md bg-stone-100 px-2.5 py-1 text-xs font-medium text-stone-700 hover:bg-stone-200"
+                        >
+                          Editar
+                        </Link>
+                        <ToggleAvailability
+                          brokerId={broker.id}
+                          isAvailable={broker.is_available}
+                        />
+                      </div>
                     </td>
                   )}
                 </tr>

@@ -43,15 +43,15 @@ const viewLabels: Record<string, string> = {
 }
 
 const statusLabels: Record<string, string> = {
-  available: "Disponivel",
+  available: "Disponível",
   reserved: "Reservada",
   sold: "Vendida",
 }
 
 const paymentMethods = [
-  { value: "financiamento_bancario", label: "Financiamento bancario" },
+  { value: "financiamento_bancario", label: "Financiamento bancário" },
   { value: "direto_construtora", label: "Direto construtora" },
-  { value: "a_vista", label: "A vista" },
+  { value: "a_vista", label: "À vista" },
   { value: "misto", label: "Misto" },
 ]
 
@@ -348,7 +348,7 @@ export default function UnitEditPage() {
           {/* Position (read-only) */}
           <div>
             <label className="mb-1 block text-xs font-medium text-gray-500">
-              Posicao
+              Posição
             </label>
             <p className="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
               {unit.position ?? "-"}

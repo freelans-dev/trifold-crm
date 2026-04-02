@@ -1,6 +1,29 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@web/lib/supabase/server"
 
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  const { data: broker } = await supabase
+    .from("brokers")
+    .select("id, creci, type, is_available, max_leads, user:users!user_id(id, name, email, is_active)")
+    .eq("id", id)
+    .single()
+
+  if (!broker) return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+  const brokerUser = Array.isArray(broker.user) ? broker.user[0] : broker.user
+
+  return NextResponse.json({ data: { ...broker, user: brokerUser } })
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

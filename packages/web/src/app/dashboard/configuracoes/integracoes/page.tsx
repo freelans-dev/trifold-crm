@@ -54,7 +54,7 @@ export default async function IntegracoesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Integracoes</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Integrações</h1>
         <p className="mt-1 text-sm text-gray-500">
           Gerencie as integracoes externas do sistema
         </p>
@@ -79,7 +79,7 @@ export default async function IntegracoesPage() {
           />
           <ConfigField
             label="META_APP_SECRET"
-            value={metaAppSecretConfigured ? "Configurado" : "Nao configurado"}
+            value={metaAppSecretConfigured ? "Configurado" : "Não configurado"}
           />
         </div>
       </div>
@@ -103,11 +103,11 @@ export default async function IntegracoesPage() {
           />
           <ConfigField
             label="Phone Number ID"
-            value={whatsappPhoneNumberId || "Nao configurado"}
+            value={whatsappPhoneNumberId || "Não configurado"}
           />
           <ConfigField
             label="WHATSAPP_ACCESS_TOKEN"
-            value={whatsappConfigured ? "Configurado" : "Nao configurado"}
+            value={whatsappConfigured ? "Configurado" : "Não configurado"}
           />
         </div>
       </div>
@@ -131,11 +131,11 @@ export default async function IntegracoesPage() {
           />
           <ConfigField
             label="Bot Username"
-            value={telegramBotUsername ? `@${telegramBotUsername}` : "Nao configurado"}
+            value={telegramBotUsername ? `@${telegramBotUsername}` : "Não configurado"}
           />
           <ConfigField
             label="TELEGRAM_BOT_TOKEN"
-            value={telegramConfigured ? "Configurado" : "Nao configurado"}
+            value={telegramConfigured ? "Configurado" : "Não configurado"}
           />
         </div>
       </div>
@@ -154,7 +154,7 @@ export default async function IntegracoesPage() {
           </span>
         </div>
         <p className="text-sm text-gray-400">
-          A integracao com Google Ads estara disponivel em breve.
+          A integração com Google Ads estará disponível em breve.
         </p>
       </div>
     </div>
