@@ -91,6 +91,14 @@ export interface MediaBlock {
   mimeType: string
 }
 
+export interface PipelineEvent {
+  level: "error" | "warn" | "info"
+  category: string
+  event_type: string
+  message: string
+  metadata?: Record<string, unknown>
+}
+
 export interface ProcessMessageParams {
   supabase: SupabaseClient
   anthropic: Anthropic
@@ -98,6 +106,7 @@ export interface ProcessMessageParams {
   message: string
   orgId: string
   mediaBlock?: MediaBlock
+  onEvent?: (event: PipelineEvent) => void
 }
 
 export interface ProcessMessageResult {
@@ -139,6 +148,7 @@ export async function processMessageWithMetadata(
   params: ProcessMessageParams
 ): Promise<ProcessMessageResult> {
   const { supabase, anthropic, conversationId, message, orgId } = params
+  const emit = params.onEvent ?? (() => {})
 
   // 1. Load conversation state
   const state = await loadConversationState(supabase, conversationId)
@@ -179,8 +189,10 @@ export async function processMessageWithMetadata(
       state?.current_property_id ?? undefined
     )
     ragContext = buildContextFromRAG(ragResults)
+    emit({ level: "info", category: "ai", event_type: "RAG_SUCCESS", message: `RAG returned ${ragResults.length} results`, metadata: { results_count: ragResults.length } })
   } catch (ragError) {
     console.error("[RAG_FALLBACK] Search failed, continuing without context:", ragError)
+    emit({ level: "warn", category: "ai", event_type: "RAG_FALLBACK", message: `RAG search failed: ${ragError instanceof Error ? ragError.message : String(ragError)}`, metadata: { error: String(ragError) } })
   }
 
   // 5. Identify property from message
@@ -190,6 +202,11 @@ export async function processMessageWithMetadata(
     collectedData,
     properties
   )
+
+  if (identifiedPropertyId) {
+    const prop = properties.find((p) => p.id === identifiedPropertyId)
+    emit({ level: "info", category: "ai", event_type: "PROPERTY_IDENTIFIED", message: `Property identified: ${prop?.name ?? identifiedPropertyId}`, metadata: { property_id: identifiedPropertyId, property_name: prop?.name } })
+  }
 
   // 6. Check Yarden gate if property identified
   let yardenGateContext = ""
@@ -326,8 +343,7 @@ export async function processMessageWithMetadata(
   )
   const claudeDuration = Date.now() - claudeStart
 
-  // AC9: Log Claude response time and token usage
-  console.log(`[INFO] [ai] [CLAUDE_RESPONSE] ${claudeDuration}ms, input=${response.usage.input_tokens} output=${response.usage.output_tokens}`)
+  emit({ level: "info", category: "ai", event_type: "CLAUDE_RESPONSE", message: `Claude responded in ${claudeDuration}ms`, metadata: { response_time_ms: claudeDuration, input_tokens: response.usage.input_tokens, output_tokens: response.usage.output_tokens, model: agentConfig.model_primary } })
 
   const assistantMessage =
     response.content[0].type === "text" ? response.content[0].text : ""
@@ -343,6 +359,8 @@ export async function processMessageWithMetadata(
   // 10. Calculate updated score and check handoff
   const updatedScore = calculateQualificationScore(finalData)
   const updatedStep = getNextQualificationStep(finalData)
+
+  emit({ level: "info", category: "ai", event_type: "QUALIFICATION_UPDATE", message: `Score: ${updatedScore}/100, step: ${updatedStep}`, metadata: { score: updatedScore, step: updatedStep, collected_fields: Object.keys(finalData).filter(k => finalData[k] != null) } })
 
   const handoffResult = shouldHandoff({
     qualificationScore: updatedScore,
@@ -366,50 +384,6 @@ export async function processMessageWithMetadata(
   if (conversation?.lead_id) {
     const leadId = conversation.lead_id
 
-    // [3.3 AC9] Sync property_interest_id to lead
-    if (identifiedPropertyId) {
-      await supabase
-        .from("leads")
-        .update({ property_interest_id: identifiedPropertyId })
-        .eq("id", leadId)
-    }
-
-    // [3.3 AC9] Sync property_interest from collected_data
-    if (!identifiedPropertyId && finalData.property_interest) {
-      const interest = (finalData.property_interest as string).toLowerCase()
-      const matchedProperty = properties.find((p) =>
-        p.slug.includes(interest) || p.name.toLowerCase().includes(interest)
-      )
-      if (matchedProperty) {
-        await supabase
-          .from("leads")
-          .update({ property_interest_id: matchedProperty.id })
-          .eq("id", leadId)
-      }
-    }
-
-    // [3.4 AC4] Sync collected_data → lead fields
-    // Map state field names to lead column names
-    const leadUpdates: Record<string, unknown> = {}
-    if (finalData.name && (finalData.name as string).toLowerCase() !== "nicole") {
-      leadUpdates.name = finalData.name
-    }
-    if (finalData.bedrooms) leadUpdates.preferred_bedrooms = finalData.bedrooms
-    if (finalData.floor) leadUpdates.preferred_floor = finalData.floor
-    if (finalData.preferred_floor) leadUpdates.preferred_floor = finalData.preferred_floor
-    if (finalData.view) leadUpdates.preferred_view = finalData.view
-    if (finalData.preferred_view) leadUpdates.preferred_view = finalData.preferred_view
-    if (finalData.garages) leadUpdates.preferred_garage_count = finalData.garages
-    if (finalData.garage_count) leadUpdates.preferred_garage_count = finalData.garage_count
-    if (finalData.has_down_payment !== undefined) leadUpdates.has_down_payment = finalData.has_down_payment
-    leadUpdates.qualification_score = updatedScore
-    leadUpdates.qualification_status = updatedScore >= 70 ? "qualified" : updatedScore > 0 ? "in_progress" : "not_started"
-
-    if (Object.keys(leadUpdates).length > 0) {
-      await supabase.from("leads").update(leadUpdates).eq("id", leadId)
-    }
-
-    // [3.4 AC11] Kanban auto-update based on qualification
     const STAGE_IDS = {
       novo: "00000000-0000-0000-0001-000000000001",
       em_qualificacao: "00000000-0000-0000-0001-000000000002",
@@ -417,6 +391,41 @@ export async function processMessageWithMetadata(
       visita_agendada: "00000000-0000-0000-0001-000000000004",
     }
 
+    // [12.2 AC11] Single batch update — accumulate all changes, apply once
+    const leadPatch: Record<string, unknown> = {}
+
+    // Sync property_interest_id
+    if (identifiedPropertyId) {
+      leadPatch.property_interest_id = identifiedPropertyId
+    } else if (finalData.property_interest) {
+      const interest = (finalData.property_interest as string).toLowerCase()
+      const matchedProperty = properties.find((p) =>
+        p.slug.includes(interest) || p.name.toLowerCase().includes(interest)
+      )
+      if (matchedProperty) {
+        leadPatch.property_interest_id = matchedProperty.id
+      }
+    }
+
+    // Sync collected_data → lead fields
+    if (finalData.name && (finalData.name as string).toLowerCase() !== "nicole") {
+      leadPatch.name = finalData.name
+    }
+    if (finalData.bedrooms) leadPatch.preferred_bedrooms = finalData.bedrooms
+    if (finalData.floor) leadPatch.preferred_floor = finalData.floor
+    if (finalData.preferred_floor) leadPatch.preferred_floor = finalData.preferred_floor
+    if (finalData.view) leadPatch.preferred_view = finalData.view
+    if (finalData.preferred_view) leadPatch.preferred_view = finalData.preferred_view
+    if (finalData.garages) leadPatch.preferred_garage_count = finalData.garages
+    if (finalData.garage_count) leadPatch.preferred_garage_count = finalData.garage_count
+    if (finalData.has_down_payment !== undefined) leadPatch.has_down_payment = finalData.has_down_payment
+    if (finalData.email) leadPatch.email = finalData.email
+    if (finalData.source) leadPatch.source = finalData.source
+    leadPatch.qualification_score = updatedScore
+    leadPatch.qualification_status = updatedScore >= 70 ? "qualified" : updatedScore > 0 ? "in_progress" : "not_started"
+    leadPatch.interest_level = updatedScore >= 70 ? "hot" : updatedScore >= 40 ? "warm" : "cold"
+
+    // Kanban stage — qualification level (lowest priority)
     const { data: currentLead } = await supabase
       .from("leads")
       .select("stage_id")
@@ -424,27 +433,20 @@ export async function processMessageWithMetadata(
       .single()
 
     if (currentLead?.stage_id === STAGE_IDS.novo && updatedScore > 0) {
-      await supabase
-        .from("leads")
-        .update({ stage_id: STAGE_IDS.em_qualificacao })
-        .eq("id", leadId)
+      leadPatch.stage_id = STAGE_IDS.em_qualificacao
+      emit({ level: "info", category: "ai", event_type: "STAGE_CHANGE", message: `Lead moved: novo → em_qualificacao (score=${updatedScore})`, metadata: { lead_id: leadId, from: "novo", to: "em_qualificacao", score: updatedScore } })
     } else if (currentLead?.stage_id === STAGE_IDS.em_qualificacao && updatedScore >= 70) {
-      await supabase
-        .from("leads")
-        .update({ stage_id: STAGE_IDS.qualificado })
-        .eq("id", leadId)
+      leadPatch.stage_id = STAGE_IDS.qualificado
+      emit({ level: "info", category: "ai", event_type: "STAGE_CHANGE", message: `Lead moved: em_qualificacao → qualificado (score=${updatedScore})`, metadata: { lead_id: leadId, from: "em_qualificacao", to: "qualificado", score: updatedScore } })
     }
 
-    // Auto-create appointment when visit is discussed
+    // Visit scheduling — overrides qualification stage
     if (finalData.visit_availability && !state?.visit_proposed && conversation.org_id) {
-      // Default: next business day 10am Maringá (UTC-3 = 13h UTC)
       const tomorrow = new Date()
       tomorrow.setDate(tomorrow.getDate() + 1)
-      // Skip Sunday
       if (tomorrow.getDay() === 0) tomorrow.setDate(tomorrow.getDate() + 1)
       tomorrow.setUTCHours(13, 0, 0, 0) // 10h Maringá = 13h UTC
 
-      // Auto-assign broker from property
       const propertyId = identifiedPropertyId ?? state?.current_property_id
       let assignedBrokerId: string | null = null
 
@@ -463,7 +465,6 @@ export async function processMessageWithMetadata(
         }
       }
 
-      // Create appointment with broker if found
       await supabase.from("appointments").insert({
         org_id: conversation.org_id,
         lead_id: leadId,
@@ -475,13 +476,9 @@ export async function processMessageWithMetadata(
         notes: `Visita sugerida pela Nicole. Disponibilidade informada: ${String(finalData.visit_availability)}`,
       })
 
-      // Assign broker to lead
-      if (assignedBrokerId) {
-        await supabase.from("leads").update({ assigned_broker_id: assignedBrokerId }).eq("id", leadId)
-      }
-
-      // Move to visita-agendada
-      await supabase.from("leads").update({ stage_id: STAGE_IDS.visita_agendada }).eq("id", leadId)
+      leadPatch.visit_scheduled_at = tomorrow.toISOString()
+      leadPatch.stage_id = STAGE_IDS.visita_agendada
+      if (assignedBrokerId) leadPatch.assigned_broker_id = assignedBrokerId
 
       await supabase.from("activities").insert({
         org_id: conversation.org_id,
@@ -489,41 +486,36 @@ export async function processMessageWithMetadata(
         type: "visit_scheduled",
         description: `Nicole agendou visita. Disponibilidade: ${String(finalData.visit_availability)}${assignedBrokerId ? ". Corretor designado automaticamente." : ""}`,
       })
+
+      emit({ level: "info", category: "ai", event_type: "APPOINTMENT_CREATED", message: `Visit scheduled for lead${assignedBrokerId ? " with broker" : " WITHOUT broker"}`, metadata: { lead_id: leadId, broker_assigned: !!assignedBrokerId, property_id: propertyId ?? null, scheduled_at: tomorrow.toISOString() } })
+
+      if (!assignedBrokerId) {
+        emit({ level: "warn", category: "ai", event_type: "APPOINTMENT_NO_BROKER", message: "Appointment created without broker assignment — no primary broker found for property", metadata: { lead_id: leadId, property_id: propertyId ?? null } })
+      }
     }
 
-    // [3.10 AC7/AC9/AC10] Handoff automations
+    // Handoff — highest priority, overrides visit and qualification stage
     if (handoffResult.trigger && conversation.org_id) {
-      // AC10: Move to appropriate stage
-      const handoffStageId = finalData.visit_availability
+      leadPatch.stage_id = finalData.visit_availability
         ? STAGE_IDS.visita_agendada
         : STAGE_IDS.qualificado
-      await supabase
-        .from("leads")
-        .update({ stage_id: handoffStageId, ai_summary: handoffSummary })
-        .eq("id", leadId)
+      leadPatch.ai_summary = handoffSummary
 
-      // AC7: Auto-assign broker from property
       if (identifiedPropertyId) {
         const { data: assignment } = await supabase
           .from("broker_assignments")
           .select("broker_id, brokers(user_id)")
           .eq("property_id", identifiedPropertyId)
           .eq("is_primary", true)
-          .single()
+          .maybeSingle()
 
-        if (assignment?.broker_id) {
+        if (assignment) {
           const brokers = assignment.brokers as unknown as { user_id: string } | { user_id: string }[]
           const brokerId = Array.isArray(brokers) ? brokers[0]?.user_id : brokers?.user_id
-          if (brokerId) {
-            await supabase
-              .from("leads")
-              .update({ assigned_broker_id: brokerId })
-              .eq("id", leadId)
-          }
+          if (brokerId) leadPatch.assigned_broker_id = brokerId
         }
       }
 
-      // AC9: Register activity log
       await supabase.from("activities").insert({
         org_id: conversation.org_id,
         lead_id: leadId,
@@ -535,11 +527,17 @@ export async function processMessageWithMetadata(
         },
       })
 
-      // Mark conversation as handed off
+      emit({ level: "info", category: "ai", event_type: "HANDOFF_TRIGGERED", message: `Handoff: ${handoffResult.reason} (score=${updatedScore})`, metadata: { lead_id: leadId, reason: handoffResult.reason, score: updatedScore, property_id: identifiedPropertyId } })
+
       await supabase
         .from("conversations")
         .update({ is_ai_active: false, handoff_at: new Date().toISOString(), handoff_reason: handoffResult.reason })
         .eq("id", conversationId)
+    }
+
+    // ONE single update with all accumulated changes
+    if (Object.keys(leadPatch).length > 0) {
+      await supabase.from("leads").update(leadPatch).eq("id", leadId)
     }
   }
 

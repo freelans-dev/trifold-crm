@@ -4,4 +4,5 @@ export {
   type ProcessMessageParams,
   type ProcessMessageResult,
   type MediaBlock,
+  type PipelineEvent,
 } from "./pipeline"

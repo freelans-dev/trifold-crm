@@ -331,6 +331,13 @@ export async function POST(request: NextRequest) {
         message: text,
         orgId,
         mediaBlock,
+        onEvent: (event) => logEvent({
+          ...event,
+          category: event.category as "bot" | "ai" | "webhook" | "auth" | "cron" | "system",
+          source: "ai/pipeline",
+          org_id: orgId,
+          metadata: { ...event.metadata, conversation_id: conversation.id, lead_id: lead?.id },
+        }),
       })
 
       // Send response via WhatsApp
