@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 import type { MediaBlock } from "@trifold/ai"
 import { getTelegramFileUrl, downloadFileAsBase64 } from "@trifold/bot"
+import { logEvent } from "@web/lib/logger"
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
 const TELEGRAM_WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET
@@ -456,6 +457,7 @@ export async function POST(request: NextRequest) {
 
         const anthropic = createAnthropicClient()
 
+        const aiStart = Date.now()
         const response = await processMessage({
           supabase,
           anthropic,
@@ -463,6 +465,24 @@ export async function POST(request: NextRequest) {
           message: text,
           orgId,
           mediaBlock,
+        })
+        const aiDuration = Date.now() - aiStart
+
+        // AC11: Log mensagem processada com tempo
+        logEvent({
+          level: "info",
+          category: "bot",
+          event_type: "MESSAGE_PROCESSED",
+          message: `Telegram message processed in ${aiDuration}ms`,
+          metadata: {
+            channel: "telegram",
+            message_type: mediaMetadata.media_type ?? "text",
+            response_time_ms: aiDuration,
+            conversation_id: conversation.id,
+            lead_id: lead.id,
+          },
+          source: "api/telegram/webhook",
+          org_id: orgId,
         })
 
         console.log("Nicole response:", response ? response.slice(0, 80) + "..." : "EMPTY")
@@ -574,7 +594,21 @@ export async function POST(request: NextRequest) {
           }
         }
       } catch (aiError) {
-        console.error("AI processing error:", aiError)
+        // AC10: Log erro de AI
+        logEvent({
+          level: "error",
+          category: "bot",
+          event_type: "AI_PROCESSING_ERROR",
+          message: `AI processing failed: ${aiError instanceof Error ? aiError.message : String(aiError)}`,
+          metadata: {
+            channel: "telegram",
+            conversation_id: conversation.id,
+            lead_id: lead.id,
+            error: aiError instanceof Error ? aiError.stack : String(aiError),
+          },
+          source: "api/telegram/webhook",
+          org_id: orgId,
+        })
         // Send fallback message
         await sendTelegramMessage(
           chatId,
@@ -585,7 +619,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ status: "ok" })
   } catch (error) {
-    console.error("Telegram webhook error:", error)
+    logEvent({
+      level: "error",
+      category: "webhook",
+      event_type: "WEBHOOK_ERROR",
+      message: `Telegram webhook error: ${error instanceof Error ? error.message : String(error)}`,
+      metadata: { error: error instanceof Error ? error.stack : String(error) },
+      source: "api/telegram/webhook",
+    })
     return NextResponse.json({ status: "ok" })
   }
 }

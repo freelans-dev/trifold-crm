@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
+import { logEvent } from "@web/lib/logger"
 
 const CRON_SECRET = process.env.CRON_SECRET
 
@@ -308,6 +309,16 @@ export async function POST(request: NextRequest) {
       postVisitSent++
     }
   }
+
+  // AC13: Log cron execution result
+  logEvent({
+    level: processed > 0 ? "info" : "info",
+    category: "cron",
+    event_type: "FOLLOWUP_EXECUTED",
+    message: `Followup cron: ${processed} processed, ${alertsCreated} alerts, ${messagesSent} messages, ${postVisitSent} post-visit`,
+    metadata: { processed, alerts_created: alertsCreated, messages_sent: messagesSent, post_visit_sent: postVisitSent },
+    source: "api/cron/followup",
+  })
 
   return NextResponse.json({
     processed,

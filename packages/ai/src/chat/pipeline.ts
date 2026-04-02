@@ -313,6 +313,7 @@ export async function processMessageWithMetadata(
     { role: "user", content: userContent },
   ]
 
+  const claudeStart = Date.now()
   const response = await anthropic.messages.create(
     {
       model: agentConfig.model_primary,
@@ -323,6 +324,10 @@ export async function processMessageWithMetadata(
     },
     { timeout: 60000 }
   )
+  const claudeDuration = Date.now() - claudeStart
+
+  // AC9: Log Claude response time and token usage
+  console.log(`[INFO] [ai] [CLAUDE_RESPONSE] ${claudeDuration}ms, input=${response.usage.input_tokens} output=${response.usage.output_tokens}`)
 
   const assistantMessage =
     response.content[0].type === "text" ? response.content[0].text : ""

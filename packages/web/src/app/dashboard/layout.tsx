@@ -2,7 +2,7 @@ import { getServerUser } from "@web/lib/auth"
 import { createClient } from "@web/lib/supabase/server"
 import { SidebarNav } from "@web/components/layout/sidebar-nav"
 
-const NAV_ITEMS = [
+const NAV_ITEMS_BASE = [
   { href: "/dashboard", label: "Dashboard", icon: "◈" },
   { href: "/dashboard/pipeline", label: "Pipeline", icon: "▦" },
   { href: "/dashboard/leads", label: "Leads", icon: "◉" },
@@ -16,6 +16,8 @@ const NAV_ITEMS = [
   { href: "/dashboard/treinamento", label: "Treinamento", icon: "◧" },
   { href: "/dashboard/configuracoes", label: "Config", icon: "⚙" },
 ]
+
+const NAV_ITEM_SISTEMA = { href: "/dashboard/sistema", label: "Sistema", icon: "◉" }
 
 export default async function DashboardLayout({
   children,
@@ -32,10 +34,15 @@ export default async function DashboardLayout({
     .eq("org_id", user.orgId)
     .eq("status", "pending")
 
+  // AC23: Show "Sistema" link only for admins
+  const navItems = user.role === "admin"
+    ? [...NAV_ITEMS_BASE, NAV_ITEM_SISTEMA]
+    : NAV_ITEMS_BASE
+
   return (
     <div className="min-h-screen bg-stone-50">
       <SidebarNav
-        items={NAV_ITEMS}
+        items={navItems}
         userName={user.name}
         userRole={user.role}
         basePath="/dashboard"

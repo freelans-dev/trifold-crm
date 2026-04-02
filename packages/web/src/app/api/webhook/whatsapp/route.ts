@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 import crypto from "crypto"
 import type { MediaBlock } from "@trifold/ai"
+import { logEvent } from "@web/lib/logger"
 
 function getSupabaseAdmin() {
   return createClient(
@@ -351,7 +352,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ status: "ok" })
   } catch (error) {
-    console.error("Webhook error:", error)
+    logEvent({
+      level: "error",
+      category: "webhook",
+      event_type: "WEBHOOK_ERROR",
+      message: `WhatsApp webhook error: ${error instanceof Error ? error.message : String(error)}`,
+      metadata: { error: error instanceof Error ? error.stack : String(error) },
+      source: "api/webhook/whatsapp",
+    })
     return NextResponse.json({ status: "ok" })
   }
 }
