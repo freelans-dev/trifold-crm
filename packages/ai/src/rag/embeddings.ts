@@ -29,29 +29,36 @@ async function generateOpenAIEmbedding(
   text: string,
   apiKey: string
 ): Promise<number[]> {
-  const response = await fetch("https://api.openai.com/v1/embeddings", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      input: text,
-      model: "text-embedding-3-small",
-      dimensions: EMBEDDING_DIMENSION,
-    }),
-  })
+  try {
+    const response = await fetch("https://api.openai.com/v1/embeddings", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        input: text,
+        model: "text-embedding-3-small",
+        dimensions: EMBEDDING_DIMENSION,
+      }),
+      signal: AbortSignal.timeout(15000),
+    })
 
-  if (!response.ok) {
-    const error = await response.text()
-    throw new Error(`OpenAI embeddings API error: ${response.status} ${error}`)
+    if (!response.ok) {
+      const error = await response.text()
+      console.error(`OpenAI embeddings API error: ${response.status} ${error}`)
+      return generateHashEmbedding(text)
+    }
+
+    const data = (await response.json()) as {
+      data: Array<{ embedding: number[] }>
+    }
+
+    return data.data[0].embedding
+  } catch (err) {
+    console.error("OpenAI embeddings failed, using hash fallback:", err)
+    return generateHashEmbedding(text)
   }
-
-  const data = (await response.json()) as {
-    data: Array<{ embedding: number[] }>
-  }
-
-  return data.data[0].embedding
 }
 
 /**

@@ -170,13 +170,18 @@ export async function processMessageWithMetadata(
   const history = await loadConversationHistory(supabase, conversationId)
 
   // 4. Search RAG for relevant context
-  const ragResults = await searchKnowledge(
-    supabase,
-    message,
-    orgId,
-    state?.current_property_id ?? undefined
-  )
-  const ragContext = buildContextFromRAG(ragResults)
+  let ragContext = ""
+  try {
+    const ragResults = await searchKnowledge(
+      supabase,
+      message,
+      orgId,
+      state?.current_property_id ?? undefined
+    )
+    ragContext = buildContextFromRAG(ragResults)
+  } catch (ragError) {
+    console.error("RAG search failed, continuing without context:", ragError)
+  }
 
   // 5. Identify property from message
   const properties = await loadProperties(supabase, orgId)
@@ -308,13 +313,16 @@ export async function processMessageWithMetadata(
     { role: "user", content: userContent },
   ]
 
-  const response = await anthropic.messages.create({
-    model: agentConfig.model_primary,
-    max_tokens: agentConfig.max_tokens,
-    temperature: agentConfig.temperature,
-    system: systemPrompt,
-    messages,
-  })
+  const response = await anthropic.messages.create(
+    {
+      model: agentConfig.model_primary,
+      max_tokens: agentConfig.max_tokens,
+      temperature: agentConfig.temperature,
+      system: systemPrompt,
+      messages,
+    },
+    { timeout: 60000 }
+  )
 
   const assistantMessage =
     response.content[0].type === "text" ? response.content[0].text : ""
