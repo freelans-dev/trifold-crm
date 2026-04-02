@@ -34,23 +34,22 @@ describe("shouldHandoff", () => {
     expect(result.trigger).toBe(false)
   })
 
-  it("triggers when visit has been scheduled", () => {
+  it("does NOT trigger when visit has been scheduled (Nicole continues attending)", () => {
     const result = shouldHandoff({
       qualificationScore: 20,
       message: "ok",
       conversationState: { visit_proposed: true },
     })
-    expect(result.trigger).toBe(true)
-    expect(result.reason).toContain("Visita")
+    expect(result.trigger).toBe(false)
   })
 
-  it("triggers when visit_availability is true", () => {
+  it("does NOT trigger when visit_availability is true (Nicole continues attending)", () => {
     const result = shouldHandoff({
       qualificationScore: 10,
       message: "ok",
       conversationState: { visit_availability: true },
     })
-    expect(result.trigger).toBe(true)
+    expect(result.trigger).toBe(false)
   })
 
   it("triggers on out-of-scope: wants to talk to a broker", () => {

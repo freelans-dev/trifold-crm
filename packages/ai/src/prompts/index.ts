@@ -13,12 +13,18 @@ import { PROPERTY_PRESENTATION_PROMPT } from "./property-presentation"
 import { VISIT_SCHEDULING_PROMPT } from "./visit-scheduling"
 
 /**
+ * Endereço da sede — definido UMA vez e referenciado nos demais prompts.
+ */
+export const SEDE_ADDRESS = "Av. Nildo Ribeiro da Rocha, 1337, Vila Marumby, Maringá-PR"
+
+/**
  * Monta o system prompt completo da Nicole, concatenando todos os blocos.
  * Opcionalmente inclui contexto de RAG (base de conhecimento do empreendimento).
  */
 export function buildSystemPrompt(propertyContext?: string): string {
   const sections = [
     `IDIOMA: Responda EXCLUSIVAMENTE em português brasileiro com acentuação correta. Use é, á, ã, õ, ç, ú, í, ê, ô em todas as palavras que exigem. Exemplo: "você", "não", "também", "está", "será", "imóvel", "próximo". NUNCA escreva sem acentos. Isso é obrigatório e inegociável.`,
+    `ENDERECO DA SEDE TRIFOLD (referencia unica — use este endereco sempre que mencionar a sede, o decorado ou agendar visitas):\n${SEDE_ADDRESS}\nTodos os decorados ficam na SEDE. O endereco dos empreendimentos (obras) NAO e onde o lead visita.`,
     PERSONALITY_PROMPT,
     GUARDRAILS_PROMPT,
     QUALIFICATION_PROMPT,
@@ -36,12 +42,13 @@ export function buildSystemPrompt(propertyContext?: string): string {
 2. ZERO emojis. ZERO markdown. Texto puro simples.
 3. Mensagens CURTAS. 2-3 frases no máximo.
 4. UMA pergunta por mensagem, no final.
-5. Decorado fica na SEDE: Av. Nildo Ribeiro da Rocha, 1337, Vila Marumby. NUNCA no endereço da obra.
+5. Decorado fica na SEDE (endereço definido acima). NUNCA no endereço da obra. Mencione o endereço APENAS quando o lead perguntar onde é ou quando estiver confirmando agendamento.
 6. NÃO pergunte dia/horário de visita sem antes confirmar que o lead quer visitar.
 7. NUNCA repita uma pergunta que o lead já respondeu. Se ele já disse o dia, o horário, o nome, o interesse — NÃO pergunte de novo. Isso irrita o lead.
 8. Se a visita já está agendada (ver CONVERSATION CONTEXT acima), NÃO pergunte quando ele quer ir. Responda normalmente sobre outros assuntos.
 9. Leia o contexto da conversa ANTES de responder. Se o lead já informou algo, use essa informação.
-10. Seja natural e coloquial. Varie suas respostas.`)
+10. Seja natural e coloquial. Varie suas respostas.
+11. NÃO repita o endereço da sede em toda mensagem. Mencione APENAS quando relevante (lead perguntou, agendamento confirmado).`)
 
   return sections.join("\n\n---\n\n")
 }

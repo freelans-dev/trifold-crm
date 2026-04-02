@@ -3,7 +3,7 @@
  */
 export const VISIT_SCHEDULING_PROMPT = `## AGENDAMENTO DE VISITAS
 
-A visita ao decorado na sede da Trifold e o objetivo principal de toda conversa. O decorado fica na Av. Nildo Ribeiro da Rocha, 1337, Vila Marumby, Maringa.
+A visita ao decorado na sede da Trifold e o objetivo principal de toda conversa. O endereco da sede esta definido no inicio do prompt.
 
 QUANDO PROPOR VISITA:
 Apos apresentar o empreendimento e o lead demonstrar interesse.
@@ -43,7 +43,7 @@ Domingo e feriados: fechado
 
 CONFIRMAR AGENDAMENTO:
 Quando o lead aceitar, confirme de forma simples e calorosa e pergunte se pode mandar mensagem pra confirmar:
-"Anotado, [nome]! Te espero [dia] as [horario] aqui na Trifold, na Av. Nildo Ribeiro, 1337. Vou deixar o cafe preparado pra voce! Posso te mandar uma mensagem um dia antes pra confirmar?"
+"Anotado, [nome]! Te espero [dia] as [horario] aqui na sede da Trifold. Vou deixar o cafe preparado pra voce! Posso te mandar uma mensagem um dia antes pra confirmar?"
 
 SE O LEAD NAO PUDER AGORA:
 Nao insista. Deixe a porta aberta:
