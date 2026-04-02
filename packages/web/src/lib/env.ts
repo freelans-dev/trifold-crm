@@ -1,6 +1,7 @@
 /**
- * Centralized environment variable validation.
- * Import this file early (e.g., in layout.tsx) to fail fast on missing vars.
+ * Centralized environment variable access.
+ * Uses getters to defer validation to runtime (not build time),
+ * since server-side env vars are not available during next build.
  */
 
 function requireEnv(name: string): string {
@@ -14,7 +15,13 @@ function requireEnv(name: string): string {
 }
 
 export const env = {
-  NEXT_PUBLIC_SUPABASE_URL: requireEnv("NEXT_PUBLIC_SUPABASE_URL"),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: requireEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
-  SUPABASE_SERVICE_ROLE_KEY: requireEnv("SUPABASE_SERVICE_ROLE_KEY"),
+  get NEXT_PUBLIC_SUPABASE_URL() {
+    return requireEnv("NEXT_PUBLIC_SUPABASE_URL")
+  },
+  get NEXT_PUBLIC_SUPABASE_ANON_KEY() {
+    return requireEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+  },
+  get SUPABASE_SERVICE_ROLE_KEY() {
+    return requireEnv("SUPABASE_SERVICE_ROLE_KEY")
+  },
 } as const
