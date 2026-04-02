@@ -64,6 +64,20 @@ export function getNextQualificationStep(
   return "complete"
 }
 
+// Portuguese spelled-out numbers (AC9)
+const PT_NUMBERS: Record<string, number> = {
+  um: 1, uma: 1, dois: 2, duas: 2,
+  "três": 3, tres: 3, quatro: 4,
+  cinco: 5, seis: 6,
+}
+
+function parsePortugueseNumber(text: string): number | null {
+  for (const [word, num] of Object.entries(PT_NUMBERS)) {
+    if (text.includes(word)) return num
+  }
+  return null
+}
+
 /**
  * Extracts newly collected data from an AI response and merges it with current data.
  * Looks for structured patterns in the response that indicate data collection.
@@ -75,23 +89,43 @@ export function extractCollectedData(
   const updated = { ...currentData }
   const lower = aiResponse.toLowerCase()
 
-  // Extract name mentions - look for patterns like "Prazer, [Name]" or "Olá, [Name]"
+  // Extract name mentions (AC6 — expanded PT-BR patterns)
   if (!updated.name) {
     const namePatterns = [
       /(?:prazer|olá|ola|obrigad[ao]),?\s+([A-Za-zÀ-ÿ][a-zà-ÿ]+(?:\s+[A-Za-zÀ-ÿ][a-zà-ÿ]+)*)/i,
       /(?:certo|entendi),?\s+([A-Za-zÀ-ÿ][a-zà-ÿ]+(?:\s+[A-Za-zÀ-ÿ][a-zà-ÿ]+)*)/i,
       /(?:meu nome [eé]|me chamo|sou (?:o |a )?)\s*([A-Za-zÀ-ÿ][a-zà-ÿ]+(?:\s+[A-Za-zÀ-ÿ][a-zà-ÿ]+)*)/i,
+      /(?:pode me chamar de|me chamam de)\s*([A-Za-zÀ-ÿ][a-zà-ÿ]+(?:\s+[A-Za-zÀ-ÿ][a-zà-ÿ]+)*)/i,
+      /(?:aqui [eé]\s*(?:o |a )?)\s*([A-Za-zÀ-ÿ][a-zà-ÿ]+(?:\s+[A-Za-zÀ-ÿ][a-zà-ÿ]+)*)/i,
     ]
     for (const pattern of namePatterns) {
       const match = aiResponse.match(pattern)
       if (match?.[1]) {
         const extractedName = match[1].trim()
-        // Never save the bot's own name as lead name
         if (extractedName.toLowerCase() !== "nicole") {
           updated.name = extractedName
           break
         }
       }
+    }
+    // Short message fallback: if message is 1-3 words and starts with capital, treat as name
+    if (!updated.name) {
+      const trimmed = aiResponse.trim()
+      const words = trimmed.split(/\s+/)
+      if (words.length >= 1 && words.length <= 3 && /^[A-ZÀ-Ÿ]/.test(trimmed)) {
+        const candidate = words.filter(w => /^[A-Za-zÀ-ÿ]+$/.test(w)).join(" ")
+        if (candidate && candidate.toLowerCase() !== "nicole" && candidate.length >= 2) {
+          updated.name = candidate
+        }
+      }
+    }
+  }
+
+  // Extract email (AC5)
+  if (!updated.email) {
+    const emailMatch = aiResponse.match(/[\w.+-]+@[\w-]+\.[\w.]+/i)
+    if (emailMatch?.[0]) {
+      updated.email = emailMatch[0].toLowerCase()
     }
   }
 
@@ -104,21 +138,31 @@ export function extractCollectedData(
     }
   }
 
-  // Extract bedroom preferences
+  // Extract bedroom preferences (AC9 — with spelled-out numbers)
   if (!updated.bedrooms) {
-    const bedroomMatch = aiResponse.match(/(\d+)\s*(?:quarto|dormitório|suite|suíte)/i)
+    const bedroomMatch = aiResponse.match(/(\d+)\s*(?:quarto|dormitório|dormitorio|suite|suíte)/i)
     if (bedroomMatch?.[1]) {
       updated.bedrooms = parseInt(bedroomMatch[1], 10)
+    } else {
+      const ptMatch = lower.match(/(um|uma|dois|duas|três|tres|quatro|cinco|seis)\s+(?:quarto|dormitório|dormitorio|suite|suíte)/i)
+      if (ptMatch?.[1]) {
+        const num = parsePortugueseNumber(ptMatch[1])
+        if (num) updated.bedrooms = num
+      }
     }
   }
 
-  // Extract floor preference
+  // Extract floor preference (AC7 — expanded patterns)
   if (!updated.floor) {
-    if (lower.includes("andar alto") || lower.includes("andares altos")) {
+    if (lower.includes("andar alto") || lower.includes("andares altos") ||
+        lower.includes("lá em cima") || lower.includes("la em cima") ||
+        lower.includes("mais alto") || lower.includes("bem alto")) {
       updated.floor = "alto"
-    } else if (lower.includes("andar baixo") || lower.includes("andares baixos")) {
+    } else if (lower.includes("andar baixo") || lower.includes("andares baixos") ||
+        lower.includes("mais baixo") || lower.includes("térreo") || lower.includes("terreo")) {
       updated.floor = "baixo"
-    } else if (lower.includes("andar médio") || lower.includes("andar medio")) {
+    } else if (lower.includes("andar médio") || lower.includes("andar medio") ||
+        lower.includes("andar do meio") || lower.includes("intermediário") || lower.includes("intermediario")) {
       updated.floor = "medio"
     }
   }
@@ -132,34 +176,52 @@ export function extractCollectedData(
     }
   }
 
-  // Extract garage preference
+  // Extract garage preference (AC9 — with spelled-out numbers)
   if (!updated.garages) {
     const garageMatch = aiResponse.match(/(\d+)\s*(?:vaga|garagem)/i)
     if (garageMatch?.[1]) {
       updated.garages = parseInt(garageMatch[1], 10)
+    } else {
+      const ptMatch = lower.match(/(um|uma|dois|duas|três|tres|quatro|cinco|seis)\s+(?:vaga|garagem)/i)
+      if (ptMatch?.[1]) {
+        const num = parsePortugueseNumber(ptMatch[1])
+        if (num) updated.garages = num
+      }
     }
   }
 
-  // Extract down payment info
+  // Extract down payment info (AC8 — expanded patterns)
   if (updated.has_down_payment === undefined) {
-    if (lower.includes("entrada disponível") || lower.includes("entrada disponivel") || lower.includes("tem entrada") || lower.includes("valor de entrada")) {
+    if (lower.includes("entrada disponível") || lower.includes("entrada disponivel") ||
+        lower.includes("tem entrada") || lower.includes("valor de entrada") ||
+        lower.includes("tenho entrada") || lower.includes("consigo dar entrada") ||
+        lower.includes("tenho o valor") || lower.includes("fgts")) {
       updated.has_down_payment = true
-    } else if (lower.includes("sem entrada") || lower.includes("não tem entrada") || lower.includes("nao tem entrada")) {
+    } else if (lower.includes("sem entrada") || lower.includes("não tem entrada") ||
+        lower.includes("nao tem entrada") || lower.includes("não tenho entrada") ||
+        lower.includes("nao tenho entrada") || lower.includes("parcelar tudo") ||
+        lower.includes("financiar tudo")) {
       updated.has_down_payment = false
     }
   }
 
-  // Extract source
+  // Extract source — values map directly to lead_source DB enum (AC10 — expanded)
   if (!updated.source) {
     const sourceKeywords: Record<string, string> = {
-      instagram: "instagram",
-      facebook: "facebook",
-      google: "google",
-      indicação: "indicacao",
-      indicacao: "indicacao",
-      "passou na frente": "passou_na_frente",
-      placa: "placa",
-      "stand de vendas": "stand",
+      instagram: "meta_ads",
+      facebook: "meta_ads",
+      tiktok: "meta_ads",
+      google: "website",
+      youtube: "website",
+      "indicação": "referral",
+      indicacao: "referral",
+      amigo: "referral",
+      conhecido: "referral",
+      "boca a boca": "referral",
+      "passou na frente": "walk_in",
+      placa: "walk_in",
+      "stand de vendas": "walk_in",
+      stand: "walk_in",
     }
     for (const [keyword, value] of Object.entries(sourceKeywords)) {
       if (lower.includes(keyword)) {
@@ -184,7 +246,6 @@ export function extractCollectedData(
     ]
     for (const kw of visitKeywords) {
       if (lower.includes(kw.toLowerCase())) {
-        // Store the actual message as visit info, not just boolean
         updated.visit_availability = aiResponse.trim()
         break
       }

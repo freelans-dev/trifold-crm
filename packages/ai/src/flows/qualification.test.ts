@@ -226,14 +226,104 @@ describe("extractCollectedData", () => {
     expect(result.has_down_payment).toBe(false)
   })
 
-  it("extracts source 'instagram'", () => {
+  it("extracts source 'instagram' as meta_ads enum", () => {
     const result = extractCollectedData("Vi pelo instagram", {})
-    expect(result.source).toBe("instagram")
+    expect(result.source).toBe("meta_ads")
   })
 
-  it("extracts source 'indicacao'", () => {
+  it("extracts source 'indicacao' as referral enum", () => {
     const result = extractCollectedData("Recebi uma indicação de amigo", {})
-    expect(result.source).toBe("indicacao")
+    expect(result.source).toBe("referral")
+  })
+
+  it("extracts source 'google' as website enum", () => {
+    const result = extractCollectedData("Achei no google", {})
+    expect(result.source).toBe("website")
+  })
+
+  it("extracts source 'placa' as walk_in enum", () => {
+    const result = extractCollectedData("Vi a placa na frente da obra", {})
+    expect(result.source).toBe("walk_in")
+  })
+
+  // AC5: Email extraction
+  it("extracts email from message", () => {
+    const result = extractCollectedData("Meu email é joao@gmail.com", {})
+    expect(result.email).toBe("joao@gmail.com")
+  })
+
+  it("does not overwrite existing email", () => {
+    const result = extractCollectedData("email: outro@test.com", { email: "primeiro@test.com" })
+    expect(result.email).toBe("primeiro@test.com")
+  })
+
+  // AC6: Expanded name patterns
+  it("extracts name from 'pode me chamar de X'", () => {
+    const result = extractCollectedData("Pode me chamar de Ricardo", {})
+    expect(result.name).toBe("Ricardo")
+  })
+
+  it("extracts name from 'me chamam de X'", () => {
+    const result = extractCollectedData("Me chamam de Ana", {})
+    expect(result.name).toBe("Ana")
+  })
+
+  it("extracts name from short message (1-3 words)", () => {
+    const result = extractCollectedData("João Silva", {})
+    expect(result.name).toBe("João Silva")
+  })
+
+  it("does not extract short lowercase as name", () => {
+    const result = extractCollectedData("bom dia", {})
+    expect(result.name).toBeUndefined()
+  })
+
+  // AC7: Expanded floor patterns
+  it("extracts floor 'alto' from 'lá em cima'", () => {
+    const result = extractCollectedData("Quero lá em cima", {})
+    expect(result.floor).toBe("alto")
+  })
+
+  it("extracts floor 'baixo' from 'térreo'", () => {
+    const result = extractCollectedData("Prefiro térreo", {})
+    expect(result.floor).toBe("baixo")
+  })
+
+  it("extracts floor 'medio' from 'andar do meio'", () => {
+    const result = extractCollectedData("Quero andar do meio", {})
+    expect(result.floor).toBe("medio")
+  })
+
+  // AC8: Expanded down payment patterns
+  it("extracts has_down_payment=true from 'tenho entrada'", () => {
+    const result = extractCollectedData("Tenho entrada sim", {})
+    expect(result.has_down_payment).toBe(true)
+  })
+
+  it("extracts has_down_payment=true from 'fgts'", () => {
+    const result = extractCollectedData("Posso usar o FGTS", {})
+    expect(result.has_down_payment).toBe(true)
+  })
+
+  it("extracts has_down_payment=false from 'financiar tudo'", () => {
+    const result = extractCollectedData("Preciso financiar tudo", {})
+    expect(result.has_down_payment).toBe(false)
+  })
+
+  // AC9: Portuguese spelled-out numbers
+  it("extracts bedrooms from 'dois quartos' (spelled out)", () => {
+    const result = extractCollectedData("Quero dois quartos", {})
+    expect(result.bedrooms).toBe(2)
+  })
+
+  it("extracts garages from 'duas vagas' (spelled out)", () => {
+    const result = extractCollectedData("Preciso de duas vagas", {})
+    expect(result.garages).toBe(2)
+  })
+
+  it("extracts bedrooms from 'três suítes' (spelled out)", () => {
+    const result = extractCollectedData("Quero três suítes", {})
+    expect(result.bedrooms).toBe(3)
   })
 
   it("extracts visit availability", () => {

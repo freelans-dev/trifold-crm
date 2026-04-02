@@ -9,7 +9,7 @@ export interface CollectionField {
 export const MANDATORY_FIELDS: CollectionField[] = [
   { key: "name", label: "Nome", type: "text", required: true },
   { key: "phone", label: "Telefone", type: "text", required: true },
-  { key: "property_interest", label: "Empreendimento de interesse", type: "select", required: true, options: ["vind", "yarden", "both", "unknown"] },
+  { key: "property_interest_id", label: "Empreendimento de interesse", type: "select", required: true, options: ["vind", "yarden", "both", "unknown"] },
 ]
 
 export const OPTIONAL_FIELDS: CollectionField[] = [
