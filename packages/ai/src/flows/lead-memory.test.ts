@@ -40,7 +40,7 @@ describe("updateLeadMemory", () => {
 
     const createCall = (mockAnthropic.messages.create as ReturnType<typeof vi.fn>).mock.calls[0][0]
     const prompt = createCall.messages[0].content
-    expect(prompt).toContain("NUNCA corte o resumo no meio de uma frase")
+    expect(prompt).toContain("NUNCA ultrapasse 80 palavras")
   })
 
   it("returns new summary on success (AC7)", async () => {
@@ -104,6 +104,6 @@ describe("updateLeadMemory", () => {
 
     const createCall = (mockAnthropic.messages.create as ReturnType<typeof vi.fn>).mock.calls[0][0]
     const prompt = createCall.messages[0].content
-    expect(prompt).toContain("Nenhum resumo ainda. Este e o primeiro contato.")
+    expect(prompt).toContain("Primeiro contato.")
   })
 })
