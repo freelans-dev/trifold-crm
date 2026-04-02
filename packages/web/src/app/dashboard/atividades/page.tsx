@@ -10,11 +10,11 @@ const typeBadgeStyles: Record<string, string> = {
 }
 
 const typeLabels: Record<string, string> = {
-  stage_change: "Mudanca de etapa",
+  stage_change: "Mudança de etapa",
   handoff: "Handoff",
   lead_created: "Lead criado",
   note_added: "Nota",
-  broker_assigned: "Corretor atribuido",
+  broker_assigned: "Corretor atribuído",
 }
 
 export default async function AtividadesPage() {
@@ -46,9 +46,9 @@ export default async function AtividadesPage() {
             <tr className="text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               <th className="px-6 py-3">Data/Hora</th>
               <th className="px-6 py-3">Tipo</th>
-              <th className="px-6 py-3">Descricao</th>
+              <th className="px-6 py-3">Descrição</th>
               <th className="px-6 py-3">Lead</th>
-              <th className="px-6 py-3">Usuario</th>
+              <th className="px-6 py-3">Usuário</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">

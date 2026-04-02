@@ -1,6 +1,7 @@
 import { createClient } from "@web/lib/supabase/server"
 import { getServerUser } from "@web/lib/auth"
 import Link from "next/link"
+import { BrokerPropertyAssign } from "@web/components/admin/broker-property-assign"
 
 export default async function CorretoresPage() {
   const user = await getServerUser()
@@ -18,6 +19,28 @@ export default async function CorretoresPage() {
     `
     )
     .eq("org_id", user.orgId)
+
+  // Get properties for assignment
+  const { data: properties } = await supabase
+    .from("properties")
+    .select("id, name")
+    .eq("is_active", true)
+    .order("name")
+
+  // Get broker assignments
+  const { data: assignments } = await supabase
+    .from("broker_assignments")
+    .select("broker_id, property_id, is_primary, properties(name)")
+
+  const assignmentsByBroker: Record<string, Array<{ property_id: string; property_name: string }>> = {}
+  for (const a of assignments ?? []) {
+    if (!assignmentsByBroker[a.broker_id]) assignmentsByBroker[a.broker_id] = []
+    const prop = Array.isArray(a.properties) ? a.properties[0] : a.properties
+    assignmentsByBroker[a.broker_id].push({
+      property_id: a.property_id,
+      property_name: (prop as { name: string } | null)?.name ?? "",
+    })
+  }
 
   // Get active lead counts per broker user
   const userIds = (brokers ?? [])
@@ -76,7 +99,8 @@ export default async function CorretoresPage() {
               <th className="px-6 py-3">Email</th>
               <th className="px-6 py-3">CRECI</th>
               <th className="px-6 py-3">Tipo</th>
-              <th className="px-6 py-3">Disponivel</th>
+              <th className="px-6 py-3">Disponível</th>
+              <th className="px-6 py-3">Empreendimentos</th>
               <th className="px-6 py-3">Leads ativos</th>
               {isAdmin && <th className="px-6 py-3"></th>}
             </tr>
@@ -120,12 +144,32 @@ export default async function CorretoresPage() {
                   <td className="px-6 py-4">
                     {broker.is_available ? (
                       <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-                        Disponivel
+                        Disponível
                       </span>
                     ) : (
                       <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
-                        Indisponivel
+                        Indisponível
                       </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    {isAdmin ? (
+                      <BrokerPropertyAssign
+                        brokerId={broker.id}
+                        properties={(properties ?? []).map(p => ({ id: p.id, name: p.name }))}
+                        currentAssignments={(assignmentsByBroker[broker.id] ?? []).map(a => a.property_id)}
+                      />
+                    ) : (
+                      <div className="flex flex-wrap gap-1">
+                        {(assignmentsByBroker[broker.id] ?? []).map((a) => (
+                          <span key={a.property_id} className="rounded-full bg-orange-50 px-2 py-0.5 text-[11px] font-medium text-orange-700">
+                            {a.property_name}
+                          </span>
+                        ))}
+                        {!(assignmentsByBroker[broker.id]?.length) && (
+                          <span className="text-xs text-stone-400">Nenhum</span>
+                        )}
+                      </div>
                     )}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">

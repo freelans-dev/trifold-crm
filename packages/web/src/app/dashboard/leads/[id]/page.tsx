@@ -17,11 +17,11 @@ const interestLevelColors: Record<string, string> = {
 }
 
 const sourceLabels: Record<string, string> = {
-  whatsapp_organic: "WhatsApp Organico",
+  whatsapp_organic: "WhatsApp Orgânico",
   whatsapp_click_to_ad: "WhatsApp Click-to-Ad",
   meta_ads: "Meta Ads",
   website: "Website",
-  referral: "Indicacao",
+  referral: "Indicação",
   walk_in: "Walk-in",
   telegram: "Telegram",
   other: "Outro",
@@ -232,7 +232,7 @@ export default async function LeadDetailPage({
       {activeTab === "info" && (
         <div className="rounded-lg bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            Informacoes
+            Informações
           </h2>
           <dl className="space-y-3">
             <InfoRow label="Empreendimento" value={
@@ -248,19 +248,19 @@ export default async function LeadDetailPage({
             <InfoRow label="Vagas" value={lead.preferred_garage_count ?? cd("garages") ?? cd("garage_count")} />
             <InfoRow label="Tem entrada" value={
               lead.has_down_payment === true ? "Sim" :
-              lead.has_down_payment === false ? "Nao" :
+              lead.has_down_payment === false ? "Não" :
               collectedData.has_down_payment === true ? "Sim" :
-              collectedData.has_down_payment === false ? "Nao" : null
+              collectedData.has_down_payment === false ? "Não" : null
             } />
             <InfoRow label="Origem" value={lead.source ? (sourceLabels[lead.source] ?? lead.source) : null} />
             <InfoRow label="Canal" value={lead.channel} />
-            <InfoRow label="Etapa qualificacao" value={convState?.qualification_step} />
-            <InfoRow label="Visita proposta" value={convState?.visit_proposed ? "Sim" : "Nao"} />
+            <InfoRow label="Etapa qualificação" value={convState?.qualification_step} />
+            <InfoRow label="Visita proposta" value={convState?.visit_proposed ? "Sim" : "Não"} />
             <InfoRow label="Como conheceu" value={cd("how_found")} />
             <InfoRow label="Disponibilidade visita" value={cd("visit_availability")} />
-            <InfoRow label="Familia" value={cd("family_size")} />
+            <InfoRow label="Família" value={cd("family_size")} />
             <InfoRow label="Faixa investimento" value={cd("budget_range")} />
-            <InfoRow label="Prazo decisao" value={cd("timeline")} />
+            <InfoRow label="Prazo decisão" value={cd("timeline")} />
           </dl>
 
           {broker && (
@@ -494,7 +494,7 @@ export default async function LeadDetailPage({
                 </p>
                 {lead.updated_at && (
                   <p className="mt-3 text-xs text-gray-400">
-                    Ultima atualizacao:{" "}
+                    Última atualização:{" "}
                     {new Date(lead.updated_at).toLocaleString("pt-BR", {
                       day: "2-digit",
                       month: "short",

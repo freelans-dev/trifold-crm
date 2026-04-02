@@ -104,7 +104,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <p className="mt-6 text-center text-[11px] text-stone-300">
-          Trifold Engenharia — Maringa, PR
+          Trifold Engenharia — Maringá, PR
         </p>
       </div>
     </div>

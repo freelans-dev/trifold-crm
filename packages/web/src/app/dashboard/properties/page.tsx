@@ -59,7 +59,7 @@ export default async function PropertiesPage() {
                     {p.status === "selling"
                       ? "Em venda"
                       : p.status === "launching"
-                      ? "Lancamento"
+                      ? "Lançamento"
                       : p.status}
                   </span>
                 </td>

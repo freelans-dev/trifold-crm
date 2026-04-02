@@ -93,7 +93,7 @@ export default async function PropertyUnitsPage({
           Unidades - {property.name}
         </h1>
         <p className="mt-1 text-sm text-gray-500">
-          {availableCount} disponiveis / {reservedCount} reservadas / {soldCount} vendidas
+          {availableCount} disponíveis / {reservedCount} reservadas / {soldCount} vendidas
         </p>
       </div>
 
@@ -108,7 +108,7 @@ export default async function PropertyUnitsPage({
               className="mt-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm"
             >
               <option value="">Todos</option>
-              <option value="available">Disponivel</option>
+              <option value="available">Disponível</option>
               <option value="reserved">Reservada</option>
               <option value="sold">Vendida</option>
             </select>
@@ -209,9 +209,9 @@ export default async function PropertyUnitsPage({
               <tr className="text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                 <th className="px-4 py-2">Unidade</th>
                 <th className="px-4 py-2">Andar</th>
-                <th className="px-4 py-2">Posicao</th>
+                <th className="px-4 py-2">Posição</th>
                 <th className="px-4 py-2">Vista</th>
-                <th className="px-4 py-2">Area</th>
+                <th className="px-4 py-2">Área</th>
                 <th className="px-4 py-2">Vagas</th>
                 <th className="px-4 py-2">Status</th>
                 <th className="px-4 py-2">Tipologia</th>
@@ -255,7 +255,7 @@ export default async function PropertyUnitsPage({
                           }`}
                         >
                           {u.status === "available"
-                            ? "Disponivel"
+                            ? "Disponível"
                             : u.status === "reserved"
                             ? "Reservada"
                             : u.status === "sold"

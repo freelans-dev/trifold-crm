@@ -6,24 +6,24 @@ const CONFIG_CARDS = [
     href: "/dashboard/configuracoes/empresa",
     icon: "◈",
     title: "Empresa",
-    description: "Dados da organizacao",
+    description: "Dados da organização",
   },
   {
     href: "/dashboard/configuracoes/usuarios",
     icon: "◎",
-    title: "Usuarios",
-    description: "Gerenciar usuarios e permissoes",
+    title: "Usuários",
+    description: "Gerenciar usuários e permissões",
   },
   {
     href: "/dashboard/configuracoes/horario",
     icon: "▣",
-    title: "Horario Comercial",
-    description: "Horarios de atendimento",
+    title: "Horário Comercial",
+    description: "Horários de atendimento",
   },
   {
     href: "/dashboard/configuracoes/integracoes",
     icon: "⟁",
-    title: "Integracoes",
+    title: "Integrações",
     description: "Meta Ads, WhatsApp, Telegram",
   },
   {
@@ -52,9 +52,9 @@ export default async function ConfiguracoesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Configuracoes</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Gerencie as configuracoes do sistema
+          Gerencie as configurações do sistema
         </p>
       </div>
 

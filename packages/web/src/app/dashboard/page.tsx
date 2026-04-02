@@ -122,7 +122,7 @@ export default async function DashboardPage() {
                 {property.status === "selling"
                   ? "Em venda"
                   : property.status === "launching"
-                  ? "Lancamento"
+                  ? "Lançamento"
                   : property.status}
               </span>
             </Link>

@@ -431,9 +431,30 @@ export async function processMessageWithMetadata(
       if (tomorrow.getDay() === 0) tomorrow.setDate(tomorrow.getDate() + 1)
       tomorrow.setUTCHours(13, 0, 0, 0) // 10h Maringá = 13h UTC
 
+      // Auto-assign broker from property
+      const propertyId = identifiedPropertyId ?? state?.current_property_id
+      let assignedBrokerId: string | null = null
+
+      if (propertyId) {
+        const { data: assignment } = await supabase
+          .from("broker_assignments")
+          .select("broker_id, brokers(user_id)")
+          .eq("property_id", propertyId)
+          .eq("is_primary", true)
+          .limit(1)
+          .maybeSingle()
+
+        if (assignment) {
+          const brokers = assignment.brokers as unknown as { user_id: string } | { user_id: string }[]
+          assignedBrokerId = Array.isArray(brokers) ? brokers[0]?.user_id : brokers?.user_id
+        }
+      }
+
+      // Create appointment with broker if found
       await supabase.from("appointments").insert({
         org_id: conversation.org_id,
         lead_id: leadId,
+        broker_id: assignedBrokerId,
         scheduled_at: tomorrow.toISOString(),
         location: "Sede Trifold - Av. Nildo Ribeiro da Rocha, 1337, Vila Marumby",
         status: "scheduled",
@@ -441,11 +462,19 @@ export async function processMessageWithMetadata(
         notes: `Visita sugerida pela Nicole. Disponibilidade informada: ${String(finalData.visit_availability)}`,
       })
 
+      // Assign broker to lead
+      if (assignedBrokerId) {
+        await supabase.from("leads").update({ assigned_broker_id: assignedBrokerId }).eq("id", leadId)
+      }
+
+      // Move to visita-agendada
+      await supabase.from("leads").update({ stage_id: STAGE_IDS.visita_agendada }).eq("id", leadId)
+
       await supabase.from("activities").insert({
         org_id: conversation.org_id,
         lead_id: leadId,
         type: "visit_scheduled",
-        description: `Nicole agendou visita. Disponibilidade: ${String(finalData.visit_availability)}`,
+        description: `Nicole agendou visita. Disponibilidade: ${String(finalData.visit_availability)}${assignedBrokerId ? ". Corretor designado automaticamente." : ""}`,
       })
     }
 

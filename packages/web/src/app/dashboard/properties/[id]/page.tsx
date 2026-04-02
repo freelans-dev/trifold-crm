@@ -50,9 +50,9 @@ export default async function PropertyDetailPage({
   const isAdminOrSupervisor = ["admin", "supervisor"].includes(appUser.role)
 
   const paymentMethodLabels: Record<string, string> = {
-    financiamento_bancario: "Financiamento bancario",
+    financiamento_bancario: "Financiamento bancário",
     direto_construtora: "Direto construtora",
-    a_vista: "A vista",
+    a_vista: "À vista",
     misto: "Misto",
   }
 
@@ -94,7 +94,7 @@ export default async function PropertyDetailPage({
             {property.status === "selling"
               ? "Em venda"
               : property.status === "launching"
-              ? "Lancamento"
+              ? "Lançamento"
               : property.status}
           </span>
         </div>
@@ -107,7 +107,7 @@ export default async function PropertyDetailPage({
           <p className="text-2xl font-bold">{units?.length ?? 0}</p>
         </div>
         <div className="rounded-lg bg-white p-4 shadow-sm">
-          <p className="text-sm text-gray-500">Disponiveis</p>
+          <p className="text-sm text-gray-500">Disponíveis</p>
           <p className="text-2xl font-bold text-green-600">{availableCount}</p>
         </div>
         <div className="rounded-lg bg-white p-4 shadow-sm">
@@ -155,7 +155,7 @@ export default async function PropertyDetailPage({
               <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
                 {t.private_area_m2 && <span>{t.private_area_m2}m2</span>}
                 {t.bedrooms && <span>{t.bedrooms} quartos</span>}
-                {t.suites && <span>{t.suites} suites</span>}
+                {t.suites && <span>{t.suites} suítes</span>}
                 {t.has_balcony && <span>Sacada</span>}
                 {t.balcony_bbq && <span>Churrasqueira</span>}
               </div>
@@ -186,9 +186,9 @@ export default async function PropertyDetailPage({
               <tr className="text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                 <th className="px-4 py-2">Unidade</th>
                 <th className="px-4 py-2">Andar</th>
-                <th className="px-4 py-2">Posicao</th>
+                <th className="px-4 py-2">Posição</th>
                 <th className="px-4 py-2">Vista</th>
-                <th className="px-4 py-2">Area</th>
+                <th className="px-4 py-2">Área</th>
                 <th className="px-4 py-2">Vagas</th>
                 <th className="px-4 py-2">Status</th>
                 <th className="px-4 py-2"></th>
@@ -225,7 +225,7 @@ export default async function PropertyDetailPage({
                       }`}
                     >
                       {u.status === "available"
-                        ? "Disponivel"
+                        ? "Disponível"
                         : u.status === "reserved"
                         ? "Reservada"
                         : u.status === "sold"

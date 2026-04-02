@@ -319,14 +319,14 @@ async function fetchTimelineData(
   if (activities) {
     for (const activity of activities) {
       const typeLabels: Record<string, string> = {
-        stage_change: "Mudanca de etapa",
+        stage_change: "Mudança de etapa",
         appointment_created: "Agendamento criado",
-        appointment_completed: "Agendamento concluido",
-        broker_assigned: "Corretor atribuido",
-        qualification_updated: "Qualificacao atualizada",
-        handoff: "Transferencia para corretor",
+        appointment_completed: "Agendamento concluído",
+        broker_assigned: "Corretor atribuído",
+        qualification_updated: "Qualificação atualizada",
+        handoff: "Transferência para corretor",
         followup_alert_broker: "Alerta de follow-up",
-        followup_nicole_sent: "Follow-up automatico",
+        followup_nicole_sent: "Follow-up automático",
         note_added: "Nota adicionada",
       }
 
@@ -357,9 +357,9 @@ async function fetchTimelineData(
       const statusLabels: Record<string, string> = {
         scheduled: "agendada",
         confirmed: "confirmada",
-        completed: "concluida",
+        completed: "concluída",
         cancelled: "cancelada",
-        no_show: "nao compareceu",
+        no_show: "não compareceu",
       }
 
       events.push({
@@ -393,12 +393,12 @@ async function fetchTimelineData(
         type: "followup",
         actor: isNicole ? "nicole" : "system",
         title: isNicole
-          ? "Follow-up automatico (Nicole)"
+          ? "Follow-up automático (Nicole)"
           : "Alerta de follow-up",
         description:
           log.message ||
           (isNicole
-            ? "Nicole enviou follow-up automatico"
+            ? "Nicole enviou follow-up automático"
             : "Alerta enviado ao corretor"),
         timestamp: log.sent_at || log.created_at,
         metadata: {

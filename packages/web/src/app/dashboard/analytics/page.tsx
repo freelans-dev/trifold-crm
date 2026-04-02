@@ -41,7 +41,7 @@ export default async function AnalyticsPage() {
     whatsapp_click_to_ad: "Click-to-Ad",
     meta_ads: "Meta Ads",
     website: "Website",
-    referral: "Indicacao",
+    referral: "Indicação",
     telegram: "Telegram",
     other: "Outro",
   }
@@ -53,7 +53,7 @@ export default async function AnalyticsPage() {
   // Lost reasons
   const lostReasons: Record<string, number> = {}
   for (const l of lostLeads ?? []) {
-    const reason = l.lost_reason ?? "Nao informado"
+    const reason = l.lost_reason ?? "Não informado"
     lostReasons[reason] = (lostReasons[reason] ?? 0) + 1
   }
 
@@ -76,14 +76,14 @@ export default async function AnalyticsPage() {
           <p className="mt-1 text-3xl font-bold text-blue-600">{leadsWeek ?? 0}</p>
         </div>
         <div className="rounded-lg bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Este mes</p>
+          <p className="text-sm text-gray-500">Este mês</p>
           <p className="mt-1 text-3xl font-bold text-orange-600">{leadsMonth ?? 0}</p>
         </div>
       </div>
 
       {/* Funnel */}
       <div className="rounded-lg bg-white p-5 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold">Funil de Conversao</h2>
+        <h2 className="mb-4 text-lg font-semibold">Funil de Conversão</h2>
         <div className="space-y-2">
           {(stages ?? []).map((stage) => {
             const count = Array.isArray(stage.leads) ? stage.leads.length : 0
@@ -134,7 +134,7 @@ export default async function AnalyticsPage() {
 
         {/* By Source */}
         <div className="rounded-lg bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold">Leads por Origem (mes)</h2>
+          <h2 className="mb-4 text-lg font-semibold">Leads por Origem (mês)</h2>
           <div className="space-y-3">
             {Object.entries(sourceCounts)
               .sort(([, a], [, b]) => b - a)
@@ -149,7 +149,7 @@ export default async function AnalyticsPage() {
                 </div>
               ))}
             {Object.keys(sourceCounts).length === 0 && (
-              <p className="text-sm text-gray-400">Nenhum lead este mes.</p>
+              <p className="text-sm text-gray-400">Nenhum lead este mês.</p>
             )}
           </div>
         </div>

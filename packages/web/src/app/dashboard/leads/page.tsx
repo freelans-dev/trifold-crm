@@ -80,7 +80,7 @@ export default async function LeadsPage({
               <th className="px-6 py-3">Etapa</th>
               <th className="px-6 py-3">Corretor</th>
               <th className="px-6 py-3">Score</th>
-              <th className="px-6 py-3">Ultimo contato</th>
+              <th className="px-6 py-3">Último contato</th>
               <th className="px-6 py-3"></th>
             </tr>
           </thead>

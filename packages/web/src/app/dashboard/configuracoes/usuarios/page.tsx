@@ -40,11 +40,11 @@ export default async function UsuariosPage() {
             href="/dashboard/configuracoes"
             className="text-sm text-gray-500 hover:text-gray-700"
           >
-            &larr; Configuracoes
+            &larr; Configurações
           </Link>
-          <h1 className="mt-1 text-2xl font-bold text-gray-900">Usuarios</h1>
+          <h1 className="mt-1 text-2xl font-bold text-gray-900">Usuários</h1>
           <p className="mt-1 text-sm text-gray-500">
-            Gerenciar usuarios e permissoes
+            Gerenciar usuários e permissões
           </p>
         </div>
         {isAdmin && (
@@ -52,7 +52,7 @@ export default async function UsuariosPage() {
             href="/dashboard/configuracoes/usuarios/novo"
             className="rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
           >
-            Novo usuario
+            Novo usuário
           </Link>
         )}
       </div>
@@ -65,7 +65,7 @@ export default async function UsuariosPage() {
               <th className="px-6 py-3">Email</th>
               <th className="px-6 py-3">Perfil</th>
               <th className="px-6 py-3">Status</th>
-              {isAdmin && <th className="px-6 py-3">Acoes</th>}
+              {isAdmin && <th className="px-6 py-3">Ações</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -114,7 +114,7 @@ export default async function UsuariosPage() {
                   colSpan={isAdmin ? 5 : 4}
                   className="px-6 py-8 text-center text-sm text-gray-500"
                 >
-                  Nenhum usuario encontrado.
+                  Nenhum usuário encontrado.
                 </td>
               </tr>
             )}

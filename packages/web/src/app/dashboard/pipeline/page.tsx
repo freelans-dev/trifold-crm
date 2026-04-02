@@ -133,7 +133,7 @@ export default async function PipelinePage({
             >
               <option value="">Todos</option>
               <option value="high">Alto (&ge;70)</option>
-              <option value="medium">Medio (40-69)</option>
+              <option value="medium">Médio (40-69)</option>
               <option value="low">Baixo (&lt;40)</option>
             </select>
           </div>

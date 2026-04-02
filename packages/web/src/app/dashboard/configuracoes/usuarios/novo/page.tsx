@@ -27,7 +27,7 @@ export default function NovoUsuarioPage() {
     }
 
     if (password.length < 6) {
-      setError("Senha deve ter no minimo 6 caracteres")
+      setError("Senha deve ter no mínimo 6 caracteres")
       setLoading(false)
       return
     }
@@ -40,7 +40,7 @@ export default function NovoUsuarioPage() {
 
     if (!res.ok) {
       const data = await res.json()
-      setError(data.error || "Erro ao criar usuario")
+      setError(data.error || "Erro ao criar usuário")
       setLoading(false)
       return
     }
@@ -55,11 +55,11 @@ export default function NovoUsuarioPage() {
           href="/dashboard/configuracoes/usuarios"
           className="text-sm text-stone-500 hover:text-stone-700"
         >
-          &larr; Usuarios
+          &larr; Usuários
         </Link>
-        <h1 className="mt-1 text-2xl font-bold text-stone-900">Novo Usuario</h1>
+        <h1 className="mt-1 text-2xl font-bold text-stone-900">Novo Usuário</h1>
         <p className="mt-1 text-sm text-stone-500">
-          Criar acesso ao sistema. Usuarios com perfil "Corretor" tambem aparecem como corretores no pipeline.
+          Criar acesso ao sistema. Usuários com perfil "Corretor" também aparecem como corretores no pipeline.
         </p>
       </div>
 
@@ -74,7 +74,7 @@ export default function NovoUsuarioPage() {
               type="text"
               required
               className="block w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-orange-300 focus:bg-white focus:ring-2 focus:ring-orange-100"
-              placeholder="Nome do usuario"
+              placeholder="Nome do usuário"
             />
           </div>
 
@@ -101,7 +101,7 @@ export default function NovoUsuarioPage() {
               required
               minLength={6}
               className="block w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-orange-300 focus:bg-white focus:ring-2 focus:ring-orange-100"
-              placeholder="Minimo 6 caracteres"
+              placeholder="Mínimo 6 caracteres"
             />
           </div>
 
@@ -116,11 +116,11 @@ export default function NovoUsuarioPage() {
             >
               <option value="">Selecione...</option>
               <option value="admin">Administrador — acesso total ao sistema</option>
-              <option value="supervisor">Supervisor — monitora conversas, treina IA, ve metricas</option>
-              <option value="broker">Corretor — pipeline proprio, leads designados, agenda</option>
+              <option value="supervisor">Supervisor — monitora conversas, treina IA, vê métricas</option>
+              <option value="broker">Corretor — pipeline próprio, leads designados, agenda</option>
             </select>
             <p className="mt-1 text-xs text-stone-400">
-              Corretores so veem seus proprios leads e agenda. Supervisores veem tudo mas nao configuram. Admins tem acesso total.
+              Corretores só veem seus próprios leads e agenda. Supervisores veem tudo mas não configuram. Admins têm acesso total.
             </p>
           </div>
 
@@ -136,7 +136,7 @@ export default function NovoUsuarioPage() {
               disabled={loading}
               className="rounded-lg bg-orange-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-700 disabled:opacity-50"
             >
-              {loading ? "Criando..." : "Criar usuario"}
+              {loading ? "Criando..." : "Criar usuário"}
             </button>
             <Link
               href="/dashboard/configuracoes/usuarios"

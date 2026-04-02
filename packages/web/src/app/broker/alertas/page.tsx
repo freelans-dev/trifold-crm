@@ -110,7 +110,7 @@ export default async function BrokerAlertasPage() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Meus Alertas</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Leads que precisam da sua atencao
+          Leads que precisam da sua atenção
         </p>
       </div>
 
@@ -127,7 +127,7 @@ export default async function BrokerAlertasPage() {
                 <th className="px-6 py-3">Etapa</th>
                 <th className="px-6 py-3">Dias sem contato</th>
                 <th className="px-6 py-3">Empreendimento</th>
-                <th className="px-6 py-3">Acoes</th>
+                <th className="px-6 py-3">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">

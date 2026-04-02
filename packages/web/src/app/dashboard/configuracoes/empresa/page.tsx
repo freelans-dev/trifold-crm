@@ -23,25 +23,25 @@ export default async function EmpresaPage() {
           href="/dashboard/configuracoes"
           className="text-sm text-gray-500 hover:text-gray-700"
         >
-          &larr; Configuracoes
+          &larr; Configurações
         </Link>
         <h1 className="mt-1 text-2xl font-bold text-gray-900">Empresa</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Dados da organizacao
+          Dados da organização
         </p>
       </div>
 
       {!org ? (
         <div className="rounded-lg bg-white p-8 text-center shadow-sm">
           <p className="text-gray-500">
-            Organizacao nao encontrada.
+            Organização não encontrada.
           </p>
         </div>
       ) : (
         <div className="space-y-4">
           {/* Org Info (read-only view) */}
           <div className="rounded-lg bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">Informacoes</h2>
+            <h2 className="mb-4 text-lg font-semibold text-gray-900">Informações</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <p className="text-xs font-medium text-gray-400">Nome</p>

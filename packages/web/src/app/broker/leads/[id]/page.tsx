@@ -105,7 +105,7 @@ export default async function BrokerLeadDetailPage({
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between">
               <dt className="text-gray-500">Empreendimento</dt>
-              <dd className="font-medium">{property?.name ?? "Nao definido"}</dd>
+              <dd className="font-medium">{property?.name ?? "Não definido"}</dd>
             </div>
             {lead.preferred_bedrooms && (
               <div className="flex justify-between">
@@ -135,7 +135,7 @@ export default async function BrokerLeadDetailPage({
               <div className="flex justify-between">
                 <dt className="text-gray-500">Tem entrada</dt>
                 <dd className="font-medium">
-                  {lead.has_down_payment ? "Sim" : "Nao"}
+                  {lead.has_down_payment ? "Sim" : "Não"}
                 </dd>
               </div>
             )}
@@ -151,7 +151,7 @@ export default async function BrokerLeadDetailPage({
             </p>
           ) : (
             <p className="text-sm text-gray-400">
-              O resumo sera gerado automaticamente apos a conversa com a Nicole.
+              O resumo será gerado automaticamente após a conversa com a Nicole.
             </p>
           )}
         </div>

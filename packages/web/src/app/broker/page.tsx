@@ -31,7 +31,7 @@ export default async function BrokerHomePage() {
       {(!leads || leads.length === 0) ? (
         <div className="rounded-lg bg-white p-12 text-center shadow-sm">
           <p className="text-gray-500">
-            Voce nao tem leads designados. Novos leads serao atribuidos pelo
+            Você não tem leads designados. Novos leads serão atribuídos pelo
             supervisor.
           </p>
         </div>
@@ -44,7 +44,7 @@ export default async function BrokerHomePage() {
                 <th className="px-6 py-3">Empreendimento</th>
                 <th className="px-6 py-3">Etapa</th>
                 <th className="px-6 py-3">Score</th>
-                <th className="px-6 py-3">Ultimo contato</th>
+                <th className="px-6 py-3">Último contato</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">

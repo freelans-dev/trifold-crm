@@ -32,7 +32,7 @@ interface PropertyData {
 
 const statusOptions = [
   { value: "planning", label: "Planejamento" },
-  { value: "launching", label: "Lancamento" },
+  { value: "launching", label: "Lançamento" },
   { value: "selling", label: "Em venda" },
   { value: "delivered", label: "Entregue" },
   { value: "sold_out", label: "Esgotado" },
@@ -76,7 +76,7 @@ export default function PropertyEditPage() {
       try {
         const res = await fetch(`/api/properties/${propertyId}`)
         if (!res.ok) {
-          setError("Empreendimento nao encontrado")
+          setError("Empreendimento não encontrado")
           setLoading(false)
           return
         }
@@ -134,22 +134,22 @@ export default function PropertyEditPage() {
     const parsedRestrictions = restrictions.trim() ? parseJsonSafe(restrictions, []) : []
 
     if (parsedDifferentials === null) {
-      setError("Diferenciais: JSON invalido")
+      setError("Diferenciais: JSON inválido")
       setSaving(false)
       return
     }
     if (parsedCommercialRules === null) {
-      setError("Regras comerciais: JSON invalido")
+      setError("Regras comerciais: JSON inválido")
       setSaving(false)
       return
     }
     if (parsedFaq === null) {
-      setError("FAQ: JSON invalido")
+      setError("FAQ: JSON inválido")
       setSaving(false)
       return
     }
     if (parsedRestrictions === null) {
-      setError("Restricoes: JSON invalido")
+      setError("Restrições: JSON inválido")
       setSaving(false)
       return
     }
@@ -263,7 +263,7 @@ export default function PropertyEditPage() {
           {/* Address */}
           <div>
             <label className="mb-1 block text-xs font-medium text-gray-500">
-              Endereco
+              Endereço
             </label>
             <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className={inputClass} />
           </div>
@@ -351,7 +351,7 @@ export default function PropertyEditPage() {
           {/* Video tour URL */}
           <div className="sm:col-span-2">
             <label className="mb-1 block text-xs font-medium text-gray-500">
-              URL do video tour
+              URL do vídeo tour
             </label>
             <input type="url" value={videoTourUrl} onChange={(e) => setVideoTourUrl(e.target.value)} className={inputClass} placeholder="https://..." />
           </div>
@@ -367,7 +367,7 @@ export default function PropertyEditPage() {
           {/* Description */}
           <div className="sm:col-span-2">
             <label className="mb-1 block text-xs font-medium text-gray-500">
-              Descricao
+              Descrição
             </label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className={inputClass} />
           </div>
@@ -375,9 +375,9 @@ export default function PropertyEditPage() {
           {/* Amenities */}
           <div className="sm:col-span-2">
             <label className="mb-1 block text-xs font-medium text-gray-500">
-              Amenidades (separadas por virgula)
+              Amenidades (separadas por vírgula)
             </label>
-            <textarea value={amenities} onChange={(e) => setAmenities(e.target.value)} rows={2} className={inputClass} placeholder="Piscina, Academia, Salao de festas" />
+            <textarea value={amenities} onChange={(e) => setAmenities(e.target.value)} rows={2} className={inputClass} placeholder="Piscina, Academia, Salão de festas" />
           </div>
 
           {/* Differentials */}
@@ -407,9 +407,9 @@ export default function PropertyEditPage() {
           {/* Restrictions */}
           <div className="sm:col-span-2">
             <label className="mb-1 block text-xs font-medium text-gray-500">
-              Restricoes (JSON)
+              Restrições (JSON)
             </label>
-            <textarea value={restrictions} onChange={(e) => setRestrictions(e.target.value)} rows={4} className={inputClass} placeholder='[{"restricao": "..."}]' />
+            <textarea value={restrictions} onChange={(e) => setRestrictions(e.target.value)} rows={4} className={inputClass} placeholder='[{"restrição": "..."}]' />
           </div>
         </div>
 

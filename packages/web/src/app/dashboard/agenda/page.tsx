@@ -204,11 +204,11 @@ export default async function AgendaPage({
       (appointments.find((a) => a.id === params.apt) as Appointment) ?? null
   }
 
-  const dayNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"]
+  const dayNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
   const monthNames = [
     "Janeiro",
     "Fevereiro",
-    "Marco",
+    "Março",
     "Abril",
     "Maio",
     "Junho",
@@ -250,7 +250,7 @@ export default async function AgendaPage({
                     : "text-stone-500 hover:text-stone-900"
                 }`}
               >
-                {v === "day" ? "Dia" : v === "week" ? "Semana" : "Mes"}
+                {v === "day" ? "Dia" : v === "week" ? "Semana" : "Mês"}
               </Link>
             ))}
           </div>
@@ -301,7 +301,7 @@ export default async function AgendaPage({
               href={`/dashboard/agenda?view=day&date=${formatDateISO(new Date(selectedDate.getTime() + 86400000))}${params.broker_id ? `&broker_id=${params.broker_id}` : ""}`}
               className="rounded-md px-3 py-1.5 text-sm text-stone-600 hover:bg-stone-100"
             >
-              Proximo dia &rarr;
+              Próximo dia &rarr;
             </Link>
           </div>
           <div className="space-y-3">
@@ -374,7 +374,7 @@ export default async function AgendaPage({
               </Link>
             </div>
             <div className="grid grid-cols-7 gap-px rounded-lg border border-stone-200 bg-stone-200">
-              {["Seg", "Ter", "Qua", "Qui", "Sex", "Sab", "Dom"].map((d) => (
+              {["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"].map((d) => (
                 <div key={d} className="bg-stone-50 px-2 py-1.5 text-center text-[11px] font-medium text-stone-500">{d}</div>
               ))}
               {cells.map((day, i) => {
@@ -445,7 +445,7 @@ export default async function AgendaPage({
           href={buildUrl({ week: formatDateISO(nextWeekStart), apt: undefined })}
           className="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100"
         >
-          Proximo &rarr;
+          Próximo &rarr;
         </Link>
       </div>
 

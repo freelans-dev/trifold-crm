@@ -64,8 +64,8 @@ export default async function ConversasPage() {
               <th className="px-6 py-3">Lead</th>
               <th className="px-6 py-3">Canal</th>
               <th className="px-6 py-3">Status</th>
-              <th className="px-6 py-3">Ultima mensagem</th>
-              <th className="px-6 py-3">Horario</th>
+              <th className="px-6 py-3">Última mensagem</th>
+              <th className="px-6 py-3">Horário</th>
               <th className="px-6 py-3"></th>
             </tr>
           </thead>

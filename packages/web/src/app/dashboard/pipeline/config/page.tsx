@@ -31,10 +31,10 @@ export default async function FollowUpConfigPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
-          Configuracao de Follow-up
+          Configuração de Follow-up
         </h1>
         <p className="mt-1 text-sm text-stone-500">
-          Follow-up e ativo apenas apos agendamento. Antes disso, a Nicole atende 100%.
+          Follow-up é ativo apenas após agendamento. Antes disso, a Nicole atende 100%.
           Se o corretor enviar mensagem, ele assume por 24h — depois a Nicole retoma.
         </p>
       </div>
@@ -114,7 +114,7 @@ function FollowUpStageCard({
         />
         <h3 className="text-lg font-semibold text-gray-900">{stage.name}</h3>
         <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
-          Posicao {stage.position}
+          Posição {stage.position}
         </span>
       </div>
 
@@ -157,7 +157,7 @@ function FollowUpStageCard({
               className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
             />
             <span className="text-sm text-gray-600">
-              Follow-up automatico habilitado
+              Follow-up automático habilitado
             </span>
           </div>
         </div>
@@ -175,7 +175,7 @@ function FollowUpStageCard({
           className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
         />
         <p className="mt-1 text-xs text-gray-400">
-          Variaveis disponiveis: {"{nome}"}, {"{empreendimento}"}
+          Variáveis disponíveis: {"{nome}"}, {"{empreendimento}"}
         </p>
       </div>
 

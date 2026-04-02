@@ -4,11 +4,11 @@ import Link from "next/link"
 
 const DAYS_OF_WEEK = [
   { key: "monday", label: "Segunda-feira" },
-  { key: "tuesday", label: "Terca-feira" },
+  { key: "tuesday", label: "Terça-feira" },
   { key: "wednesday", label: "Quarta-feira" },
   { key: "thursday", label: "Quinta-feira" },
   { key: "friday", label: "Sexta-feira" },
-  { key: "saturday", label: "Sabado" },
+  { key: "saturday", label: "Sábado" },
   { key: "sunday", label: "Domingo" },
 ] as const
 
@@ -61,10 +61,10 @@ export default async function HorarioConfigPage() {
           href="/dashboard/configuracoes"
           className="text-sm text-stone-500 hover:text-stone-700"
         >
-          &larr; Configuracoes
+          &larr; Configurações
         </Link>
         <h1 className="mt-1 text-2xl font-bold text-stone-900">
-          Horario de Atendimento
+          Horário de Atendimento
         </h1>
         <p className="mt-1 text-sm text-stone-500">
           Defina quando a Nicole atende automaticamente
@@ -141,10 +141,10 @@ export default async function HorarioConfigPage() {
           {/* Custom hours — only shown when not 24h */}
           <div className={alwaysOn ? "pointer-events-none opacity-40" : ""}>
             <p className="mb-3 text-sm font-medium text-stone-700">
-              Horarios por dia da semana
+              Horários por dia da semana
             </p>
             <p className="mb-4 text-xs text-stone-400">
-              Fora desses horarios, a Nicole envia mensagem de fora do expediente e retoma no proximo dia util
+              Fora desses horários, a Nicole envia mensagem de fora do expediente e retoma no próximo dia útil
             </p>
             <div className="space-y-3">
               {DAYS_OF_WEEK.map(({ key, label }) => {
@@ -172,7 +172,7 @@ export default async function HorarioConfigPage() {
                         disabled={!isAdmin}
                         className="rounded-lg border border-stone-200 px-3 py-1.5 text-sm outline-none focus:border-orange-300 focus:ring-2 focus:ring-orange-100 disabled:bg-stone-50"
                       />
-                      <span className="text-xs text-stone-400">ate</span>
+                      <span className="text-xs text-stone-400">até</span>
                       <input
                         type="time"
                         name={`${key}_end`}
@@ -193,7 +193,7 @@ export default async function HorarioConfigPage() {
                 type="submit"
                 className="rounded-lg bg-orange-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-700"
               >
-                Salvar configuracao
+                Salvar configuração
               </button>
             </div>
           )}

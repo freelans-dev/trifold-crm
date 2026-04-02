@@ -17,18 +17,18 @@ const IMAGE_MIME_TYPES = new Set([
 function prepareTextForTTS(text: string): string {
   let result = text
 
-  // Primeiro: expandir abreviações que o TTS lê errado
+  // Primeiro: expandir abreviações com regex replace functions
+  result = result
+    .replace(/\b(\d{1,2})h\s?às\s?(\d{1,2})h/gi, (_: string, a: string, b: string) => `${numberToWords(a)} às ${numberToWords(b)}`)
+    .replace(/\b(\d{1,2})h(\d{2})/gi, (_: string, h: string, m: string) => `${numberToWords(h)} e ${numberToWords(m)}`)
+    .replace(/\b(\d{1,2})h\b/gi, (_: string, h: string) => `${numberToWords(h)} horas`)
+    .replace(/\bdas\s+(\d{1,2})\s+às\s+(\d{1,2})/gi, (_: string, a: string, b: string) => `das ${numberToWords(a)} às ${numberToWords(b)}`)
+    .replace(/(\d+)\s?m[²2]/gi, (_: string, n: string) => `${numberToWords(n)} metros quadrados`)
+    .replace(/\b(\d+)%/gi, (_: string, n: string) => `${numberToWords(n)} por cento`)
+    .replace(/R\$\s?/gi, "")
+
+  // Expandir com substituições estáticas
   const expansions: [RegExp, string][] = [
-    // Horários
-    [/\b(\d{1,2})h\s?às\s?(\d{1,2})h/gi, (_, a, b) => `${numberToWords(a)} às ${numberToWords(b)}`],
-    [/\b(\d{1,2})h(\d{2})?/gi, (_, h, m) => m ? `${numberToWords(h)} e ${numberToWords(m)}` : `${numberToWords(h)} horas`],
-    [/\bdas\s+(\d{1,2})\s+às\s+(\d{1,2})/gi, (_, a, b) => `das ${numberToWords(a)} às ${numberToWords(b)}`],
-    // Unidades
-    [/(\d+)\s?m²/gi, (_, n) => `${numberToWords(n)} metros quadrados`],
-    [/(\d+)\s?m2/gi, (_, n) => `${numberToWords(n)} metros quadrados`],
-    [/\b(\d+)%/gi, (_, n) => `${numberToWords(n)} por cento`],
-    // Dinheiro
-    [/R\$\s?(\d[\d.,]*)/gi, (_, v) => `${v.replace(/\./g, "")} reais`],
     // Datas/anos
     [/\b2029\b/g, "dois mil e vinte e nove"],
     [/\b2027\b/g, "dois mil e vinte e sete"],

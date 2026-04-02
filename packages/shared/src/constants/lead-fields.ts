@@ -15,15 +15,15 @@ export const MANDATORY_FIELDS: CollectionField[] = [
 export const OPTIONAL_FIELDS: CollectionField[] = [
   { key: "email", label: "Email", type: "text", required: false },
   { key: "preferred_bedrooms", label: "Quartos desejados", type: "number", required: false },
-  { key: "preferred_floor", label: "Preferencia de andar", type: "select", required: false, options: ["alto", "baixo", "indiferente"] },
+  { key: "preferred_floor", label: "Preferência de andar", type: "select", required: false, options: ["alto", "baixo", "indiferente"] },
   { key: "preferred_view", label: "Vista preferida", type: "text", required: false },
   { key: "preferred_garage_count", label: "Vagas de garagem", type: "number", required: false },
-  { key: "has_down_payment", label: "Tem entrada disponivel", type: "boolean", required: false },
+  { key: "has_down_payment", label: "Tem entrada disponível", type: "boolean", required: false },
   { key: "how_found", label: "Como conheceu a Trifold", type: "text", required: false },
   { key: "visit_availability", label: "Disponibilidade para visita", type: "text", required: false },
-  { key: "family_size", label: "Composicao familiar", type: "text", required: false },
+  { key: "family_size", label: "Composição familiar", type: "text", required: false },
   { key: "budget_range", label: "Faixa de investimento", type: "text", required: false },
-  { key: "timeline", label: "Prazo para decisao", type: "text", required: false },
+  { key: "timeline", label: "Prazo para decisão", type: "text", required: false },
 ]
 
 export const ALL_FIELDS = [...MANDATORY_FIELDS, ...OPTIONAL_FIELDS]
