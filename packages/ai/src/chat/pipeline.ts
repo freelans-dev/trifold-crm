@@ -267,11 +267,33 @@ export async function processMessageWithMetadata(
     }
   }
 
-  // Inject visit reminder directly into the message context if visit is scheduled
+  // Inject visit context directly into the message — only if relevant
   let messageWithContext = message
-  if (state?.visit_proposed) {
-    const visitInfo = (state.collected_data as Record<string, unknown>)?.visit_availability ?? ""
-    messageWithContext = `[SISTEMA: A visita deste lead JÁ está confirmada para ${visitInfo}. NÃO pergunte dia nem horário. Se ele perguntar algo, confirme: "Sua visita tá marcada pra ${visitInfo}, te espero lá!"]\n\n${message}`
+  if (state?.visit_proposed && conversation?.lead_id) {
+    // Check if there's an active future appointment
+    const { data: activeAppointment } = await supabase
+      .from("appointments")
+      .select("scheduled_at, status")
+      .eq("lead_id", conversation.lead_id)
+      .in("status", ["scheduled", "confirmed"])
+      .gte("scheduled_at", new Date().toISOString())
+      .order("scheduled_at", { ascending: true })
+      .limit(1)
+      .maybeSingle()
+
+    if (activeAppointment) {
+      // Visita futura agendada — lembrar o modelo
+      const visitDate = new Date(activeAppointment.scheduled_at)
+      const formatted = visitDate.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo", weekday: "long", day: "numeric", month: "long" })
+      const hora = visitDate.toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit" })
+      messageWithContext = `[SISTEMA: Visita JÁ confirmada para ${formatted} às ${hora}. NÃO pergunte dia nem horário. Se perguntar, confirme: "Sua visita tá marcada pra ${formatted} às ${hora}, te espero lá!"]\n\n${message}`
+    } else {
+      // Visita passou ou foi cancelada — resetar
+      await supabase
+        .from("conversation_state")
+        .update({ visit_proposed: false })
+        .eq("conversation_id", conversationId)
+    }
   }
 
   userContent.push({ type: "text", text: messageWithContext })
