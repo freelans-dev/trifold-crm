@@ -1,6 +1,24 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@web/lib/supabase/server"
 
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id: brokerId } = await params
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  const { data } = await supabase
+    .from("broker_assignments")
+    .select("broker_id, property_id, is_primary")
+    .eq("broker_id", brokerId)
+
+  return NextResponse.json({ data: data ?? [] })
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

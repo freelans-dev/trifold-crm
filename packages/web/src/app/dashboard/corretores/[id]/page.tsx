@@ -18,6 +18,11 @@ interface BrokerData {
   }
 }
 
+interface Property {
+  id: string
+  name: string
+}
+
 export default function EditCorretorPage({
   params,
 }: {
@@ -29,10 +34,14 @@ export default function EditCorretorPage({
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
   const [brokerId, setBrokerId] = useState("")
+  const [properties, setProperties] = useState<Property[]>([])
+  const [assignedProperties, setAssignedProperties] = useState<string[]>([])
+  const [assignLoading, setAssignLoading] = useState(false)
 
   useEffect(() => {
     params.then((p) => {
       setBrokerId(p.id)
+      // Load broker
       fetch(`/api/brokers/${p.id}`)
         .then((r) => r.json())
         .then((d) => {
@@ -40,6 +49,16 @@ export default function EditCorretorPage({
           setLoading(false)
         })
         .catch(() => setLoading(false))
+      // Load properties
+      fetch("/api/properties")
+        .then((r) => r.json())
+        .then((d) => setProperties(d.data ?? []))
+        .catch(() => {})
+      // Load assignments
+      fetch(`/api/brokers/${p.id}/assignments`)
+        .then((r) => r.json())
+        .then((d) => setAssignedProperties((d.data ?? []).map((a: { property_id: string }) => a.property_id)))
+        .catch(() => {})
     })
   }, [params])
 
@@ -166,8 +185,51 @@ export default function EditCorretorPage({
           </form>
         </div>
 
-        {/* Status e ações */}
+        {/* Empreendimentos + Status */}
         <div className="space-y-4">
+          {/* Empreendimentos vinculados */}
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-lg font-semibold text-stone-900">Empreendimentos vinculados</h2>
+            <p className="mb-3 text-xs text-stone-500">
+              Clique para vincular ou desvincular. Leads desses empreendimentos serão direcionados automaticamente para este corretor.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {properties.map((p) => {
+                const assigned = assignedProperties.includes(p.id)
+                return (
+                  <button
+                    key={p.id}
+                    disabled={assignLoading}
+                    onClick={async () => {
+                      setAssignLoading(true)
+                      await fetch(`/api/brokers/${brokerId}/assignments`, {
+                        method: assigned ? "DELETE" : "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ property_id: p.id }),
+                      })
+                      setAssignedProperties(
+                        assigned
+                          ? assignedProperties.filter((id) => id !== p.id)
+                          : [...assignedProperties, p.id]
+                      )
+                      setAssignLoading(false)
+                    }}
+                    className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                      assigned
+                        ? "bg-orange-100 text-orange-700 hover:bg-orange-200"
+                        : "bg-stone-100 text-stone-400 hover:bg-stone-200"
+                    }`}
+                  >
+                    {p.name} {assigned ? "✓" : ""}
+                  </button>
+                )
+              })}
+              {properties.length === 0 && (
+                <p className="text-sm text-stone-400">Nenhum empreendimento cadastrado</p>
+              )}
+            </div>
+          </div>
+
           <div className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-semibold text-stone-900">Status</h2>
             <div className="flex items-center gap-3">

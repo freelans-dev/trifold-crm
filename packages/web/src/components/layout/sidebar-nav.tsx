@@ -3,6 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
+import { LogoutButton } from "./logout-button"
 
 interface NavItem {
   href: string
@@ -83,14 +84,7 @@ export function SidebarNav({ items, userName, userRole, basePath, alertCount }: 
                 <p className="text-[11px] text-stone-400 capitalize">{userRole}</p>
               </div>
             </div>
-            <form action={`${basePath === "/broker" ? "/broker" : "/dashboard"}/../login/actions`} method="post">
-              <Link
-                href="/login"
-                className="mt-1 flex w-full items-center justify-center rounded-lg px-3 py-1.5 text-[12px] text-stone-400 hover:bg-stone-50 hover:text-stone-600"
-              >
-                Sair
-              </Link>
-            </form>
+            <LogoutButton />
           </div>
         </div>
       </aside>
