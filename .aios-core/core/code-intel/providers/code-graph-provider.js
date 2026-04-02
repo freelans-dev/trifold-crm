@@ -30,14 +30,6 @@ class CodeGraphProvider extends CodeIntelProvider {
   }
 
   /**
-   * Code Graph provider is available when mcpCallFn is configured.
-   * @returns {boolean}
-   */
-  isAvailable() {
-    return typeof this.options.mcpCallFn === 'function';
-  }
-
-  /**
    * Execute an MCP tool call via the configured server.
    * This method is the single point of MCP communication — all capabilities route through here.
    *

@@ -30,3 +30,6 @@ Thumbs.db
 .claude/settings.local.json
 .aios/install-log.txt
 .vercel
+
+# Environment & Secrets (AIOS)
+.env.local

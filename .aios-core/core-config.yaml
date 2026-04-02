@@ -1,7 +1,7 @@
 markdownExploder: true
 project:
-  type: greenfield
-  installedAt: '2026-04-01T01:49:12.791Z'
+  type: brownfield
+  installedAt: '2026-04-02T13:32:11.904Z'
   version: 2.1.0
 user_profile: bob
 ide:
@@ -9,15 +9,15 @@ ide:
     - claude-code
     - codex
   configs:
-    vscode: false
-    codex: true
+    vscode: true
+    codex: false
     gemini: false
     cursor: false
     github-copilot: false
     antigravity: false
     zed: false
     claude-desktop: false
-    claude-code: true
+    claude-code: false
 mcp:
   enabled: false
   configLocation: .claude/mcp.json
@@ -86,23 +86,6 @@ projectStatus:
   statusFile: .aios/project-status.yaml
   maxModifiedFiles: 5
   maxRecentCommits: 2
-boundary:
-  frameworkProtection: true
-  protected:
-    - .aios-core/core/**
-    - .aios-core/development/tasks/**
-    - .aios-core/development/templates/**
-    - .aios-core/development/checklists/**
-    - .aios-core/development/workflows/**
-    - .aios-core/infrastructure/**
-    - .aios-core/constitution.md
-    - bin/aios.js
-    - bin/aios-init.js
-  exceptions:
-    - .aios-core/data/**
-    - .aios-core/development/agents/*/MEMORY.md
-    - .aios-core/core/config/schemas/**
-    - .aios-core/core/config/template-overrides.js
 agentIdentity:
   greeting:
     contextDetection: true

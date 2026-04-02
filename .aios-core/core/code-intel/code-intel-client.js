@@ -1,7 +1,6 @@
 'use strict';
 
 const { CodeGraphProvider } = require('./providers/code-graph-provider');
-const { RegistryProvider } = require('./providers/registry-provider');
 
 // --- Constants (adjustable, not hardcoded magic numbers) ---
 const CIRCUIT_BREAKER_THRESHOLD = 3;
@@ -52,19 +51,10 @@ class CodeIntelClient {
 
   /**
    * Register default providers based on configuration.
-   * Provider priority: RegistryProvider FIRST (native, T1), then CodeGraphProvider (MCP, T3).
-   * First provider with isAvailable() === true wins.
    * @private
    */
   _registerDefaultProviders(options) {
-    // RegistryProvider — native, T1, always available when registry exists
-    const registryProvider = new RegistryProvider({
-      registryPath: options.registryPath || null,
-      projectRoot: options.projectRoot || null,
-    });
-    this._providers.push(registryProvider);
-
-    // Code Graph MCP — T3, available when mcpCallFn is configured
+    // Code Graph MCP is the primary (and currently only) provider
     const codeGraphProvider = new CodeGraphProvider({
       mcpServerName: options.mcpServerName || 'code-graph',
       mcpCallFn: options.mcpCallFn || null,
@@ -84,7 +74,6 @@ class CodeIntelClient {
 
   /**
    * Detect and return the first available provider.
-   * Uses polymorphic isAvailable() — first provider that returns true wins.
    * @returns {import('./providers/provider-interface').CodeIntelProvider|null}
    * @private
    */
@@ -92,13 +81,10 @@ class CodeIntelClient {
     if (this._activeProvider) return this._activeProvider;
 
     for (const provider of this._providers) {
-      try {
-        if (typeof provider.isAvailable === 'function' && provider.isAvailable()) {
-          this._activeProvider = provider;
-          return provider;
-        }
-      } catch (_err) {
-        // Provider threw during availability check — treat as unavailable
+      // A provider is considered "available" if it has a configured mcpCallFn
+      if (provider.options && typeof provider.options.mcpCallFn === 'function') {
+        this._activeProvider = provider;
+        return provider;
       }
     }
 

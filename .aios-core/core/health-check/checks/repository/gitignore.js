@@ -3,7 +3,7 @@
  *
  * Verifies .gitignore has required patterns.
  *
- * @module aios-core/health-check/checks/repository/gitignore
+ * @module @synkra/aios-core/health-check/checks/repository/gitignore
  * @version 1.0.0
  * @story HCS-2 - Health Check System Implementation
  */

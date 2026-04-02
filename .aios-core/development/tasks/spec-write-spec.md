@@ -529,8 +529,3 @@ metadata:
     - documentation
     - prompt-engineering
 ```
-
-## Handoff
-next_agent: @qa
-next_command: *critique-spec {story-id}
-condition: Spec written (spec.md created)

@@ -1,22 +1,13 @@
-version: 4.4.6
-installed_at: '2026-04-01T01:49:07.829Z'
+version: 4.2.12
+installed_at: '2026-04-02T13:32:11.034Z'
 install_type: full
 files:
   - core/README.md
   - core/code-intel-client.js
   - core/code-intel-enricher.js
-  - core/creation-helper.js
-  - core/dev-helper.js
-  - core/devops-helper.js
-  - core/planning-helper.js
-  - core/qa-helper.js
-  - core/story-helper.js
-  - core/hook-runtime.js
   - core/index.js
   - core/code-graph-provider.js
   - core/provider-interface.js
-  - core/registry-provider.js
-  - core/registry-syncer.js
   - core/config-cache.js
   - core/config-loader.js
   - core/config-resolver.js
@@ -27,7 +18,6 @@ files:
   - core/local-config.schema.json
   - core/project-config.schema.json
   - core/user-config.schema.json
-  - core/template-overrides.js
   - core/user-config.yaml
   - core/SHARD-TRANSLATION-GUIDE.md
   - core/component-creation-guide.md
@@ -145,7 +135,6 @@ files:
   - core/g4-dev-context.js
   - core/incremental-decision-engine.js
   - core/index.js
-  - core/layer-classifier.js
   - core/registry-healer.js
   - core/registry-loader.js
   - core/registry-updater.js
@@ -250,12 +239,10 @@ files:
   - core/l7-star-command.js
   - core/layer-processor.js
   - core/memory-bridge.js
-  - core/synapse-memory-provider.js
   - core/formatter.js
   - core/hook-runtime.js
   - core/generate-constitution.js
   - core/session-manager.js
-  - core/atomic-write.js
   - core/paths.js
   - core/tokens.js
   - core/index.js
@@ -271,31 +258,19 @@ files:
   - development/team-no-ui.yaml
   - development/team-qa-focused.yaml
   - development/aios-master.md
-  - development/MEMORY.md
   - development/analyst.md
-  - development/MEMORY.md
   - development/architect.md
-  - development/MEMORY.md
   - development/data-engineer.md
-  - development/MEMORY.md
   - development/dev.md
-  - development/MEMORY.md
   - development/devops.md
-  - development/MEMORY.md
   - development/pm.md
-  - development/MEMORY.md
   - development/po.md
-  - development/MEMORY.md
   - development/qa.md
-  - development/MEMORY.md
   - development/sm.md
   - development/squad-creator.md
-  - development/MEMORY.md
   - development/ux-design-expert.md
   - development/agent-quality-gate.md
   - development/brownfield-compatibility-checklist.md
-  - development/issue-triage-checklist.md
-  - development/memory-audit-checklist.md
   - development/self-critique-checklist.md
   - development/decision-heuristics-framework.md
   - development/quality-dimensions-framework.md
@@ -328,7 +303,6 @@ files:
   - development/greeting-builder.js
   - development/greeting-config-cli.js
   - development/greeting-preference-manager.js
-  - development/issue-triage.js
   - development/manifest-preview.js
   - development/metrics-tracker.js
   - development/migrate-task-to-v2.js
@@ -461,7 +435,6 @@ files:
   - development/github-devops-pre-push-quality-gate.md
   - development/github-devops-repository-cleanup.md
   - development/github-devops-version-management.md
-  - development/github-issue-triage.md
   - development/gotcha.md
   - development/gotchas.md
   - development/health-check.yaml
@@ -524,13 +497,12 @@ files:
   - development/release-management.md
   - development/remove-mcp.md
   - development/remove-worktree.md
-  - development/resolve-github-issue.md
-  - development/review-contributor-pr.md
   - development/run-design-system-pipeline.md
   - development/run-workflow-engine.md
   - development/run-workflow.md
   - development/search-mcp.md
   - development/security-audit.md
+  - development/security-hardening-audit.md
   - development/security-scan.md
   - development/session-resume.md
   - development/setup-database.md
@@ -559,11 +531,9 @@ files:
   - development/squad-creator-validate.md
   - development/story-checkpoint.md
   - development/sync-documentation.md
-  - development/sync-registry-intel.md
   - development/tailwind-upgrade.md
   - development/test-as-user.md
   - development/test-validation-task.md
-  - development/triage-github-issues.md
   - development/undo-last.md
   - development/update-aios.md
   - development/update-manifest.md
@@ -578,12 +548,7 @@ files:
   - development/verify-subtask.md
   - development/waves.md
   - development/yolo-toggle.md
-  - development/agent-handoff-tmpl.yaml
   - development/aios-doc-template.md
-  - development/code-intel-integration-pattern.md
-  - development/ptc-entity-validation.md
-  - development/ptc-qa-gate.md
-  - development/ptc-research-aggregation.md
   - development/research-prompt-tmpl.md
   - development/README.md.hbs
   - development/index.test.ts.hbs
@@ -602,6 +567,7 @@ files:
   - development/template-template.md
   - development/tool-template.js
   - development/workflow-template.yaml
+  - development/.gitignore
   - development/LICENSE
   - development/README.md
   - development/example-agent.yaml
@@ -671,6 +637,7 @@ files:
   - product/brownfield-prd-tmpl.yaml
   - product/brownfield-risk-report-tmpl.yaml
   - product/changelog-template.md
+  - product/claude-settings-local.json
   - product/command-rationalization-matrix.md
   - product/competitor-analysis-tmpl.yaml
   - product/component-react-tmpl.tsx
@@ -701,6 +668,7 @@ files:
   - product/github-actions-ci.yml
   - product/github-pr-template.md
   - product/gordon-mcp.yaml
+  - product/gotchas-template.json
   - product/antigravity-rules.md
   - product/claude-rules.md
   - product/codex-rules.md
@@ -795,7 +763,6 @@ files:
   - infrastructure/codebase-mapper.js
   - infrastructure/index.js
   - infrastructure/validate.js
-  - infrastructure/collect-tool-usage.js
   - infrastructure/commit-message-generator.js
   - infrastructure/component-generator.js
   - infrastructure/component-metadata.js
@@ -817,8 +784,6 @@ files:
   - infrastructure/mode-detector.js
   - infrastructure/documentation-synchronizer.js
   - infrastructure/framework-analyzer.js
-  - infrastructure/generate-optimization-report.js
-  - infrastructure/generate-settings-json.js
   - infrastructure/git-config-detector.js
   - infrastructure/post-commit.js
   - infrastructure/git-wrapper.js
@@ -831,7 +796,6 @@ files:
   - infrastructure/antigravity.js
   - infrastructure/claude-code.js
   - infrastructure/cursor.js
-  - infrastructure/github-copilot.js
   - infrastructure/validator.js
   - infrastructure/improvement-engine.js
   - infrastructure/improvement-validator.js
@@ -932,19 +896,14 @@ files:
   - infrastructure/supabase.yaml
   - data/agent-config-requirements.yaml
   - data/aios-kb.md
-  - data/capability-detection.js
   - data/entity-registry.yaml
   - data/learned-patterns.yaml
-  - data/mcp-discipline.js
-  - data/mcp-tool-examples.yaml
+  - data/registry-update-log.jsonl
   - data/_template.md
   - data/nextjs-react.md
+  - data/node-express.md
+  - data/python-fastapi.md
   - data/technical-preferences.md
-  - data/tok2-validation.js
-  - data/tok3-token-comparison.js
-  - data/tool-registry.yaml
-  - data/tool-search-validation.js
-  - data/workflow-chains.yaml
   - data/workflow-patterns.yaml
   - data/workflow-state-schema.yaml
   - docs/AGENT-PERSONALIZATION-STANDARD-V1.md
@@ -969,6 +928,7 @@ files:
   - scripts/command-execution-hook.js
   - scripts/diagnose-installation.js
   - scripts/diagnose-npx-issue.ps1
+  - scripts/.gitignore
   - scripts/README.md
   - scripts/index.html
   - scripts/package-lock.json
@@ -1101,3 +1061,4 @@ files:
   - constitution.md
   - user-guide.md
   - working-in-the-brownfield.md
+  - .aios/gotchas.json

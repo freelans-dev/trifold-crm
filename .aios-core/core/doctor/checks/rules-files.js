@@ -30,7 +30,7 @@ async function run(context) {
       check: name,
       status: 'FAIL',
       message: `Rules directory not found (expected ${EXPECTED_RULES.length} files)`,
-      fixCommand: 'aios doctor --fix',
+      fixCommand: 'aiox doctor --fix',
     };
   }
 
@@ -54,7 +54,7 @@ async function run(context) {
     check: name,
     status: severity,
     message: `Missing ${missing.length} of ${EXPECTED_RULES.length} rules (${missing.join(', ')})`,
-    fixCommand: 'aios doctor --fix',
+    fixCommand: 'aiox doctor --fix',
   };
 }
 

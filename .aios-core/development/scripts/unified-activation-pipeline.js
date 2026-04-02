@@ -47,14 +47,12 @@ const yaml = require('js-yaml');
 const GreetingBuilder = require('./greeting-builder');
 const { AgentConfigLoader } = require('./agent-config-loader');
 const SessionContextLoader = require('../../core/session/context-loader');
-// NOG-18: loadProjectStatus removed — gitStatus is native in Claude Code system prompt.
-// const { loadProjectStatus } = require('../../infrastructure/scripts/project-status-loader');
+const { loadProjectStatus } = require('../../infrastructure/scripts/project-status-loader');
 const GitConfigDetector = require('../../infrastructure/scripts/git-config-detector');
 const { PermissionMode } = require('../../core/permissions');
 const GreetingPreferenceManager = require('./greeting-preference-manager');
 const ContextDetector = require('../../core/session/context-detector');
 const WorkflowNavigator = require('./workflow-navigator');
-const { atomicWriteSync } = require('../../core/synapse/utils/atomic-write');
 // BUG-1 fix (INS-1): Graceful degradation when pro-detector is not available
 // In installed projects, bin/utils/pro-detector.js does not exist
 let isProAvailable, loadProModule;
@@ -84,9 +82,9 @@ const LOADER_TIERS = {
     description: 'Permission badge + branch name — visually degraded without these',
   },
   bestEffort: {
-    loaders: ['sessionContext'],
+    loaders: ['sessionContext', 'projectStatus'],
     timeout: 180,
-    description: 'Session awareness — greeting works fine without this. NOG-18: projectStatus removed (native gitStatus)',
+    description: 'Session awareness + project status — greeting works fine without these',
   },
 };
 
@@ -281,16 +279,15 @@ class UnifiedActivationPipeline {
     const elapsedAfterT2 = Date.now() - pipelineStart;
     const tier3Remaining = Math.max(tier3Budget - elapsedAfterT2, 20);
 
-    // NOG-18: projectStatus loader removed — gitStatus is native in Claude Code system prompt.
-    // The loadProjectStatus() function ran 5+ git commands (~76ms) duplicating native features.
-    // GreetingBuilder handles projectStatus: null gracefully (null-checks everywhere).
-    const [sessionContext] = await Promise.all([
+    const [sessionContext, projectStatus] = await Promise.all([
       this._profileLoader('sessionContext', metrics, tier3Remaining, () => {
         const loader = new SessionContextLoader();
         return loader.loadContext(agentId);
       }),
+      this._profileLoader('projectStatus', metrics, tier3Remaining, () => {
+        return loadProjectStatus();
+      }),
     ]);
-    const projectStatus = null;
 
     // --- Sequential steps with data dependencies ---
 
@@ -713,7 +710,7 @@ class UnifiedActivationPipeline {
       };
 
       const bridgePath = path.join(sessionsDir, '_active-agent.json');
-      atomicWriteSync(bridgePath, JSON.stringify(bridgeData, null, 2));
+      fsSync.writeFileSync(bridgePath, JSON.stringify(bridgeData, null, 2), 'utf8');
 
       const duration = Date.now() - start;
       metrics.loaders.synapseSession = { duration, status: 'ok', start, end: start + duration };
@@ -759,9 +756,9 @@ class UnifiedActivationPipeline {
           status: info.status || 'unknown',
         };
       }
-      atomicWriteSync(
+      fsSync.writeFileSync(
         path.join(metricsDir, 'uap-metrics.json'),
-        JSON.stringify(data, null, 2),
+        JSON.stringify(data, null, 2), 'utf8',
       );
     } catch {
       // Fire-and-forget: never block the activation pipeline
@@ -795,21 +792,3 @@ module.exports = {
   // ACT-12: Single English fallback (language delegated to Claude Code settings.json)
   FALLBACK_PHRASE,
 };
-
-// CLI entrypoint: `node unified-activation-pipeline.js <agentId>`
-if (require.main === module) {
-  const agentId = process.argv[2];
-  if (!agentId || !ALL_AGENT_IDS.includes(agentId)) {
-    console.error(`Usage: node unified-activation-pipeline.js <agentId>\nValid agents: ${ALL_AGENT_IDS.join(', ')}`);
-    process.exit(1);
-  }
-  UnifiedActivationPipeline.activate(agentId)
-    .then(result => {
-      console.log(result.greeting);
-      process.exit(0);
-    })
-    .catch(err => {
-      console.error(`Activation error: ${err.message}`);
-      process.exit(1);
-    });
-}

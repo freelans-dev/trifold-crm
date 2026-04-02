@@ -173,14 +173,6 @@ class PipelineMetrics {
 const PIPELINE_TIMEOUT_MS = 100;
 
 /**
- * NOG-18: Default active layers (L0-L2 only).
- * L3-L7 produced 0 rules in NOG-17 audit — disabled for performance.
- * Set SYNAPSE_LEGACY_MODE=true to re-enable full 8-layer processing.
- */
-const DEFAULT_ACTIVE_LAYERS = [0, 1, 2];
-const LEGACY_MODE = process.env.SYNAPSE_LEGACY_MODE === 'true';
-
-/**
  * Orchestrates the 8-layer SYNAPSE context injection pipeline.
  *
  * Instantiates all available layers at construction time and
@@ -237,32 +229,20 @@ class SynapseEngine {
     const metrics = new PipelineMetrics();
     metrics.totalStart = process.hrtime.bigint();
 
-    // 1. Calculate bracket (or use fixed layers in non-legacy mode)
+    // 1. Calculate bracket
     const promptCount = (session && session.prompt_count) || 0;
-    let contextPercent, bracket, activeLayers, tokenBudget;
+    const contextPercent = estimateContextPercent(promptCount);
+    const bracket = calculateBracket(contextPercent);
+    const layerConfig = getActiveLayers(bracket);
+    const tokenBudget = getTokenBudget(bracket);
 
-    if (LEGACY_MODE) {
-      // Full 8-layer processing with bracket-based filtering
-      contextPercent = estimateContextPercent(promptCount);
-      bracket = calculateBracket(contextPercent);
-      const layerConfig = getActiveLayers(bracket);
-      tokenBudget = getTokenBudget(bracket);
-
-      // Guard: no layer config (invalid bracket — should not happen)
-      if (!layerConfig) {
-        metrics.totalEnd = process.hrtime.bigint();
-        return { xml: '', metrics: metrics.getSummary() };
-      }
-      activeLayers = layerConfig.layers;
-    } else {
-      // NOG-18: Simplified — always load L0-L2, skip bracket calculation.
-      // L3-L7 produced 0 rules (require session context that never exists).
-      // Bracket management replaced by native /compact.
-      contextPercent = estimateContextPercent(promptCount);
-      bracket = calculateBracket(contextPercent);
-      activeLayers = DEFAULT_ACTIVE_LAYERS;
-      tokenBudget = getTokenBudget(bracket);
+    // Guard: no layer config (invalid bracket — should not happen)
+    if (!layerConfig) {
+      metrics.totalEnd = process.hrtime.bigint();
+      return { xml: '', metrics: metrics.getSummary() };
     }
+
+    const activeLayers = layerConfig.layers;
 
     // 2. Execute layers sequentially
     const results = [];
@@ -343,7 +323,7 @@ class SynapseEngine {
       needsHandoffWarning(bracket),
     );
 
-    return { xml, metrics: summary, bracket };
+    return { xml, metrics: summary };
   }
 
   /**

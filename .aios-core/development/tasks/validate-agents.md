@@ -1,9 +1,5 @@
 # Validate Agents Task
 
----
-execution_mode: programmatic  # TOK-3: PTC-eligible — batch-scan all agent files in single Bash block
----
-
 ## Purpose
 
 Validate all agent definition files for structural integrity, required fields,

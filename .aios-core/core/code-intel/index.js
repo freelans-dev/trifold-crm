@@ -4,7 +4,6 @@ const { CodeIntelClient } = require('./code-intel-client');
 const { CodeIntelEnricher } = require('./code-intel-enricher');
 const { CodeIntelProvider, CAPABILITIES } = require('./providers/provider-interface');
 const { CodeGraphProvider, TOOL_MAP } = require('./providers/code-graph-provider');
-const { RegistryProvider } = require('./providers/registry-provider');
 
 // Singleton client instance (lazily initialized)
 let _defaultClient = null;
@@ -128,7 +127,6 @@ module.exports = {
   CodeIntelEnricher,
   CodeIntelProvider,
   CodeGraphProvider,
-  RegistryProvider,
 
   // Constants
   CAPABILITIES,

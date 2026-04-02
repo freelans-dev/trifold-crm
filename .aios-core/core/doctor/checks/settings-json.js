@@ -95,7 +95,7 @@ async function run(context) {
       check: name,
       status: 'WARN',
       message: `Deny rules below threshold (${denyCount} rules, expected >= 40)`,
-      fixCommand: 'aios doctor --fix',
+      fixCommand: 'aiox doctor --fix',
     };
   }
 
@@ -106,7 +106,7 @@ async function run(context) {
       check: name,
       status: 'WARN',
       message: `Deny rules present (${denyCount}) but missing boundary coverage: ${boundaryIssues.join(', ')}`,
-      fixCommand: 'aios doctor --fix',
+      fixCommand: 'aiox doctor --fix',
     };
   }
 

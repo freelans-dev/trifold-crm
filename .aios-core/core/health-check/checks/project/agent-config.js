@@ -3,7 +3,7 @@
  *
  * Verifies agent configuration files are valid YAML.
  *
- * @module aios-core/health-check/checks/project/agent-config
+ * @module @synkra/aios-core/health-check/checks/project/agent-config
  * @version 1.0.0
  * @story HCS-2 - Health Check System Implementation
  */
