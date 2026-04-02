@@ -1,23 +1,40 @@
 import { getServerUser } from "@web/lib/auth"
 import { createClient } from "@web/lib/supabase/server"
 import { SidebarNav } from "@web/components/layout/sidebar-nav"
+import {
+  LayoutDashboard,
+  Kanban,
+  Users,
+  Building2,
+  UserCheck,
+  MessageSquare,
+  CalendarDays,
+  Bell,
+  Activity,
+  BarChart3,
+  GraduationCap,
+  Settings,
+  Shield,
+} from "lucide-react"
+
+const ICON_SIZE = "h-[18px] w-[18px]"
 
 const NAV_ITEMS_BASE = [
-  { href: "/dashboard", label: "Dashboard", icon: "◈" },
-  { href: "/dashboard/pipeline", label: "Pipeline", icon: "▦" },
-  { href: "/dashboard/leads", label: "Leads", icon: "◉" },
-  { href: "/dashboard/properties", label: "Imóveis", icon: "⌂" },
-  { href: "/dashboard/corretores", label: "Corretores", icon: "◎" },
-  { href: "/dashboard/conversas", label: "Conversas", icon: "◬" },
-  { href: "/dashboard/agenda", label: "Agenda", icon: "▣" },
-  { href: "/dashboard/alertas", label: "Alertas", icon: "△" },
-  { href: "/dashboard/atividades", label: "Atividades", icon: "◫" },
-  { href: "/dashboard/analytics", label: "Analytics", icon: "◩" },
-  { href: "/dashboard/treinamento", label: "Treinamento", icon: "◧" },
-  { href: "/dashboard/configuracoes", label: "Config", icon: "⚙" },
+  { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className={ICON_SIZE} /> },
+  { href: "/dashboard/pipeline", label: "Pipeline", icon: <Kanban className={ICON_SIZE} /> },
+  { href: "/dashboard/leads", label: "Leads", icon: <Users className={ICON_SIZE} /> },
+  { href: "/dashboard/properties", label: "Imóveis", icon: <Building2 className={ICON_SIZE} /> },
+  { href: "/dashboard/corretores", label: "Corretores", icon: <UserCheck className={ICON_SIZE} /> },
+  { href: "/dashboard/conversas", label: "Conversas", icon: <MessageSquare className={ICON_SIZE} /> },
+  { href: "/dashboard/agenda", label: "Agenda", icon: <CalendarDays className={ICON_SIZE} /> },
+  { href: "/dashboard/alertas", label: "Alertas", icon: <Bell className={ICON_SIZE} /> },
+  { href: "/dashboard/atividades", label: "Atividades", icon: <Activity className={ICON_SIZE} /> },
+  { href: "/dashboard/analytics", label: "Analytics", icon: <BarChart3 className={ICON_SIZE} /> },
+  { href: "/dashboard/treinamento", label: "Treinamento", icon: <GraduationCap className={ICON_SIZE} /> },
+  { href: "/dashboard/configuracoes", label: "Config", icon: <Settings className={ICON_SIZE} /> },
 ]
 
-const NAV_ITEM_SISTEMA = { href: "/dashboard/sistema", label: "Sistema", icon: "◉" }
+const NAV_ITEM_SISTEMA = { href: "/dashboard/sistema", label: "Sistema", icon: <Shield className={ICON_SIZE} /> }
 
 export default async function DashboardLayout({
   children,

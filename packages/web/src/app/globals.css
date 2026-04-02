@@ -63,6 +63,11 @@ main {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
 /* Mobile bottom nav safe area */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .mobile-nav-safe {

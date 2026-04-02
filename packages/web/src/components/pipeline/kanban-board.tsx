@@ -13,6 +13,7 @@ import {
 } from "@dnd-kit/core"
 import { KanbanColumn } from "./kanban-column"
 import { LeadCard } from "./lead-card"
+import { LeadDetailDrawer } from "@web/components/leads/lead-detail-drawer"
 import { createClient } from "@web/lib/supabase/client"
 
 interface Stage {
@@ -47,6 +48,7 @@ interface KanbanBoardProps {
 export function KanbanBoard({ initialStages, initialLeads }: KanbanBoardProps) {
   const [leads, setLeads] = useState(initialLeads)
   const [activeId, setActiveId] = useState<string | null>(null)
+  const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -128,6 +130,7 @@ export function KanbanBoard({ initialStages, initialLeads }: KanbanBoardProps) {
             key={stage.id}
             stage={stage}
             leads={leads.filter((l) => l.stage_id === stage.id)}
+            onSelectLead={setSelectedLeadId}
           />
         ))}
       </div>
@@ -141,6 +144,11 @@ export function KanbanBoard({ initialStages, initialLeads }: KanbanBoardProps) {
           />
         )}
       </DragOverlay>
+
+      <LeadDetailDrawer
+        leadId={selectedLeadId}
+        onClose={() => setSelectedLeadId(null)}
+      />
     </DndContext>
   )
 }

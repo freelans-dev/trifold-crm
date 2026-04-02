@@ -27,9 +27,10 @@ interface KanbanColumnProps {
     properties?: { name: string } | null
     users?: { name: string } | null
   }>
+  onSelectLead?: (leadId: string) => void
 }
 
-export function KanbanColumn({ stage, leads }: KanbanColumnProps) {
+export function KanbanColumn({ stage, leads, onSelectLead }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id })
 
   return (
@@ -69,6 +70,7 @@ export function KanbanColumn({ stage, leads }: KanbanColumnProps) {
               lead={lead}
               propertyName={lead.properties?.name}
               brokerName={lead.users?.name}
+              onSelect={onSelectLead}
             />
           ))}
         </SortableContext>

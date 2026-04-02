@@ -8,7 +8,7 @@ import { LogoutButton } from "./logout-button"
 interface NavItem {
   href: string
   label: string
-  icon: string
+  icon: React.ReactNode
 }
 
 interface SidebarNavProps {
@@ -59,7 +59,7 @@ export function SidebarNav({ items, userName, userRole, basePath, alertCount }: 
                           : "text-stone-500 hover:bg-stone-50 hover:text-stone-900"
                       }`}
                     >
-                      <span className="text-base">{item.icon}</span>
+                      <span className="flex h-5 w-5 items-center justify-center">{item.icon}</span>
                       <span className="flex-1">{item.label}</span>
                       {item.label === "Alertas" && alertCount != null && alertCount > 0 && (
                         <span className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
@@ -116,7 +116,7 @@ export function SidebarNav({ items, userName, userRole, basePath, alertCount }: 
                   active ? "text-orange-600" : "text-stone-400"
                 }`}
               >
-                <span className="text-lg">{item.icon}</span>
+                <span className="flex h-5 w-5 items-center justify-center">{item.icon}</span>
                 <span className="text-[10px] font-medium">{item.label}</span>
               </Link>
             )

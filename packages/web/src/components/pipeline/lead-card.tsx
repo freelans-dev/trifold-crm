@@ -2,7 +2,6 @@
 
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import Link from "next/link"
 import { MANDATORY_FIELDS } from "@trifold/shared"
 
 interface LeadCardProps {
@@ -20,6 +19,7 @@ interface LeadCardProps {
   }
   propertyName?: string
   brokerName?: string
+  onSelect?: (leadId: string) => void
 }
 
 const PROPERTY_BADGE: Record<string, { label: string; bg: string; text: string; dot: string }> = {
@@ -43,7 +43,7 @@ function getDaysSinceContact(dateStr: string): number {
   return Math.floor(diff / (1000 * 60 * 60 * 24))
 }
 
-export function LeadCard({ lead, propertyName, brokerName }: LeadCardProps) {
+export function LeadCard({ lead, propertyName, brokerName, onSelect }: LeadCardProps) {
   const {
     attributes,
     listeners,
@@ -100,7 +100,16 @@ export function LeadCard({ lead, propertyName, brokerName }: LeadCardProps) {
       {...listeners}
       className={`group cursor-grab rounded-xl border bg-white p-3 transition-all hover:shadow-md active:cursor-grabbing ${alertBorderClass} ${needsFollowUp ? "border-2" : ""} ${!needsFollowUp ? "hover:border-stone-300" : ""}`}
     >
-      <Link href={`/dashboard/leads/${lead.id}`} className="block">
+      <div
+        onClick={(e) => {
+          // Only trigger if not dragging (no significant pointer movement)
+          if (onSelect && !isDragging) {
+            e.preventDefault()
+            onSelect(lead.id)
+          }
+        }}
+        className="block"
+      >
         {/* Header: Name + Score */}
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
@@ -178,7 +187,7 @@ export function LeadCard({ lead, propertyName, brokerName }: LeadCardProps) {
           )}
           <span className="text-[10px] tabular-nums text-stone-300">{timeAgo}</span>
         </div>
-      </Link>
+      </div>
     </div>
   )
 }
