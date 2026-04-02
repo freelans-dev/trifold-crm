@@ -46,7 +46,7 @@ async function generateOpenAIEmbedding(
 
     if (!response.ok) {
       const error = await response.text()
-      console.error(`OpenAI embeddings API error: ${response.status} ${error}`)
+      console.error(`[EMBEDDING_FALLBACK] OpenAI API error ${response.status}: ${error}. RAG quality degraded.`)
       return generateHashEmbedding(text)
     }
 
@@ -56,7 +56,7 @@ async function generateOpenAIEmbedding(
 
     return data.data[0].embedding
   } catch (err) {
-    console.error("OpenAI embeddings failed, using hash fallback:", err)
+    console.error("[EMBEDDING_FALLBACK] OpenAI embeddings failed, RAG quality degraded:", err)
     return generateHashEmbedding(text)
   }
 }

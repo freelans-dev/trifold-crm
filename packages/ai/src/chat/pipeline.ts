@@ -180,7 +180,7 @@ export async function processMessageWithMetadata(
     )
     ragContext = buildContextFromRAG(ragResults)
   } catch (ragError) {
-    console.error("RAG search failed, continuing without context:", ragError)
+    console.error("[RAG_FALLBACK] Search failed, continuing without context:", ragError)
   }
 
   // 5. Identify property from message
