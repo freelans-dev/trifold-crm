@@ -69,7 +69,8 @@ export async function GET(request: NextRequest) {
       .from("leads")
       .select("source")
       .eq("is_active", true)
-      .gte("created_at", sinceISO),
+      .gte("created_at", sinceISO)
+      .limit(10000),
     supabase
       .from("users")
       .select("id, name, leads:leads(id, qualification_score)")
@@ -79,7 +80,8 @@ export async function GET(request: NextRequest) {
       .from("leads")
       .select("lost_reason")
       .eq("is_active", true)
-      .not("lost_reason", "is", null),
+      .not("lost_reason", "is", null)
+      .limit(10000),
   ])
 
   // Process funnel

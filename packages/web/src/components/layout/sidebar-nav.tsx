@@ -95,8 +95,11 @@ export function SidebarNav({ items, userName, userRole, basePath, alertCount }: 
           <Image src="/logo-trifold.webp" alt="Trifold" width={24} height={24} />
           <span className="text-sm font-semibold text-stone-900">Trifold</span>
         </div>
-        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-100 text-[10px] font-semibold text-orange-700">
-          {initials}
+        <div className="flex items-center gap-2">
+          <LogoutButton />
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-100 text-[10px] font-semibold text-orange-700">
+            {initials}
+          </div>
         </div>
       </header>
 

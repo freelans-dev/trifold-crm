@@ -1,5 +1,6 @@
 import { createClient } from "@web/lib/supabase/server"
 import { getServerUser } from "@web/lib/auth"
+import { now } from "@web/lib/time"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 
@@ -29,7 +30,8 @@ export default async function AlertasPage() {
     .limit(100)
 
   // Also find leads with no recent contact (> 2 days since updated_at)
-  const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+  const nowMs = now()
+  const twoDaysAgo = new Date(nowMs - 2 * 24 * 60 * 60 * 1000).toISOString()
   const { data: staleLeads } = await supabase
     .from("leads")
     .select(
@@ -70,7 +72,7 @@ export default async function AlertasPage() {
       const broker = Array.isArray(lead.broker) ? lead.broker[0] : lead.broker
 
       const daysSince = Math.floor(
-        (Date.now() - new Date(lead.updated_at).getTime()) / (1000 * 60 * 60 * 24)
+        (nowMs - new Date(lead.updated_at).getTime()) / (1000 * 60 * 60 * 24)
       )
 
       alerts.push({
@@ -98,7 +100,7 @@ export default async function AlertasPage() {
       const broker = Array.isArray(lead.broker) ? lead.broker[0] : lead.broker
 
       const daysSince = Math.floor(
-        (Date.now() - new Date(lead.updated_at).getTime()) / (1000 * 60 * 60 * 24)
+        (nowMs - new Date(lead.updated_at).getTime()) / (1000 * 60 * 60 * 24)
       )
 
       alerts.push({

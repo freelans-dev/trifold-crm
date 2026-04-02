@@ -32,18 +32,27 @@ export async function POST(request: NextRequest) {
   const appSecret = process.env.META_APP_SECRET
   const rawBody = await request.text()
 
-  if (appSecret) {
-    const signature = request.headers.get("x-hub-signature-256")
-    const expectedSignature =
-      "sha256=" +
-      crypto.createHmac("sha256", appSecret).update(rawBody).digest("hex")
-
-    if (signature !== expectedSignature) {
-      return NextResponse.json({ error: "Invalid signature" }, { status: 403 })
-    }
+  if (!appSecret) {
+    console.error("META_APP_SECRET not configured — webhook blocked")
+    return NextResponse.json({ error: "Webhook not configured" }, { status: 503 })
   }
 
-  const body = JSON.parse(rawBody)
+  const signature = request.headers.get("x-hub-signature-256")
+  const expectedSignature =
+    "sha256=" +
+    crypto.createHmac("sha256", appSecret).update(rawBody).digest("hex")
+
+  if (signature !== expectedSignature) {
+    return NextResponse.json({ error: "Invalid signature" }, { status: 403 })
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let body: any
+  try {
+    body = JSON.parse(rawBody)
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 })
+  }
 
   // Parse the incoming message
   const entry = body.entry?.[0]

@@ -59,7 +59,7 @@ export default function NovoUsuarioPage() {
         </Link>
         <h1 className="mt-1 text-2xl font-bold text-stone-900">Novo Usuário</h1>
         <p className="mt-1 text-sm text-stone-500">
-          Criar acesso ao sistema. Usuários com perfil "Corretor" também aparecem como corretores no pipeline.
+          Criar acesso ao sistema. Usuários com perfil &quot;Corretor&quot; também aparecem como corretores no pipeline.
         </p>
       </div>
 

@@ -1,5 +1,6 @@
 import { createClient } from "@web/lib/supabase/server"
 import { getServerUser } from "@web/lib/auth"
+import { now } from "@web/lib/time"
 import Link from "next/link"
 
 const statusConfig: Record<
@@ -116,6 +117,7 @@ export default async function BrokerAgendaPage({
 
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+  const nowMs = now()
 
   let weekStart: Date
   if (params.week) {
@@ -144,7 +146,7 @@ export default async function BrokerAgendaPage({
   const nextWeekStart = new Date(weekStart)
   nextWeekStart.setDate(weekStart.getDate() + 7)
 
-  let query = supabase
+  const query = supabase
     .from("appointments")
     .select(
       `
@@ -206,8 +208,6 @@ export default async function BrokerAgendaPage({
       .join("&")
     return `/broker/agenda${qs ? `?${qs}` : ""}`
   }
-
-  const nowMs = Date.now()
 
   return (
     <div className="space-y-6">
@@ -513,18 +513,17 @@ export default async function BrokerAgendaPage({
 
       {/* Appointment detail panel */}
       {selectedApt && (
-        <AppointmentDetail apt={selectedApt} />
+        <AppointmentDetail apt={selectedApt} nowMs={nowMs} />
       )}
     </div>
   )
 }
 
-function AppointmentDetail({ apt }: { apt: Appointment }) {
+function AppointmentDetail({ apt, nowMs }: { apt: Appointment; nowMs: number }) {
   const s = statusConfig[apt.status] ?? statusConfig.scheduled
   const date = new Date(apt.scheduled_at)
   const lead = extractRelation<RelatedLead>(apt.lead)
   const property = extractRelation<RelatedProperty>(apt.property)
-  const nowMs = Date.now()
   const isPastScheduled = apt.status === "scheduled" && date.getTime() < nowMs
 
   return (

@@ -15,9 +15,13 @@ const CRON_SECRET = process.env.CRON_SECRET
  * - Respect: max 1 followup per lead per 48h, business hours only
  */
 export async function POST(request: NextRequest) {
-  // Validate cron secret
+  // Validate cron secret — fail-closed
   const authHeader = request.headers.get("authorization")
-  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+  if (!CRON_SECRET) {
+    console.error("CRON_SECRET not configured — endpoint blocked")
+    return NextResponse.json({ error: "Cron not configured" }, { status: 503 })
+  }
+  if (authHeader !== `Bearer ${CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 

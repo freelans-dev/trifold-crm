@@ -142,13 +142,12 @@ export default function UnitEditPage() {
   }, [])
 
   // Show sale form when status changes to sold
-  useEffect(() => {
-    if (status === "sold" && unit && unit.status !== "sold") {
-      setShowSaleForm(true)
-    } else if (status !== "sold") {
-      setShowSaleForm(false)
-    }
-  }, [status, unit])
+  const shouldShowSaleForm = status === "sold" && unit != null && unit.status !== "sold"
+  if (shouldShowSaleForm && !showSaleForm) {
+    setShowSaleForm(true)
+  } else if (status !== "sold" && showSaleForm) {
+    setShowSaleForm(false)
+  }
 
   const searchLeads = useCallback(async (query: string) => {
     if (query.length < 2) {

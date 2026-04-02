@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     query = query.lte("created_at", to)
   }
 
-  const { data: leads, error } = await query
+  const { data: leads, error } = await query.limit(10000)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })

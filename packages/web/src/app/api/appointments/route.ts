@@ -27,6 +27,10 @@ export async function GET(request: NextRequest) {
   const dateTo = url.searchParams.get("date_to")
   const status = url.searchParams.get("status")
   const propertyId = url.searchParams.get("property_id")
+  const page = Math.max(1, parseInt(url.searchParams.get("page") || "1"))
+  const limit = Math.min(Math.max(1, parseInt(url.searchParams.get("limit") || "50")), 100)
+  const from = (page - 1) * limit
+  const to = from + limit - 1
 
   let query = supabase
     .from("appointments")
@@ -36,10 +40,12 @@ export async function GET(request: NextRequest) {
       lead:leads!lead_id(id, name, phone),
       broker:users!broker_id(id, name, email),
       property:properties!property_id(id, name)
-    `
+    `,
+      { count: "exact" }
     )
     .eq("org_id", appUser.org_id)
     .order("scheduled_at", { ascending: true })
+    .range(from, to)
 
   if (brokerId) {
     query = query.eq("broker_id", brokerId)
@@ -61,13 +67,13 @@ export async function GET(request: NextRequest) {
     query = query.eq("property_id", propertyId)
   }
 
-  const { data: appointments, error } = await query
+  const { data: appointments, error, count } = await query
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ data: appointments })
+  return NextResponse.json({ data: appointments, count, page, limit })
 }
 
 export async function POST(request: Request) {

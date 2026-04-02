@@ -1,4 +1,5 @@
 import { createClient } from "@web/lib/supabase/server"
+import { now } from "@web/lib/time"
 import { getServerUser } from "@web/lib/auth"
 import Link from "next/link"
 
@@ -133,6 +134,7 @@ export default async function AgendaPage({
   // Determine the current week
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+  const nowMs = now()
 
   let weekStart: Date
   if (params.week) {
@@ -212,8 +214,6 @@ export default async function AgendaPage({
     selectedApt =
       (appointments.find((a) => a.id === params.apt) as Appointment) ?? null
   }
-
-  const nowMs = Date.now()
 
   const dayNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
   const monthNames = [

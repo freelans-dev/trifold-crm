@@ -1,5 +1,6 @@
 import { createClient } from "@web/lib/supabase/server"
 import { getServerUser } from "@web/lib/auth"
+import { now } from "@web/lib/time"
 import Link from "next/link"
 
 export default async function BrokerAlertasPage() {
@@ -22,7 +23,8 @@ export default async function BrokerAlertasPage() {
     .limit(100)
 
   // Stale leads assigned to this broker
-  const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+  const nowMs = now()
+  const twoDaysAgo = new Date(nowMs - 2 * 24 * 60 * 60 * 1000).toISOString()
   const { data: staleLeads } = await supabase
     .from("leads")
     .select(
@@ -61,7 +63,7 @@ export default async function BrokerAlertasPage() {
       const property = Array.isArray(lead.property) ? lead.property[0] : lead.property
 
       const daysSince = Math.floor(
-        (Date.now() - new Date(lead.updated_at).getTime()) / (1000 * 60 * 60 * 24)
+        (nowMs - new Date(lead.updated_at).getTime()) / (1000 * 60 * 60 * 24)
       )
 
       alerts.push({
@@ -87,7 +89,7 @@ export default async function BrokerAlertasPage() {
       const property = Array.isArray(lead.property) ? lead.property[0] : lead.property
 
       const daysSince = Math.floor(
-        (Date.now() - new Date(lead.updated_at).getTime()) / (1000 * 60 * 60 * 24)
+        (nowMs - new Date(lead.updated_at).getTime()) / (1000 * 60 * 60 * 24)
       )
 
       alerts.push({

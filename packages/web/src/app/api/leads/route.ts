@@ -26,15 +26,21 @@ export async function GET(request: NextRequest) {
   const search = rawSearch && rawSearch.length <= 100 ? rawSearch : null
   const stageId = url.searchParams.get("stage_id")
   const propertyId = url.searchParams.get("property_id")
+  const page = Math.max(1, parseInt(url.searchParams.get("page") || "1"))
+  const limit = Math.min(Math.max(1, parseInt(url.searchParams.get("limit") || "50")), 100)
+  const from = (page - 1) * limit
+  const to = from + limit - 1
 
   let query = supabase
     .from("leads")
     .select(
-      "id, name, phone, email, stage_id, qualification_score, interest_level, property_interest_id, assigned_broker_id, source, created_at, updated_at"
+      "id, name, phone, email, stage_id, qualification_score, interest_level, property_interest_id, assigned_broker_id, source, created_at, updated_at",
+      { count: "exact" }
     )
     .eq("org_id", appUser.org_id)
     .eq("is_active", true)
     .order("updated_at", { ascending: false })
+    .range(from, to)
 
   if (search) {
     query = query.or(`name.ilike.%${search}%,phone.ilike.%${search}%`)
@@ -48,13 +54,13 @@ export async function GET(request: NextRequest) {
     query = query.eq("property_interest_id", propertyId)
   }
 
-  const { data: leads, error } = await query
+  const { data: leads, error, count } = await query
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ data: leads })
+  return NextResponse.json({ data: leads, count, page, limit })
 }
 
 export async function POST(request: Request) {
