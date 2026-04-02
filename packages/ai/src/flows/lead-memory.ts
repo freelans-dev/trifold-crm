@@ -44,12 +44,13 @@ Inclua especialmente:
 
 Formato: texto corrido em paragrafos curtos, sem markdown, sem listas.
 Maximo 200 palavras. Seja objetivo e util.
+NUNCA corte o resumo no meio de uma frase. Se precisar encurtar, remova detalhes menos relevantes mas mantenha frases completas.
 Se nao houver informacao nova relevante, retorne o resumo atual sem mudancas.`
 
   try {
     const response = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 400,
+      max_tokens: 600,
       messages: [{ role: "user", content: prompt }],
     })
 

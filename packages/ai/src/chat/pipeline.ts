@@ -394,13 +394,20 @@ export async function processMessageWithMetadata(
     // [12.2 AC11] Single batch update — accumulate all changes, apply once
     const leadPatch: Record<string, unknown> = {}
 
-    // Sync property_interest_id
+    // Fetch current lead state for conditional logic
+    const { data: currentLead } = await supabase
+      .from("leads")
+      .select("stage_id, property_interest_id")
+      .eq("id", leadId)
+      .single()
+
+    // Sync property_interest_id — identifyProperty has priority, fallback only if no existing value
     if (identifiedPropertyId) {
       leadPatch.property_interest_id = identifiedPropertyId
-    } else if (finalData.property_interest) {
+    } else if (finalData.property_interest && !currentLead?.property_interest_id) {
       const interest = (finalData.property_interest as string).toLowerCase()
       const matchedProperty = properties.find((p) =>
-        p.slug.includes(interest) || p.name.toLowerCase().includes(interest)
+        p.slug === interest || p.name.toLowerCase() === interest
       )
       if (matchedProperty) {
         leadPatch.property_interest_id = matchedProperty.id
@@ -426,11 +433,6 @@ export async function processMessageWithMetadata(
     leadPatch.interest_level = updatedScore >= 70 ? "hot" : updatedScore >= 40 ? "warm" : "cold"
 
     // Kanban stage — qualification level (lowest priority)
-    const { data: currentLead } = await supabase
-      .from("leads")
-      .select("stage_id")
-      .eq("id", leadId)
-      .single()
 
     if (currentLead?.stage_id === STAGE_IDS.novo && updatedScore > 0) {
       leadPatch.stage_id = STAGE_IDS.em_qualificacao
@@ -551,8 +553,8 @@ export async function processMessageWithMetadata(
     current_property_id: identifiedPropertyId ?? state?.current_property_id ?? null,
   })
 
-  // 12.5 Update lead memory (run in background but don't swallow errors)
-  if (conversation?.lead_id) {
+  // 12.5 Update lead memory — skip on handoff (handoffSummary is definitive)
+  if (conversation?.lead_id && !handoffResult.trigger) {
     const leadId = conversation.lead_id
     updateLeadMemory({
       anthropic,
