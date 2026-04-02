@@ -39,10 +39,10 @@ export async function GET(request: NextRequest) {
 
   const cutoff = new Date(Date.now() - ENRICHMENT_WINDOW_MINUTES * 60 * 1000).toISOString()
 
-  // AC2: Find conversations with recent activity
-  const { data: conversations, error: convError } = await supabase
+  // AC2: Find conversations with recent activity that haven't been enriched yet
+  const { data: rawConversations, error: convError } = await supabase
     .from("conversations")
-    .select("id, lead_id, org_id")
+    .select("id, lead_id, org_id, last_message_at, last_enriched_at")
     .eq("is_ai_active", true)
     .gte("last_message_at", cutoff)
     .limit(MAX_CONVERSATIONS_PER_RUN)
@@ -52,8 +52,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "DB error" }, { status: 500 })
   }
 
-  if (!conversations || conversations.length === 0) {
-    return NextResponse.json({ processed: 0, message: "No active conversations" })
+  // Filter: only process if last_message_at > last_enriched_at (or never enriched)
+  const conversations = (rawConversations ?? []).filter((c) => {
+    if (!c.last_enriched_at) return true // never enriched
+    return new Date(c.last_message_at) > new Date(c.last_enriched_at)
+  })
+
+  if (conversations.length === 0) {
+    return NextResponse.json({ processed: 0, skipped: rawConversations?.length ?? 0, message: "No new messages to enrich" })
   }
 
   const results = { processed: 0, skipped: 0, failed: 0 }
@@ -146,6 +152,12 @@ export async function GET(request: NextRequest) {
         .from("conversation_state")
         .update({ collected_data: mergedCollectedData })
         .eq("conversation_id", conv.id)
+
+      // Mark conversation as enriched — prevents reprocessing until new messages arrive
+      await supabase
+        .from("conversations")
+        .update({ last_enriched_at: new Date().toISOString() })
+        .eq("id", conv.id)
 
       // AC15: Log success
       console.log(`[ENRICH_CRON] Enriched lead ${conv.lead_id}: ${Object.keys(enrichment.extracted_data).join(", ")}`)
