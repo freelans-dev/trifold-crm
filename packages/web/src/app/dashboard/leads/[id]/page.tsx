@@ -4,28 +4,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { GenerateSummaryButton } from "@web/components/leads/generate-summary-button"
 
-const interestLevelLabels: Record<string, string> = {
-  cold: "Frio",
-  warm: "Morno",
-  hot: "Quente",
-}
-
-const interestLevelColors: Record<string, string> = {
-  cold: "bg-blue-100 text-blue-700",
-  warm: "bg-yellow-100 text-yellow-700",
-  hot: "bg-red-100 text-red-700",
-}
-
-const sourceLabels: Record<string, string> = {
-  whatsapp_organic: "WhatsApp Orgânico",
-  whatsapp_click_to_ad: "WhatsApp Click-to-Ad",
-  meta_ads: "Meta Ads",
-  website: "Website",
-  referral: "Indicação",
-  walk_in: "Walk-in",
-  telegram: "Telegram",
-  other: "Outro",
-}
+import { INTEREST_LEVEL_LABELS as interestLevelLabels, INTEREST_LEVEL_COLORS as interestLevelColors, SOURCE_LABELS as sourceLabels } from "@web/lib/constants"
 
 const TABS = [
   { key: "info", label: "Info" },

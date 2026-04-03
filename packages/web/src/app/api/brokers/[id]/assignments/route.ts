@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@web/lib/supabase/server"
+import { requireAuth, requireRole } from "@web/lib/api-auth"
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: brokerId } = await params
-  const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase } = auth
 
   const { data } = await supabase
     .from("broker_assignments")
@@ -24,20 +24,13 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: brokerId } = await params
-  const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser || appUser.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
+  const forbidden = requireRole(appUser, ["admin"])
+  if (forbidden) return forbidden
 
   const body = await request.json()
   const { property_id } = body
@@ -61,20 +54,13 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: brokerId } = await params
-  const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser || appUser.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
+  const forbidden = requireRole(appUser, ["admin"])
+  if (forbidden) return forbidden
 
   const body = await request.json()
   const { property_id } = body

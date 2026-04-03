@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@web/lib/supabase/server"
+import { requireAuth, requireRole } from "@web/lib/api-auth"
+import { buildUpdatePayload, softDelete } from "@web/lib/api-utils"
 
 export async function PATCH(
   request: NextRequest,
@@ -7,53 +8,22 @@ export async function PATCH(
 ) {
   const { id } = await params
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
-
-  if (appUser.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
+  const forbidden = requireRole(appUser, ["admin"])
+  if (forbidden) return forbidden
 
   const body = await request.json()
 
-  const updateFields: Record<string, unknown> = {}
   const allowedFields = ["name", "slug", "type", "position", "color", "is_default"]
-
-  for (const field of allowedFields) {
-    if (body[field] !== undefined) {
-      updateFields[field] =
-        typeof body[field] === "string"
-          ? body[field].trim() || null
-          : body[field]
-    }
-  }
-
-  if (Object.keys(updateFields).length === 0) {
-    return NextResponse.json(
-      { error: "No fields to update" },
-      { status: 400 }
-    )
-  }
+  const { fields, error: payloadError } = buildUpdatePayload(body, allowedFields)
+  if (payloadError) return payloadError
 
   const { data: stage, error } = await supabase
     .from("kanban_stages")
-    .update(updateFields)
+    .update(fields)
     .eq("id", id)
     .eq("org_id", appUser.org_id)
     .eq("is_active", true)
@@ -73,42 +43,15 @@ export async function DELETE(
 ) {
   const { id } = await params
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
+  const forbidden = requireRole(appUser, ["admin"])
+  if (forbidden) return forbidden
 
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
-
-  if (appUser.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
-
-  // Soft delete
-  const { data: stage, error } = await supabase
-    .from("kanban_stages")
-    .update({ is_active: false })
-    .eq("id", id)
-    .eq("org_id", appUser.org_id)
-    .eq("is_active", true)
-    .select()
-    .single()
-
-  if (error || !stage) {
-    return NextResponse.json({ error: "Stage not found" }, { status: 404 })
-  }
+  const result = await softDelete(supabase, "kanban_stages", id, appUser.org_id)
+  if (result.error) return result.error
 
   return NextResponse.json({ data: { message: "Stage deleted" } })
 }

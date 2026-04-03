@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@web/lib/supabase/server"
+import { requireAuth } from "@web/lib/api-auth"
+import { buildUpdatePayload } from "@web/lib/api-utils"
 
 export async function GET(
   _req: NextRequest,
@@ -7,24 +8,9 @@ export async function GET(
 ) {
   const { id } = await params
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
   const { data: appointment, error } = await supabase
     .from("appointments")
@@ -56,29 +42,13 @@ export async function PATCH(
 ) {
   const { id } = await params
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("id, role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
   const body = await request.json()
 
-  const updateFields: Record<string, unknown> = {}
-  const allowedFields = [
+  const { fields: updateFields, error: payloadError } = buildUpdatePayload(body, [
     "scheduled_at",
     "duration_minutes",
     "location",
@@ -86,23 +56,9 @@ export async function PATCH(
     "notes",
     "broker_id",
     "property_id",
-  ]
+  ])
 
-  for (const field of allowedFields) {
-    if (body[field] !== undefined) {
-      updateFields[field] =
-        typeof body[field] === "string"
-          ? body[field].trim() || null
-          : body[field]
-    }
-  }
-
-  if (Object.keys(updateFields).length === 0) {
-    return NextResponse.json(
-      { error: "No fields to update" },
-      { status: 400 }
-    )
-  }
+  if (payloadError) return payloadError
 
   const { data: appointment, error } = await supabase
     .from("appointments")
@@ -141,24 +97,9 @@ export async function DELETE(
 ) {
   const { id } = await params
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("id, role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
   // Soft delete: set status to cancelled
   const { data: appointment, error } = await supabase

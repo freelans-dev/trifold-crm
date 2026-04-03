@@ -1,5 +1,6 @@
 import { createClient } from "@web/lib/supabase/server"
 import { getServerUser } from "@web/lib/auth"
+import { SOURCE_LABELS_SHORT } from "@web/lib/constants"
 
 export default async function AnalyticsPage() {
   await getServerUser()
@@ -36,15 +37,7 @@ export default async function AnalyticsPage() {
 
   // Source counts
   const sourceCounts: Record<string, number> = {}
-  const sourceLabels: Record<string, string> = {
-    whatsapp_organic: "WhatsApp",
-    whatsapp_click_to_ad: "Click-to-Ad",
-    meta_ads: "Meta Ads",
-    website: "Website",
-    referral: "Indicação",
-    telegram: "Telegram",
-    other: "Outro",
-  }
+  const sourceLabels = SOURCE_LABELS_SHORT
   for (const l of sourceLeads ?? []) {
     const key = l.source ?? "other"
     sourceCounts[key] = (sourceCounts[key] ?? 0) + 1

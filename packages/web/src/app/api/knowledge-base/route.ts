@@ -1,29 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@web/lib/supabase/server"
+import { requireAuth, requireRole } from "@web/lib/api-auth"
 
 export async function GET(request: NextRequest) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
-
-  if (!["admin", "supervisor"].includes(appUser.role)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
+  const roleError = requireRole(appUser, ["admin", "supervisor"])
+  if (roleError) return roleError
 
   const { searchParams } = request.nextUrl
   const sourceId = searchParams.get("source_id")
@@ -54,28 +38,12 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("id, role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
-
-  if (!["admin", "supervisor"].includes(appUser.role)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
+  const roleError = requireRole(appUser, ["admin", "supervisor"])
+  if (roleError) return roleError
 
   const body = await request.json()
 

@@ -1,25 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@web/lib/supabase/server"
+import { requireAuth } from "@web/lib/api-auth"
 
 export async function GET(request: NextRequest) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("id, role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
   const url = new URL(request.url)
   const brokerId = url.searchParams.get("broker_id")
@@ -77,24 +62,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("id, role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
   const body = await request.json()
 

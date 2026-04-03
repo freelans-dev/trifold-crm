@@ -3,6 +3,7 @@
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { MANDATORY_FIELDS } from "@trifold/shared"
+import { getDaysSinceContact, getTimeAgo } from "@web/lib/time"
 
 interface LeadCardProps {
   lead: {
@@ -36,11 +37,6 @@ function getMandatoryFieldsFilled(lead: LeadCardProps["lead"]): number {
     if (value !== null && value !== undefined && value !== "") filled++
   }
   return filled
-}
-
-function getDaysSinceContact(dateStr: string): number {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  return Math.floor(diff / (1000 * 60 * 60 * 24))
 }
 
 export function LeadCard({ lead, propertyName, brokerName, onSelect }: LeadCardProps) {
@@ -192,14 +188,3 @@ export function LeadCard({ lead, propertyName, brokerName, onSelect }: LeadCardP
   )
 }
 
-function getTimeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const mins = Math.floor(diff / 60000)
-  if (mins < 1) return "agora"
-  if (mins < 60) return `${mins}min`
-  const hours = Math.floor(mins / 60)
-  if (hours < 24) return `${hours}h`
-  const days = Math.floor(hours / 24)
-  if (days < 7) return `${days}d`
-  return `${Math.floor(days / 7)}sem`
-}

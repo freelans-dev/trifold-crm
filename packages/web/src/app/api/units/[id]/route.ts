@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@web/lib/supabase/server"
+import { requireAuth, requireRole } from "@web/lib/api-auth"
+import { buildUpdatePayload } from "@web/lib/api-utils"
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
   available: ["reserved", "sold"],
@@ -38,24 +39,9 @@ export async function GET(
 ) {
   const { id } = await params
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
   const { data: unit, error } = await supabase
     .from("units")
@@ -93,28 +79,12 @@ export async function PATCH(
 ) {
   const { id } = await params
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
-
-  if (!["admin", "supervisor"].includes(appUser.role)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
+  const forbidden = requireRole(appUser, ["admin", "supervisor"])
+  if (forbidden) return forbidden
 
   // Verify unit exists and belongs to user's org
   const { data: existing } = await supabase
@@ -154,27 +124,13 @@ export async function PATCH(
     }
   }
 
-  // Build update payload with only provided fields
-  const updateFields: Record<string, unknown> = {}
-  if (body.identifier !== undefined)
-    updateFields.identifier = body.identifier.trim()
-  if (body.floor !== undefined) updateFields.floor = body.floor
-  if (body.status !== undefined) updateFields.status = body.status
-  if (body.area !== undefined) updateFields.area = body.area
-  if (body.price !== undefined) updateFields.price = body.price
-  if (body.typology_id !== undefined)
-    updateFields.typology_id = body.typology_id
-
-  if (Object.keys(updateFields).length === 0) {
-    return NextResponse.json(
-      { error: "No fields to update" },
-      { status: 400 }
-    )
-  }
+  const allowedFields = ["identifier", "floor", "status", "area", "price", "typology_id"]
+  const { fields, error: payloadError } = buildUpdatePayload(body, allowedFields)
+  if (payloadError) return payloadError
 
   const { data: unit, error } = await supabase
     .from("units")
-    .update(updateFields)
+    .update(fields)
     .eq("id", id)
     .eq("is_active", true)
     .select()

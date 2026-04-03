@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@web/lib/supabase/server"
+import { requireAuth, requireRole } from "@web/lib/api-auth"
+import { softDelete } from "@web/lib/api-utils"
 
 export async function GET(
   _req: NextRequest,
@@ -7,24 +8,9 @@ export async function GET(
 ) {
   const { id } = await ctx.params
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
   const { data: property, error } = await supabase
     .from("properties")
@@ -47,28 +33,12 @@ export async function PATCH(
 ) {
   const { id } = await ctx.params
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
-
-  if (!["admin", "supervisor"].includes(appUser.role)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
+  const forbidden = requireRole(appUser, ["admin", "supervisor"])
+  if (forbidden) return forbidden
 
   const body = await request.json()
 
@@ -139,41 +109,15 @@ export async function DELETE(
 ) {
   const { id } = await ctx.params
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
+  const forbidden = requireRole(appUser, ["admin"])
+  if (forbidden) return forbidden
 
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
-
-  if (appUser.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
-
-  const { data: property, error } = await supabase
-    .from("properties")
-    .update({ is_active: false })
-    .eq("id", id)
-    .eq("org_id", appUser.org_id)
-    .eq("is_active", true)
-    .select()
-    .single()
-
-  if (error || !property) {
-    return NextResponse.json({ error: "Property not found" }, { status: 404 })
-  }
+  const result = await softDelete(supabase, "properties", id, appUser.org_id)
+  if (result.error) return result.error
 
   return NextResponse.json({ data: { message: "Property deleted" } })
 }

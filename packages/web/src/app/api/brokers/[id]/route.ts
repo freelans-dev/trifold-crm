@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@web/lib/supabase/server"
+import { requireAuth, requireRole } from "@web/lib/api-auth"
+import { buildUpdatePayload } from "@web/lib/api-utils"
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase } = auth
 
   const { data: broker } = await supabase
     .from("brokers")
@@ -30,53 +31,22 @@ export async function PATCH(
 ) {
   const { id } = await params
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const auth = await requireAuth()
+  if (auth.error) return auth.error
+  const { supabase, appUser } = auth
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: appUser } = await supabase
-    .from("users")
-    .select("role, org_id")
-    .eq("auth_id", user.id)
-    .single()
-
-  if (!appUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
-
-  if (appUser.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
+  const forbidden = requireRole(appUser, ["admin"])
+  if (forbidden) return forbidden
 
   const body = await request.json()
 
-  const updateFields: Record<string, unknown> = {}
   const allowedFields = ["creci", "type", "is_available", "max_leads"]
-
-  for (const field of allowedFields) {
-    if (body[field] !== undefined) {
-      updateFields[field] =
-        typeof body[field] === "string"
-          ? body[field].trim() || null
-          : body[field]
-    }
-  }
-
-  if (Object.keys(updateFields).length === 0) {
-    return NextResponse.json(
-      { error: "No fields to update" },
-      { status: 400 }
-    )
-  }
+  const { fields, error: payloadError } = buildUpdatePayload(body, allowedFields)
+  if (payloadError) return payloadError
 
   const { data: broker, error } = await supabase
     .from("brokers")
-    .update(updateFields)
+    .update(fields)
     .eq("id", id)
     .eq("org_id", appUser.org_id)
     .select(
