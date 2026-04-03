@@ -9,7 +9,9 @@
     "type-check": "turbo type-check",
     "seed": "tsx scripts/run-seed.ts && tsx scripts/seed-properties.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "aios": "node bin/aios.js",
+    "aios:init": "node bin/aios-init.js"
   },
   "devDependencies": {
     "tsx": "^4.21.0",

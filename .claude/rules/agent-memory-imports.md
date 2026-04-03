@@ -13,3 +13,9 @@ These are the canonical locations — agents should read their memory on activat
 @import .aios-core/development/agents/devops/MEMORY.md
 @import .aios-core/development/agents/pm/MEMORY.md
 @import .aios-core/development/agents/po/MEMORY.md
+@import .aios-core/development/agents/sm/MEMORY.md
+@import .aios-core/development/agents/analyst/MEMORY.md
+@import .aios-core/development/agents/data-engineer/MEMORY.md
+@import .aios-core/development/agents/ux/MEMORY.md
+@import .aios-core/development/agents/aios-master/MEMORY.md
+@import .aios-core/development/agents/squad-creator/MEMORY.md
